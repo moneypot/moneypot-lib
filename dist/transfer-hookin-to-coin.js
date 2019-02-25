@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const claimable_coin_set_1 = require("./claimable-coin-set");
+const hash_1 = require("./hash");
 const spent_hookin_1 = require("./spent-hookin");
-const transfer_1 = require("./transfer");
 // th2c
 class TransferHookinToCoin {
     static fromPOD(data) {
@@ -24,7 +24,10 @@ class TransferHookinToCoin {
         this.output = output;
     }
     hash() {
-        return transfer_1.default.hashOf(this.input.hash(), this.output.hash());
+        const h = hash_1.default.newBuilder('TransferHookinToCoin');
+        h.update(this.input.hash().buffer);
+        h.update(this.output.hash().buffer);
+        return h.digest();
     }
     toPOD() {
         return {

@@ -1,8 +1,7 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from './hash';
+import Hash from "./hash";
 import * as POD from './pod';
 import SpentCoinSet from './spent-coin-set';
-import Transfer from './transfer';
 
 // c2ct
 
@@ -32,7 +31,12 @@ export default class TransferCoinToCoin {
   }
 
   public hash() {
-    return Transfer.hashOf(this.input.hash(), this.output.hash());
+    const h = Hash.newBuilder('TransferCoinToCoin');
+
+    h.update(this.input.hash().buffer);
+    h.update(this.output.hash().buffer);
+
+    return h.digest();
   }
 
   public toPOD(): POD.TransferCoinToCoin {

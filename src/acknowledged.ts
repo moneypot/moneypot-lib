@@ -25,7 +25,7 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
 
   public static fromPOD<T extends Acknowledgable<P>, P>(
     creator: (data: any) => T | Error,
-    data: any
+    data: any,
   ): Acknowledged<T, P> | Error {
     const contents = creator(data);
     if (contents instanceof Error) {

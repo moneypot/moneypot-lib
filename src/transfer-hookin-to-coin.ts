@@ -1,7 +1,7 @@
 import ClaimableCoinSet from './claimable-coin-set';
+import Hash from "./hash";
 import * as POD from './pod';
 import SpentHookin from './spent-hookin';
-import Transfer from './transfer';
 
 // th2c
 
@@ -33,7 +33,12 @@ export default class TransferHookinToCoin {
   }
 
   public hash() {
-    return Transfer.hashOf(this.input.hash(), this.output.hash());
+    const h = Hash.newBuilder('TransferHookinToCoin');
+
+    h.update(this.input.hash().buffer);
+    h.update(this.output.hash().buffer);
+
+    return h.digest();
   }
 
   public toPOD(): POD.TransferHookinToCoin {

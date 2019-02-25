@@ -33,8 +33,6 @@ export { default as LightningHookin } from './lightning-hookin';
 
 export { default as LightningHookout } from './lightning-hookout';
 
-export { default as Transfer } from './transfer';
-
 import TransferCoinToCoin from './transfer-coin-to-coin';
 export { TransferCoinToCoin };
 

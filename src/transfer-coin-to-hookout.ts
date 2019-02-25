@@ -1,7 +1,7 @@
+import Hash from "./hash";
 import * as POD from './pod';
 import SpentCoinSet from './spent-coin-set';
 import Hookout from './hookout';
-import Transfer from './transfer';
 
 // c2h
 export default class TransferCoinToHookout {
@@ -32,7 +32,12 @@ export default class TransferCoinToHookout {
   }
 
   public hash() {
-    return Transfer.hashOf(this.input.hash(), this.output.hash());
+    const h = Hash.newBuilder('TransferCoinToHookout');
+
+    h.update(this.input.hash().buffer);
+    h.update(this.output.hash().buffer);
+
+    return h.digest();
   }
 
   public toPOD(): POD.TransferCoinToHookout {

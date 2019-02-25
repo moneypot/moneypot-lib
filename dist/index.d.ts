@@ -17,7 +17,6 @@ export { default as SpentHookin } from './spent-hookin';
 export { default as Hookout } from './hookout';
 export { default as LightningHookin } from './lightning-hookin';
 export { default as LightningHookout } from './lightning-hookout';
-export { default as Transfer } from './transfer';
 import TransferCoinToCoin from './transfer-coin-to-coin';
 export { TransferCoinToCoin };
 import TransferCoinToHookout from './transfer-coin-to-hookout';
