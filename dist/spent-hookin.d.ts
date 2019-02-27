@@ -7,6 +7,6 @@ export default class SpentHookin {
     spendAuthorization: Signature;
     constructor(hookin: Hookin, spendAuthorization: Signature);
     readonly amount: number;
-    hash(): import("./hash").default;
+    hash(): Promise<import("./hash").default>;
     toPOD(): POD.SpentHookin;
 }

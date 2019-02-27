@@ -30,13 +30,13 @@ export default class ClaimableCoinSet {
     return new ClaimableCoinSet(coins);
   }
 
-  public static fromPayTo(creditTo: PublicKey, amount: number) {
+  public static async fromPayTo(creditTo: PublicKey, amount: number) {
     const coins = amountToMagnitudes(amount);
 
     const claimableOutputs = [];
 
     for (let i = 0; i < coins.length; i++) {
-      const claimant = creditTo.derive(buffutils.fromUint8(i));
+      const claimant = await creditTo.derive(buffutils.fromUint8(i));
 
       claimableOutputs.push(new ClaimableCoin(claimant, coins[i]));
     }
@@ -90,13 +90,13 @@ export default class ClaimableCoinSet {
     return this.coins.map(i => i.toPOD());
   }
 
-  public hash() {
+  public async hash() {
     assert.equal(this.isCanonicalized(), true);
 
     const h = Hash.newBuilder('ClaimableCoinSet');
 
     for (const coin of this.coins) {
-      h.update(coin.hash().buffer);
+      h.update((await coin.hash()).buffer);
     }
 
     return h.digest();

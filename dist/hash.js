@@ -1,26 +1,23 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("./util/assert");
-const bech32 = require("./util/bech32");
-const crypto_1 = require("crypto");
+import * as assert from './util/assert';
+import * as bech32 from './util/bech32';
+import hmacSha256 from './util/node-crypto/hmac-sha256';
+import * as Buffutil from './util/buffutils';
 const serializedPrefix = 'hshi'; // hash hookedin
-class Hash {
+export default class Hash {
     // actually hashes a message(s)
-    static fromMessage(prefix, ...message) {
-        const h = crypto_1.createHmac('sha256', prefix);
-        for (const m of message) {
-            h.update(m);
-        }
-        return new Hash(h.digest());
+    static async fromMessage(prefix, ...message) {
+        const buff = await hmacSha256(Buffutil.fromString(prefix), Buffutil.concat(...message));
+        return new Hash(buff);
     }
     static newBuilder(prefix) {
-        const h = crypto_1.createHmac('sha256', prefix);
+        // this can be optimized later:
+        const parts = [];
         return new class {
             update(message) {
-                h.update(message);
+                parts.push(message);
             }
             digest() {
-                return new Hash(h.digest());
+                return Hash.fromMessage(prefix, ...parts);
             }
         }();
     }
@@ -46,5 +43,4 @@ class Hash {
         return bech32.encode(serializedPrefix, words);
     }
 }
-exports.default = Hash;
 //# sourceMappingURL=hash.js.map

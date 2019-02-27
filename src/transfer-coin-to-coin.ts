@@ -30,11 +30,11 @@ export default class TransferCoinToCoin {
     this.output = output;
   }
 
-  public hash() {
+  public async hash() {
     const h = Hash.newBuilder('TransferCoinToCoin');
 
-    h.update(this.input.hash().buffer);
-    h.update(this.output.hash().buffer);
+    h.update((await this.input.hash()).buffer);
+    h.update((await this.output.hash()).buffer);
 
     return h.digest();
   }
@@ -46,3 +46,4 @@ export default class TransferCoinToCoin {
     };
   }
 }
+

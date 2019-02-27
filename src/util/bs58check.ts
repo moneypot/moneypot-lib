@@ -1,27 +1,22 @@
-import { createHash } from 'crypto';
+import sha256 from './node-crypto/sha256';
 import * as base58 from './base58';
 
 import * as buffutils from './buffutils';
 
-function checksumFn(buffer: Uint8Array) {
-  const tmp = createHash('sha256')
-    .update(buffer)
-    .digest();
-  return createHash('sha256')
-    .update(tmp)
-    .digest();
+async function checksumFn(buffer: Uint8Array) {
+  return await sha256(await sha256(buffer));
 }
 
-export function encode(payload: Uint8Array) {
-  const checksum = checksumFn(payload).slice(0, 4);
+export async function encode(payload: Uint8Array) {
+  const checksum = (await checksumFn(payload)).slice(0, 4);
 
   return base58.encode(buffutils.concat(payload, checksum));
 }
 
-function decodeRaw(buffer: Uint8Array) {
+async function decodeRaw(buffer: Uint8Array) {
   const payload = buffer.slice(0, -4);
   const checksum = buffer.slice(-4);
-  const newChecksum = checksumFn(payload);
+  const newChecksum = await checksumFn(payload);
 
   if (
     (checksum[0] ^ newChecksum[0]) |
@@ -36,18 +31,18 @@ function decodeRaw(buffer: Uint8Array) {
 }
 
 // Decode a base58-check encoded string to a buffer, no result if checksum is wrong
-export function decodeUnsafe(str: string) {
+export async function decodeUnsafe(str: string) {
   const buffer = base58.decodeUnsafe(str);
   if (!buffer) {
     return;
   }
 
-  return decodeRaw(buffer);
+  return await decodeRaw(buffer);
 }
 
-export function decode(str: string) {
+export async function decode(str: string) {
   const buffer = base58.decode(str);
-  const payload = decodeRaw(buffer);
+  const payload = await decodeRaw(buffer);
   if (!payload) {
     throw new Error('Invalid checksum');
   }

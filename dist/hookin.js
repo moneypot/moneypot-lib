@@ -1,17 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const hash_1 = require("./hash");
-const private_key_1 = require("./private-key");
-const public_key_1 = require("./public-key");
-const crypto_1 = require("crypto");
-const buffutils = require("./util/buffutils");
-const params_1 = require("./params");
-class Hookin {
+import Hash from './hash';
+import PrivateKey from './private-key';
+import PublicKey from './public-key';
+import hmacSha512 from './util/browser-crypto/hmac-sha512';
+import * as buffutils from './util/buffutils';
+import Params from './params';
+export default class Hookin {
     static fromPOD(data) {
         const txid = buffutils.fromHex(data.txid);
         const vout = data.vout;
         const amount = data.amount;
-        const creditTo = public_key_1.default.fromBech(data.creditTo);
+        const creditTo = PublicKey.fromBech(data.creditTo);
         if (creditTo instanceof Error) {
             return creditTo;
         }
@@ -19,7 +17,7 @@ class Hookin {
         return new Hookin(txid, vout, amount, creditTo, deriveIndex);
     }
     static hashOf(txid, vout, amount, creditTo, deriveIndex) {
-        const b = hash_1.default.newBuilder('Hookin');
+        const b = Hash.newBuilder('Hookin');
         b.update(txid);
         b.update(buffutils.fromUint32(vout));
         b.update(buffutils.fromUint64(amount));
@@ -34,14 +32,14 @@ class Hookin {
         this.creditTo = creditTo;
         this.deriveIndex = deriveIndex;
     }
-    hash() {
+    async hash() {
         return Hookin.hashOf(this.txid, this.vout, this.amount, this.creditTo, this.deriveIndex);
     }
-    get tweak() {
-        const message = buffutils.concat(params_1.default.fundingPublicKey.buffer, buffutils.fromUint32(this.deriveIndex));
-        const I = hmacSHA512(this.creditTo.hash().buffer, message);
+    async getTweak() {
+        const message = buffutils.concat(Params.fundingPublicKey.buffer, buffutils.fromUint32(this.deriveIndex));
+        const I = await hmacSha512((await this.creditTo.hash()).buffer, message);
         const IL = I.slice(0, 32);
-        const pk = private_key_1.default.fromBytes(IL);
+        const pk = PrivateKey.fromBytes(IL);
         if (pk instanceof Error) {
             throw pk;
         }
@@ -56,11 +54,5 @@ class Hookin {
             vout: this.vout,
         };
     }
-}
-exports.default = Hookin;
-function hmacSHA512(key, data) {
-    return crypto_1.createHmac('sha512', key)
-        .update(data)
-        .digest();
 }
 //# sourceMappingURL=hookin.js.map

@@ -10,6 +10,6 @@ export default class PrivateKey {
     toBech(): string;
     toPublicKey(): PublicKey;
     tweak(n: PrivateKey): PrivateKey;
-    toWif(testnet?: boolean): string;
-    derive(n: Uint8Array): PrivateKey;
+    toWif(testnet?: boolean): Promise<string>;
+    derive(n: Uint8Array): Promise<PrivateKey>;
 }

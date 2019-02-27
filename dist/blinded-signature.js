@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("./util/assert");
-const ecc = require("./util/ecc");
-const bech32 = require("./util/bech32");
+import * as assert from './util/assert';
+import * as ecc from './util/ecc';
+import * as bech32 from './util/bech32';
 const serializedPrefix = 'bshi'; // blinded signature hookedin
-class BlindedSignature {
+export default class BlindedSignature {
     static fromBech(str) {
         const { prefix, words } = bech32.decode(str);
         if (prefix !== serializedPrefix) {
@@ -30,5 +28,4 @@ class BlindedSignature {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
     }
 }
-exports.default = BlindedSignature;
 //# sourceMappingURL=blinded-signature.js.map

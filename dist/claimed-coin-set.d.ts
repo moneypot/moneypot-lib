@@ -11,6 +11,6 @@ export default class ClaimedCoinSet {
     canonicalize(): void;
     readonly length: number;
     toPOD(): POD.ClaimedCoinSet;
-    hash(): Hash;
+    hash(): Promise<Hash>;
     private isCanonicalized;
 }

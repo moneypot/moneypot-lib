@@ -1,13 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const hash_1 = require("./hash");
-const POD = require("./pod");
-const public_key_1 = require("./public-key");
-const signature_1 = require("./signature");
-const Buffutils = require("./util/buffutils");
-class ClaimedCoin {
+import Hash from './hash';
+import * as POD from './pod';
+import PublicKey from './public-key';
+import Signature from './signature';
+import * as Buffutils from './util/buffutils';
+export default class ClaimedCoin {
     static fromPOD(data) {
-        const owner = public_key_1.default.fromBech(data.owner);
+        const owner = PublicKey.fromBech(data.owner);
         if (owner instanceof Error) {
             return owner;
         }
@@ -15,7 +13,7 @@ class ClaimedCoin {
         if (!POD.isMagnitude(magnitude)) {
             return new Error('invalid magnitude for coin');
         }
-        const existenceProof = signature_1.default.fromBech(data.existenceProof);
+        const existenceProof = Signature.fromBech(data.existenceProof);
         if (existenceProof instanceof Error) {
             return existenceProof;
         }
@@ -27,7 +25,7 @@ class ClaimedCoin {
         this.existenceProof = existenceProof;
     }
     hash() {
-        return hash_1.default.fromMessage('ClaimedCoin', this.owner.buffer, Buffutils.fromUint8(this.magnitude), this.existenceProof.buffer);
+        return Hash.fromMessage('ClaimedCoin', this.owner.buffer, Buffutils.fromUint8(this.magnitude), this.existenceProof.buffer);
     }
     toPOD() {
         return {
@@ -37,5 +35,4 @@ class ClaimedCoin {
         };
     }
 }
-exports.default = ClaimedCoin;
 //# sourceMappingURL=claimed-coin.js.map

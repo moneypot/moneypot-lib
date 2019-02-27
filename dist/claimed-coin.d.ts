@@ -8,6 +8,6 @@ export default class ClaimedCoin {
     magnitude: POD.Magnitude;
     existenceProof: Signature;
     constructor(owner: PublicKey, magnitude: POD.Magnitude, existenceProof: Signature);
-    hash(): Hash;
+    hash(): Promise<Hash>;
     toPOD(): POD.ClaimedCoin;
 }

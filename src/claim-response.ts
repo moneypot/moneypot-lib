@@ -26,9 +26,9 @@ export default class ClaimResponse {
     this.blindedExistenceProof = blindedExistenceProof;
   }
 
-  public hash() {
+  public async hash() {
     const h = Hash.newBuilder('ClaimResponse');
-    h.update(this.claimRequest.hash().buffer);
+    h.update((await this.claimRequest.hash()).buffer);
     h.update(this.blindedExistenceProof.buffer);
     return h.digest();
   }

@@ -9,7 +9,7 @@ export default class PublicKey {
     constructor(x: ecc.Scalar, y: ecc.Scalar);
     toBech(): string;
     tweak(n: PublicKey): PublicKey;
-    derive(n: Uint8Array): PublicKey;
-    hash(): Hash;
-    toBitcoinAddress(testnet?: boolean): string;
+    derive(n: Uint8Array): Promise<PublicKey>;
+    hash(): Promise<Hash>;
+    toBitcoinAddress(testnet?: boolean): Promise<string>;
 }

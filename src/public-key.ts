@@ -4,7 +4,7 @@ import * as assert from './util/assert';
 import * as ecc from './util/ecc/elliptic';
 import * as bech32 from './util/bech32';
 
-import rmd160sha256 from './util/rmd160-sha256';
+import rmd160sha256 from './util/node-crypto/rmd160-sha256';
 
 import * as buffutils from './util/buffutils';
 
@@ -52,8 +52,8 @@ export default class PublicKey {
     return new PublicKey(newQ.x, newQ.y);
   }
 
-  public derive(n: Uint8Array): PublicKey {
-    const tweakBy = Hash.fromMessage('derive', this.buffer, n).buffer;
+  public async derive(n: Uint8Array): Promise<PublicKey> {
+    const tweakBy = (await Hash.fromMessage('derive', this.buffer, n)).buffer;
     const tweakByN = ecc.Scalar.fromBytes(tweakBy);
     if (tweakByN instanceof Error) {
       throw tweakByN;
@@ -69,10 +69,10 @@ export default class PublicKey {
     return Hash.fromMessage('PublicKey', this.buffer);
   }
 
-  public toBitcoinAddress(testnet: boolean = true): string {
+  public async toBitcoinAddress(testnet: boolean = true): Promise<string> {
     const prefix = testnet ? 'tb' : 'bc';
 
-    const pubkeyHash = rmd160sha256(this.buffer);
+    const pubkeyHash = await rmd160sha256(this.buffer);
 
     const words = bech32.toWords(pubkeyHash);
 

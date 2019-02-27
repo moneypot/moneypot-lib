@@ -1,15 +1,13 @@
-"use strict";
 // This works very similar to bip32, except that it's not limited to 32 bit
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("./util/assert");
-const types = require("./util/types");
-const crypto_1 = require("crypto");
-const buffutils = require("./util/buffutils");
-const ecc = require("./util/ecc");
-const public_key_1 = require("./public-key");
-const bs58check = require("./util/bs58check");
-const rmd160_sha256_1 = require("./util/rmd160-sha256");
-const wif = require("./util/wif");
+import * as assert from './util/assert';
+import * as types from './util/types';
+import hmacSHA512 from './util/node-crypto/hmac-sha512';
+import * as buffutils from './util/buffutils';
+import * as ecc from './util/ecc';
+import PublicKey from './public-key';
+import * as bs58check from './util/bs58check';
+import rmd160sha256 from './util/node-crypto/rmd160-sha256';
+import * as wif from './util/wif';
 function isNetworkType(net) {
     return types.isUint8(net.wif) && net.bip32 && types.isUint32(net.bip32.public) && types.isUint32(net.bip32.private);
 }
@@ -27,17 +25,12 @@ const BITCOIN = {
         private: 0x4b2430c,
     },
 };
-function hmacSHA512(key, data) {
-    return crypto_1.createHmac('sha512', key)
-        .update(data)
-        .digest();
-}
-class HDChain {
-    get identifier() {
-        return rmd160_sha256_1.default(this.publicKey);
+export default class HDChain {
+    async getIdentifier() {
+        return await rmd160sha256(this.publicKey);
     }
-    get fingerprint() {
-        return this.identifier.slice(0, 4);
+    async getFingerprint() {
+        return (await this.getIdentifier()).slice(0, 4);
     }
     get privateKeyScalar() {
         if (this.__d === null) {
@@ -68,8 +61,8 @@ class HDChain {
         this.__Q = q;
         return q;
     }
-    static fromBase58(str, network = BITCOIN) {
-        const buffer = Buffer.from(bs58check.decode(str));
+    static async fromBase58(str, network = BITCOIN) {
+        const buffer = Buffer.from(await bs58check.decode(str));
         if (buffer.length !== 78) {
             throw new TypeError('Invalid buffer length');
         }
@@ -134,14 +127,14 @@ class HDChain {
         }
         return new HDChain(null, publicKey, chainCode, network);
     }
-    static fromSeed(seed, network = BITCOIN) {
+    static async fromSeed(seed, network = BITCOIN) {
         if (seed.length < 16) {
             throw new TypeError('Seed should be at least 128 bits');
         }
         if (seed.length > 64) {
             throw new TypeError('Seed should be at most 512 bits');
         }
-        const I = hmacSHA512('Bitcoin seed', seed);
+        const I = await hmacSHA512(buffutils.fromString('Bitcoin seed'), seed);
         const IL = I.slice(0, 32);
         const IR = I.slice(32);
         return HDChain.fromPrivateKey(IL, IR, network);
@@ -159,7 +152,7 @@ class HDChain {
         this.parentFingerprint = 0x00000000;
     }
     toPublicKey() {
-        return public_key_1.default.fromBytes(this.publicKey);
+        return PublicKey.fromBytes(this.publicKey);
     }
     isNeutered() {
         return this.__d === null;
@@ -207,7 +200,7 @@ class HDChain {
         }
         return wif.encode(this.network.wif, this.privateKey, true);
     }
-    derive(index) {
+    async derive(index) {
         assert.check(types.isUint32, index);
         const isHardened = index >= HIGHEST_BIT;
         const data = Buffer.allocUnsafe(37);
@@ -228,7 +221,7 @@ class HDChain {
             buffutils.copy(this.publicKey, data, 0);
             data.writeUInt32BE(index, 33);
         }
-        const I = hmacSHA512(this.chainCode, data);
+        const I = await hmacSHA512(this.chainCode, data);
         const IL = I.slice(0, 32);
         const IR = I.slice(32);
         const ILScalar = ecc.Scalar.fromBytes(IL);
@@ -260,7 +253,7 @@ class HDChain {
         }
         hd.depth = this.depth + 1;
         hd.index = index;
-        hd.parentFingerprint = Buffer.from(this.fingerprint).readUInt32BE(0);
+        hd.parentFingerprint = Buffer.from(await this.getFingerprint()).readUInt32BE(0);
         return hd;
     }
     deriveHardened(index) {
@@ -268,27 +261,5 @@ class HDChain {
         // Only derives hardened private keys by default
         return this.derive(index + HIGHEST_BIT);
     }
-    derivePath(path) {
-        assert.check(isBip32Path, path);
-        let splitPath = path.split('/');
-        if (splitPath[0] === 'm') {
-            if (this.parentFingerprint) {
-                throw new TypeError('Expected master, got child');
-            }
-            splitPath = splitPath.slice(1);
-        }
-        return splitPath.reduce(function (prevHd, indexStr) {
-            let index;
-            if (indexStr.slice(-1) === "'") {
-                index = parseInt(indexStr.slice(0, -1), 10);
-                return prevHd.deriveHardened(index);
-            }
-            else {
-                index = parseInt(indexStr, 10);
-                return prevHd.derive(index);
-            }
-        }, this);
-    }
 }
-exports.default = HDChain;
 //# sourceMappingURL=hdchain.js.map

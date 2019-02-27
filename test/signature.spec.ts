@@ -3,12 +3,12 @@ import PrivateKey from '../src/private-key';
 import Signature from '../src/signature';
 
 describe('signature', () => {
-  it('should work', () => {
+  it('should work', async () => {
     const priv = PrivateKey.fromRand();
 
     const message = Buffer.from('Wow, such a message');
 
-    const sig = Signature.compute(message, priv);
+    const sig = await Signature.compute(message, priv);
 
     const serialized = sig.toBech();
 
@@ -19,6 +19,6 @@ describe('signature', () => {
 
     strictEqual(sig2.toBech(), serialized);
 
-    strictEqual(sig2.verify(message, priv.toPublicKey()), true);
+    strictEqual(await sig2.verify(message, priv.toPublicKey()), true);
   });
 });

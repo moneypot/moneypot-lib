@@ -2,7 +2,7 @@ import Hash from './hash';
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 
-import { createHmac } from 'crypto';
+import hmacSha512 from './util/browser-crypto/hmac-sha512';
 
 import * as POD from './pod';
 
@@ -49,14 +49,14 @@ export default class Hookin {
     this.deriveIndex = deriveIndex;
   }
 
-  public hash(): Hash {
+  public async hash(): Promise<Hash> {
     return Hookin.hashOf(this.txid, this.vout, this.amount, this.creditTo, this.deriveIndex);
   }
 
-  get tweak(): PrivateKey {
+  async getTweak(): Promise<PrivateKey> {
     const message = buffutils.concat(Params.fundingPublicKey.buffer, buffutils.fromUint32(this.deriveIndex));
 
-    const I = hmacSHA512(this.creditTo.hash().buffer, message);
+    const I = await hmacSha512((await this.creditTo.hash()).buffer, message);
     const IL = I.slice(0, 32);
     const pk = PrivateKey.fromBytes(IL);
     if (pk instanceof Error) {
@@ -75,10 +75,4 @@ export default class Hookin {
       vout: this.vout,
     };
   }
-}
-
-function hmacSHA512(key: Uint8Array, data: Uint8Array) {
-  return createHmac('sha512', key)
-    .update(data)
-    .digest();
 }

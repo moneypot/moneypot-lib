@@ -6,7 +6,7 @@ import Params from './params';
 
 // P is used as the POD type that it returns
 interface Acknowledgable<P> {
-  hash(): Hash;
+  hash(): Promise<Hash>;
   toPOD(): P;
 }
 
@@ -17,28 +17,30 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
   public acknowledgement: Signature;
   public contents: T;
 
-  public static acknowledge<T extends Acknowledgable<P>, P>(contents: T, acknowledgeKey: PrivateKey) {
-    const hash = contents.hash();
-    const acknowledgement = Signature.compute(hash.buffer, acknowledgeKey);
+  public static async acknowledge<T extends Acknowledgable<P>, P>(contents: T, acknowledgeKey: PrivateKey) {
+    const hash = await contents.hash();
+    const acknowledgement = await Signature.compute(hash.buffer, acknowledgeKey);
     return new Acknowledged<T, P>(contents, acknowledgement);
   }
 
-  public static fromPOD<T extends Acknowledgable<P>, P>(
+  public static async fromPOD<T extends Acknowledgable<P>, P>(
     creator: (data: any) => T | Error,
     data: any,
-  ): Acknowledged<T, P> | Error {
+  ): Promise<Acknowledged<T, P>> {
     const contents = creator(data);
     if (contents instanceof Error) {
-      return contents;
+      throw contents;
     }
 
     const acknowledgement = Signature.fromBech(data.acknowledgement);
     if (acknowledgement instanceof Error) {
-      return acknowledgement;
+      throw acknowledgement;
     }
 
-    if (!acknowledgement.verify(contents.hash().buffer, Params.acknowledgementPublicKey)) {
-      return Error('acknowledgement does not verify');
+    const hash = await contents.hash();
+
+    if (!acknowledgement.verify(hash.buffer, Params.acknowledgementPublicKey)) {
+      throw new Error('acknowledgement does not verify');
     }
 
     return new Acknowledged<T, P>(contents, acknowledgement);

@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const bs58check = require("./bs58check");
-function decodeRaw(buffer, version) {
+import * as bs58check from './bs58check';
+export function decodeRaw(buffer, version) {
     // check version only if defined
     if (version !== undefined && buffer[0] !== version) {
         throw new Error('Invalid network version');
@@ -28,8 +26,7 @@ function decodeRaw(buffer, version) {
         compressed: true,
     };
 }
-exports.decodeRaw = decodeRaw;
-function encodeRaw(version, privateKey, compressed = true) {
+export function encodeRaw(version, privateKey, compressed = true) {
     const result = new Uint8Array(compressed ? 34 : 33);
     result[0] = version;
     result.set(privateKey, 1);
@@ -38,13 +35,10 @@ function encodeRaw(version, privateKey, compressed = true) {
     }
     return result;
 }
-exports.encodeRaw = encodeRaw;
-function decode(str, version) {
-    return decodeRaw(bs58check.decode(str), version);
+export async function decode(str, version) {
+    return decodeRaw(await bs58check.decode(str), version);
 }
-exports.decode = decode;
-function encode(version, privateKey, compressed = true) {
+export function encode(version, privateKey, compressed = true) {
     return bs58check.encode(encodeRaw(version, privateKey, compressed));
 }
-exports.encode = encode;
 //# sourceMappingURL=wif.js.map

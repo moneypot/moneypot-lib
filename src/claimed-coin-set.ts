@@ -65,13 +65,13 @@ export default class ClaimedCoinSet {
     return this.coins.map(i => i.toPOD());
   }
 
-  public hash() {
+  public async hash() {
     this.canonicalize();
 
     const h = Hash.newBuilder('ClaimedCoinSet');
 
     for (const input of this.coins) {
-      h.update(input.hash().buffer);
+      h.update((await input.hash()).buffer);
     }
 
     return h.digest();

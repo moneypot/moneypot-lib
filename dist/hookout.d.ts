@@ -8,5 +8,5 @@ export default class Hookout {
     nonce: Uint8Array;
     constructor(amount: POD.Amount, bitcoinAddress: string, immediate: boolean, nonce: Uint8Array);
     toPOD(): POD.Hookout;
-    hash(): Hash;
+    hash(): Promise<Hash>;
 }

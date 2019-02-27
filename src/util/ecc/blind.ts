@@ -1,7 +1,6 @@
 import { Point, pointMultiply as mul, pointAdd as add, scalarAdd, scalarMultiply } from './elliptic';
 import { Signature } from './signature';
 import {
-  utf8ToBuffer,
   concatBuffers as concat,
   secp256k1 as curve,
   bufferToBigInt,
@@ -9,23 +8,28 @@ import {
   jacobi,
   pointToBuffer,
 } from './util';
-import { hash, hmac } from './sha256';
+import * as buffutils from '../buffutils';
 
-export type BlindedMessage = { c: bigint /* c = challenge */ };
-export type Unblinder = { alpha: bigint; r: bigint /* R.x */ };
-export type BlindedSignature = { s: bigint };
+import hash from '../node-crypto/sha256';
+import hmac from '../node-crypto/hmac-sha256';
 
-export function blindMessage(
+export interface BlindedMessage { c: bigint; /* c = challenge */ }
+export interface Unblinder { alpha: bigint; r: bigint; /* R.x */ }
+export interface BlindedSignature { s: bigint; }
+
+export async function blindMessage(
   secret: Uint8Array,
   nonce: Point,
   signer: Point,
-  message: Uint8Array
-): [Unblinder, BlindedMessage] {
+  message: Uint8Array,
+): Promise<[Unblinder, BlindedMessage]> {
   const R = nonce;
   const P = signer;
 
   const alpha = bufferToBigInt(
-    hmac(utf8ToBuffer('alpha'), [secret, pointToBuffer(nonce), pointToBuffer(signer), message])
+    await hmac(
+      buffutils.fromString('alpha'),
+      buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message)),
   );
 
   // spin beta until we find quadratic residue
@@ -34,7 +38,9 @@ export function blindMessage(
   let RPrime;
   while (true) {
     beta = bufferToBigInt(
-      hmac(utf8ToBuffer('beta'), [secret, pointToBuffer(nonce), pointToBuffer(signer), message, Uint8Array.of(retry)])
+      await hmac(
+        buffutils.fromString('beta'),
+        buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message, Uint8Array.of(retry))),
     );
 
     RPrime = add(R, mul(curve.g, alpha), mul(P, beta));
@@ -47,7 +53,7 @@ export function blindMessage(
   }
 
   // the challenge
-  const cPrime = bufferToBigInt(hash(concat(bufferFromBigInt(RPrime.x), pointToBuffer(P), message))) % curve.n;
+  const cPrime = bufferToBigInt(await hash(concat(bufferFromBigInt(RPrime.x), pointToBuffer(P), message))) % curve.n;
 
   // the blinded challenge
   const c = scalarAdd(cPrime, beta);

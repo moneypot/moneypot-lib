@@ -1,14 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("./util/assert");
-const bech32 = require("./util/bech32");
-const Buffutils = require("./util/buffutils");
-const ecc = require("./util/ecc");
+import * as assert from './util/assert';
+import * as bech32 from './util/bech32';
+import * as Buffutils from './util/buffutils';
+import * as ecc from './util/ecc';
 const serializedPrefix = 'sighi'; // signature hookedin
-class Signature {
+export default class Signature {
     // actually creates a schnorr sig. This takes a message, not a hash to prevent existential forgeries
-    static compute(message, privkey) {
-        const sig = ecc.sign(message, privkey.scalar);
+    static async compute(message, privkey) {
+        const sig = await ecc.sign(message, privkey.scalar);
         return new Signature(sig.r, sig.s);
     }
     static fromBech(serialized) {
@@ -44,5 +42,4 @@ class Signature {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
     }
 }
-exports.default = Signature;
 //# sourceMappingURL=signature.js.map

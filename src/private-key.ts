@@ -1,11 +1,10 @@
 import * as ecc from './util/ecc';
 import Hash from './hash';
 
-import { randomFillSync } from 'crypto';
-
 import PublicKey from './public-key';
 import * as bech32 from './util/bech32';
 import * as wif from './util/wif';
+import random from './util/node-crypto/random';
 
 const serializedPrefix = 'privhi'; // private key hookedin
 
@@ -29,8 +28,7 @@ export default class PrivateKey {
   }
 
   public static fromRand() {
-    const buff = new Uint8Array(32);
-    randomFillSync(buff);
+    const buff = random(32);
     const s = ecc.Scalar.fromBytes(buff);
     if (s instanceof Error) {
       throw s; // should never really happen..
@@ -70,8 +68,8 @@ export default class PrivateKey {
     return wif.encode(prefix, this.buffer, true);
   }
 
-  public derive(n: Uint8Array): PrivateKey {
-    const tweakBy = Hash.fromMessage('derive', this.toPublicKey().buffer, n).buffer;
+  public async derive(n: Uint8Array): Promise<PrivateKey> {
+    const tweakBy = (await Hash.fromMessage('derive', this.toPublicKey().buffer, n)).buffer;
     const tweakByN = ecc.Scalar.fromBytes(tweakBy);
     if (tweakByN instanceof Error) {
       throw tweakByN;
