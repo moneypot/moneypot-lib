@@ -1,5 +1,5 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from "./hash";
+import Hash from './hash';
 import SpentCoinSet from './spent-coin-set';
 // c2ct
 export default class TransferCoinToCoin {

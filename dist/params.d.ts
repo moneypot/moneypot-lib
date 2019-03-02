@@ -1,2 +1,14 @@
-declare let param: any;
-export default param;
+import PrivateKey from './private-key';
+import PublicKey from './public-key';
+declare const _default: {
+    acknowledgementPrivateKey: PrivateKey;
+    acknowledgementPublicKey: PublicKey;
+    basicTransferFee: number;
+    blindingCoinPrivateKeys: PrivateKey[];
+    blindingCoinPublicKeys: PublicKey[];
+    fundingPrivateKey: PrivateKey;
+    fundingPublicKey: PublicKey;
+    templateTransactionWeight: number;
+    transactionConsolidationFee: number;
+};
+export default _default;

@@ -7,7 +7,7 @@ export default async function(data: Uint8Array): Promise<Uint8Array> {
     .update(
       createHash('sha256')
         .update(data)
-        .digest(),
+        .digest()
     )
     .digest();
 }

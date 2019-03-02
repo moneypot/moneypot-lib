@@ -1,5 +1,5 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from "./hash";
+import Hash from './hash';
 import SpentHookin from './spent-hookin';
 // th2c
 export default class TransferHookinToCoin {

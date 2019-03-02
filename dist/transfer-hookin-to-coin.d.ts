@@ -1,5 +1,5 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from "./hash";
+import Hash from './hash';
 import * as POD from './pod';
 import SpentHookin from './spent-hookin';
 export default class TransferHookinToCoin {

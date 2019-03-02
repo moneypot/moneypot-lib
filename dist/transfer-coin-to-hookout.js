@@ -1,4 +1,4 @@
-import Hash from "./hash";
+import Hash from './hash';
 import SpentCoinSet from './spent-coin-set';
 import Hookout from './hookout';
 // c2h

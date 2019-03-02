@@ -21,5 +21,12 @@
     "ts-node": "^7.0.1",
     "tslint": "^5.13.0",
     "typescript": "^3.3.3333"
+  },
+  "browser": {
+    "./dist/util/node-crypto/hmac-sha256.js": "./dist/util/browser-crypto/hmac-sha256.js",
+    "./dist/util/node-crypto/hmac-sha512.js": "./dist/util/browser-crypto/hmac-sha512.js",
+    "./dist/util/node-crypto/random.js": "./dist/util/browser-crypto/random.js",
+    "./dist/util/node-crypto/rmd160-sha256.js": "./dist/util/browser-crypto/rmd160-sha256.js",
+    "./dist/util/node-crypto/sha256.js": "./dist/util/browser-crypto/sha256.js"
   }
 }

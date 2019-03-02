@@ -25,7 +25,7 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
 
   public static async fromPOD<T extends Acknowledgable<P>, P>(
     creator: (data: any) => T | Error,
-    data: any,
+    data: any
   ): Promise<Acknowledged<T, P>> {
     const contents = creator(data);
     if (contents instanceof Error) {

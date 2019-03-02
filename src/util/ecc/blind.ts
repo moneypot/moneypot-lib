@@ -13,15 +13,22 @@ import * as buffutils from '../buffutils';
 import hash from '../node-crypto/sha256';
 import hmac from '../node-crypto/hmac-sha256';
 
-export interface BlindedMessage { c: bigint; /* c = challenge */ }
-export interface Unblinder { alpha: bigint; r: bigint; /* R.x */ }
-export interface BlindedSignature { s: bigint; }
+export interface BlindedMessage {
+  c: bigint /* c = challenge */;
+}
+export interface Unblinder {
+  alpha: bigint;
+  r: bigint /* R.x */;
+}
+export interface BlindedSignature {
+  s: bigint;
+}
 
 export async function blindMessage(
   secret: Uint8Array,
   nonce: Point,
   signer: Point,
-  message: Uint8Array,
+  message: Uint8Array
 ): Promise<[Unblinder, BlindedMessage]> {
   const R = nonce;
   const P = signer;
@@ -29,7 +36,8 @@ export async function blindMessage(
   const alpha = bufferToBigInt(
     await hmac(
       buffutils.fromString('alpha'),
-      buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message)),
+      buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message)
+    )
   );
 
   // spin beta until we find quadratic residue
@@ -40,7 +48,8 @@ export async function blindMessage(
     beta = bufferToBigInt(
       await hmac(
         buffutils.fromString('beta'),
-        buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message, Uint8Array.of(retry))),
+        buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message, Uint8Array.of(retry))
+      )
     );
 
     RPrime = add(R, mul(curve.g, alpha), mul(P, beta));

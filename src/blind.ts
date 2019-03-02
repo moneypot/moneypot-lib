@@ -10,7 +10,7 @@ export async function blindMessage(
   secretRandomSeed: Uint8Array,
   nonce: PublicKey,
   signer: PublicKey,
-  message: Uint8Array,
+  message: Uint8Array
 ): Promise<[ecc.Unblinder, BlindedMessage]> {
   const [unblinder, bm] = await ecc.blindMessage(secretRandomSeed, nonce, signer, message);
   return [unblinder, new BlindedMessage(bm.c)];

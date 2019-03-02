@@ -1,5 +1,5 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from "./hash";
+import Hash from './hash';
 import * as POD from './pod';
 import SpentCoinSet from './spent-coin-set';
 export default class TransferCoinToCoin {

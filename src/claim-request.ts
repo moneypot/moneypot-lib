@@ -8,13 +8,12 @@ import * as POD from './pod';
 
 // represents a claim request
 
-
 export default class ClaimRequest {
   public static async newAuthorized(
     claimantPrivateKey: PrivateKey,
     magnitude: number,
     blindingNonce: PublicKey,
-    blindedOwner: BlindedMessage,
+    blindedOwner: BlindedMessage
   ) {
     const pubkey = claimantPrivateKey.toPublicKey();
     const coin = new ClaimableCoin(pubkey, magnitude);

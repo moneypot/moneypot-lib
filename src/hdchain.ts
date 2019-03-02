@@ -175,7 +175,7 @@ export default class HDChain {
       throw new TypeError('Seed should be at most 512 bits');
     }
 
-    const I = await hmacSHA512( buffutils.fromString('Bitcoin seed'), seed);
+    const I = await hmacSHA512(buffutils.fromString('Bitcoin seed'), seed);
     const IL = I.slice(0, 32);
     const IR = I.slice(32);
 
@@ -350,5 +350,4 @@ export default class HDChain {
     // Only derives hardened private keys by default
     return this.derive(index + HIGHEST_BIT);
   }
-
 }
