@@ -471,7 +471,7 @@ export default class RIPEMD160 {
 
     this._block.fill(0, this._blockOffset, 56);
 
-    const blockView = new DataView(this._block, this._block.byteOffset);
+    const blockView = new DataView(this._block.buffer, this._block.byteOffset);
     blockView.setUint32(56, this._length[0]);
     blockView.setUint32(60, this._length[1]);
 

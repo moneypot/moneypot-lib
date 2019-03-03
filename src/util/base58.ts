@@ -76,12 +76,12 @@ export function encode(source: Uint8Array) {
   return str;
 }
 
-export function decodeUnsafe(source: string) {
+export function decodeUnsafe(source: string): Uint8Array | undefined {
   if (typeof source !== 'string') {
     throw new TypeError('Expected String');
   }
   if (source.length === 0) {
-    return Buffer.alloc(0);
+    return new Uint8Array(0);
   }
 
   let psz = 0;
@@ -138,8 +138,8 @@ export function decodeUnsafe(source: string) {
     it++;
   }
 
-  const vch = Buffer.allocUnsafe(zeroes + (size - it));
-  vch.fill(0x00, 0, zeroes);
+  const vch = new Uint8Array(zeroes + (size - it));
+  //vch.fill(0x00, 0, zeroes);
 
   let j = zeroes;
   while (it !== size) {

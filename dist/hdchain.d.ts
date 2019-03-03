@@ -3,6 +3,7 @@ import PublicKey from './public-key';
 export default class HDChain {
     getIdentifier(): Promise<Uint8Array>;
     getFingerprint(): Promise<Uint8Array>;
+    getFingerprintAsNumber(): Promise<number>;
     readonly privateKeyScalar: bigint | null;
     readonly privateKey: Uint8Array | null;
     readonly publicKeyPoint: ecc.Point;

@@ -65,7 +65,7 @@ export function decodeUnsafe(source) {
         throw new TypeError('Expected String');
     }
     if (source.length === 0) {
-        return Buffer.alloc(0);
+        return new Uint8Array(0);
     }
     let psz = 0;
     // Skip leading spaces.
@@ -111,8 +111,8 @@ export function decodeUnsafe(source) {
     while (it !== size && b256[it] === 0) {
         it++;
     }
-    const vch = Buffer.allocUnsafe(zeroes + (size - it));
-    vch.fill(0x00, 0, zeroes);
+    const vch = new Uint8Array(zeroes + (size - it));
+    //vch.fill(0x00, 0, zeroes);
     let j = zeroes;
     while (it !== size) {
         vch[j++] = b256[it++];

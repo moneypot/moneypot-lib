@@ -46,6 +46,13 @@ export default class HDChain {
     return (await this.getIdentifier()).slice(0, 4);
   }
 
+  async getFingerprintAsNumber() {
+    const identifier = await this.getIdentifier();
+    const identifierView = new DataView(identifier.buffer, identifier.byteOffset);
+    return identifierView.getUint32(0, false);
+  }
+
+
   get privateKeyScalar() {
     if (this.__d === null) {
       return null;
@@ -84,15 +91,16 @@ export default class HDChain {
   }
 
   public static async fromBase58(str: string, network = BITCOIN) {
-    const buffer = Buffer.from(await bs58check.decode(str));
+    const buffer = await bs58check.decode(str);
     if (buffer.length !== 78) {
       throw new TypeError('Invalid buffer length');
     }
+    const bufferView = new DataView(buffer.buffer, buffer.byteOffset);
 
     const indexLength = buffer.length - 74;
 
     // 4 bytes: version bytes
-    const version = buffer.readUInt32BE(0);
+    const version = bufferView.getUint32(0, false);
     if (version !== network.bip32.private && version !== network.bip32.public) {
       throw new TypeError('Invalid network version');
     }
@@ -101,7 +109,8 @@ export default class HDChain {
     const depth = buffer[4];
 
     // 4 bytes: the fingerprint of the parent's key (0x00000000 if master key)
-    const parentFingerprint = buffer.readUInt32BE(5);
+    // const parentFingerprint = buffer.readUInt32BE(5);
+    const parentFingerprint = bufferView.getUint32(5, false);
     if (depth === 0) {
       if (parentFingerprint !== 0x00000000) {
         throw new TypeError('Invalid parent fingerprint');
@@ -110,7 +119,7 @@ export default class HDChain {
 
     // 4 bytes: child number. This is the number i in xi = xpar/i, with xi the key being serialized.
     // This is encoded in MSB order. (0x00000000 if master key)
-    const index = buffer.readUInt32BE(9);
+    const index = bufferView.getUint32(9, false);
     if (depth === 0 && (indexLength !== 4 || index !== 0)) {
       throw new TypeError('Invalid index');
     }
@@ -122,7 +131,7 @@ export default class HDChain {
 
     // 33 bytes: private key data (0x00 + k)
     if (version === network.bip32.private) {
-      if (buffer.readUInt8(45) !== 0x00) {
+      if (bufferView.getUint8(45) !== 0x00) {
         throw new TypeError('Invalid private key');
       }
 
@@ -275,7 +284,8 @@ export default class HDChain {
     assert.check(types.isUint32, index);
 
     const isHardened = index >= HIGHEST_BIT;
-    const data = Buffer.allocUnsafe(37);
+    const data = new Uint8Array(37);
+    const dataView = new DataView(data.buffer, data.byteOffset);
 
     // Hardened child
     if (isHardened) {
@@ -286,14 +296,14 @@ export default class HDChain {
       // data = 0x00 || ser256(kpar) || ser32(index)
       data[0] = 0x00;
       buffutils.copy(this.privateKey!, data, 1);
-      data.writeUInt32BE(index, 33);
+      dataView.setUint32(33, index, false);
 
       // Normal child
     } else {
       // data = serP(point(kpar)) || ser32(index)
       //      = serP(Kpar) || ser32(index)
       buffutils.copy(this.publicKey, data, 0);
-      data.writeUInt32BE(index, 33);
+      dataView.setUint32(33, index, false);
     }
 
     const I = await hmacSHA512(this.chainCode, data);
@@ -340,7 +350,7 @@ export default class HDChain {
 
     hd.depth = this.depth + 1;
     hd.index = index;
-    hd.parentFingerprint = Buffer.from(await this.getFingerprint()).readUInt32BE(0);
+    hd.parentFingerprint = await this.getFingerprintAsNumber();
     return hd;
   }
 
@@ -351,3 +361,4 @@ export default class HDChain {
     return this.derive(index + HIGHEST_BIT);
   }
 }
+

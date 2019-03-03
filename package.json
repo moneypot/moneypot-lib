@@ -2,8 +2,8 @@
   "name": "hookedin-lib",
   "version": "0.0.1",
   "description": "a library for hookedin",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "mocha -r ts-node/register \"test/**/*.ts\"",
