@@ -1,14 +1,19 @@
 import Hash from './hash';
-import * as assert from './util/assert';
 
 import * as ecc from './util/ecc/elliptic';
 import * as bech32 from './util/bech32';
 
-import rmd160sha256 from './util/node-crypto/rmd160-sha256';
+
+import RIPEMD160 from './util/bcrypto/ripemd160';
+import SHA256 from './util/bcrypto/sha256';
+
 
 import * as buffutils from './util/buffutils';
 
 const serializedPrefix = 'pubhi'; // public key hookedin
+
+
+
 
 export default class PublicKey {
   public static fromBech(serialized: string) {
@@ -69,14 +74,19 @@ export default class PublicKey {
     return Hash.fromMessage('PublicKey', this.buffer);
   }
 
-  public async toBitcoinAddress(testnet: boolean = true): Promise<string> {
+  public toBitcoinAddress(testnet: boolean = true): string {
     const prefix = testnet ? 'tb' : 'bc';
 
-    const pubkeyHash = await rmd160sha256(this.buffer);
+    const pubkeyHash = rmd160sha256(this.buffer);
 
     const words = bech32.toWords(pubkeyHash);
 
     const version = new Uint8Array(1); // [0]
     return bech32.encode(prefix, buffutils.concat(version, words));
   }
+}
+
+
+function rmd160sha256(data: Uint8Array) {
+  return RIPEMD160.digest(SHA256.digest(data))
 }

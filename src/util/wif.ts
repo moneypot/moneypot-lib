@@ -45,8 +45,8 @@ export function encodeRaw(version: number, privateKey: Uint8Array, compressed: b
   return result;
 }
 
-export async function decode(str: string, version: number) {
-  return decodeRaw(await bs58check.decode(str), version);
+export function decode(str: string, version: number) {
+  return decodeRaw(bs58check.decode(str), version);
 }
 
 export function encode(version: number, privateKey: Uint8Array, compressed: boolean = true) {

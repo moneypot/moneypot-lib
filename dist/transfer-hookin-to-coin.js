@@ -1,19 +1,17 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const claimable_coin_set_1 = require("./claimable-coin-set");
-const hash_1 = require("./hash");
-const spent_hookin_1 = require("./spent-hookin");
+import ClaimableCoinSet from './claimable-coin-set';
+import Hash from './hash';
+import SpentHookin from './spent-hookin';
 // th2c
-class TransferHookinToCoin {
+export default class TransferHookinToCoin {
     static fromPOD(data) {
         if (!data || typeof data !== 'object') {
             return new Error('expected an obj to parse a TransferHookinToCoin');
         }
-        const input = spent_hookin_1.default.fromPOD(data.input);
+        const input = SpentHookin.fromPOD(data.input);
         if (input instanceof Error) {
             return input;
         }
-        const output = claimable_coin_set_1.default.fromPOD(data.output);
+        const output = ClaimableCoinSet.fromPOD(data.output);
         if (output instanceof Error) {
             return output;
         }
@@ -24,7 +22,7 @@ class TransferHookinToCoin {
         this.output = output;
     }
     hash() {
-        const h = hash_1.default.newBuilder('TransferHookinToCoin');
+        const h = Hash.newBuilder('TransferHookinToCoin');
         h.update((this.input.hash()).buffer);
         h.update((this.output.hash()).buffer);
         return h.digest();
@@ -36,5 +34,4 @@ class TransferHookinToCoin {
         };
     }
 }
-exports.default = TransferHookinToCoin;
 //# sourceMappingURL=transfer-hookin-to-coin.js.map

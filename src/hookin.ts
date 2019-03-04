@@ -2,7 +2,7 @@ import Hash from './hash';
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 
-import hmacSha512 from './util/browser-crypto/hmac-sha512';
+import SHA512 from './util/bcrypto/sha512';
 
 import * as POD from './pod';
 
@@ -53,10 +53,10 @@ export default class Hookin {
     return Hookin.hashOf(this.txid, this.vout, this.amount, this.creditTo, this.deriveIndex);
   }
 
-  async getTweak(): Promise<PrivateKey> {
+  getTweak(): PrivateKey {
     const message = buffutils.concat(Params.fundingPublicKey.buffer, buffutils.fromUint32(this.deriveIndex));
 
-    const I = await hmacSha512((await this.creditTo.hash()).buffer, message);
+    const I = SHA512.mac(this.creditTo.hash().buffer, message);
     const IL = I.slice(0, 32);
     const pk = PrivateKey.fromBytes(IL);
     if (pk instanceof Error) {

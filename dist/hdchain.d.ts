@@ -1,9 +1,9 @@
 import * as ecc from './util/ecc';
 import PublicKey from './public-key';
 export default class HDChain {
-    getIdentifier(): Promise<Uint8Array>;
-    getFingerprint(): Promise<Uint8Array>;
-    getFingerprintAsNumber(): Promise<number>;
+    getIdentifier(): Uint8Array;
+    getFingerprint(): Uint8Array;
+    getFingerprintAsNumber(): number;
     readonly privateKeyScalar: bigint | null;
     readonly privateKey: Uint8Array | null;
     readonly publicKeyPoint: ecc.Point;
@@ -14,10 +14,10 @@ export default class HDChain {
             public: number;
             private: number;
         };
-    }): Promise<HDChain>;
+    }): HDChain;
     static fromPrivateKey(privateKey: Uint8Array, chainCode: Uint8Array, network?: any): HDChain;
     static fromPublicKey(publicKey: Uint8Array, chainCode: Uint8Array, network?: any): HDChain;
-    static fromSeed(seed: Uint8Array, network?: any): Promise<HDChain>;
+    static fromSeed(seed: Uint8Array, network?: any): HDChain;
     __d: Uint8Array | null;
     __Q: Uint8Array | null;
     chainCode: Uint8Array;
@@ -36,8 +36,8 @@ export default class HDChain {
     toPublicKey(): Error | PublicKey;
     isNeutered(): boolean;
     neutered(): HDChain;
-    toBase58(): Promise<string>;
-    toWIF(): Promise<string>;
-    derive(index: number): Promise<HDChain>;
-    deriveHardened(index: number): Promise<HDChain>;
+    toBase58(): string;
+    toWIF(): string;
+    derive(index: number): HDChain;
+    deriveHardened(index: number): HDChain;
 }

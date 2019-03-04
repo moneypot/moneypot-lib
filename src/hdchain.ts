@@ -1,9 +1,11 @@
 // This works very similar to bip32, except that it's not limited to 32 bit
 
 import * as assert from './util/assert';
+import RIPEMD160 from './util/bcrypto/ripemd160';
+import SHA256 from './util/bcrypto/sha256';
 import * as types from './util/types';
 
-import hmacSHA512 from './util/node-crypto/hmac-sha512';
+import sha512 from './util/bcrypto/sha512';
 
 import * as buffutils from './util/buffutils';
 import * as ecc from './util/ecc';
@@ -12,7 +14,6 @@ import PublicKey from './public-key';
 
 import * as bs58check from './util/bs58check';
 
-import rmd160sha256 from './util/node-crypto/rmd160-sha256';
 import * as wif from './util/wif';
 
 function isNetworkType(net: any) {
@@ -38,16 +39,16 @@ const BITCOIN = {
 };
 
 export default class HDChain {
-  async getIdentifier(): Promise<Uint8Array> {
-    return await rmd160sha256(this.publicKey);
+  getIdentifier(): Uint8Array {
+    return rmd160sha256(this.publicKey);
   }
 
-  async getFingerprint() {
-    return (await this.getIdentifier()).slice(0, 4);
+  getFingerprint() {
+    return this.getIdentifier().slice(0, 4);
   }
 
-  async getFingerprintAsNumber() {
-    const identifier = await this.getIdentifier();
+  getFingerprintAsNumber() {
+    const identifier = this.getIdentifier();
     const identifierView = new DataView(identifier.buffer, identifier.byteOffset);
     return identifierView.getUint32(0, false);
   }
@@ -90,8 +91,8 @@ export default class HDChain {
     return q;
   }
 
-  public static async fromBase58(str: string, network = BITCOIN) {
-    const buffer = await bs58check.decode(str);
+  public static fromBase58(str: string, network = BITCOIN) {
+    const buffer = bs58check.decode(str);
     if (buffer.length !== 78) {
       throw new TypeError('Invalid buffer length');
     }
@@ -176,7 +177,7 @@ export default class HDChain {
     return new HDChain(null, publicKey, chainCode, network);
   }
 
-  public static async fromSeed(seed: Uint8Array, network: any = BITCOIN) {
+  public static fromSeed(seed: Uint8Array, network: any = BITCOIN) {
     if (seed.length < 16) {
       throw new TypeError('Seed should be at least 128 bits');
     }
@@ -184,7 +185,7 @@ export default class HDChain {
       throw new TypeError('Seed should be at most 512 bits');
     }
 
-    const I = await hmacSHA512(buffutils.fromString('Bitcoin seed'), seed);
+    const I = sha512.mac(buffutils.fromString('Bitcoin seed'), seed);
     const IL = I.slice(0, 32);
     const IR = I.slice(32);
 
@@ -280,7 +281,7 @@ export default class HDChain {
     return wif.encode(this.network.wif, this.privateKey, true);
   }
 
-  public async derive(index: number): Promise<HDChain> {
+  public derive(index: number): HDChain {
     assert.check(types.isUint32, index);
 
     const isHardened = index >= HIGHEST_BIT;
@@ -306,7 +307,7 @@ export default class HDChain {
       dataView.setUint32(33, index, false);
     }
 
-    const I = await hmacSHA512(this.chainCode, data);
+    const I = sha512.mac(this.chainCode, data);
     const IL = I.slice(0, 32);
 
     const IR = I.slice(32);
@@ -350,7 +351,7 @@ export default class HDChain {
 
     hd.depth = this.depth + 1;
     hd.index = index;
-    hd.parentFingerprint = await this.getFingerprintAsNumber();
+    hd.parentFingerprint = this.getFingerprintAsNumber();
     return hd;
   }
 
@@ -362,3 +363,7 @@ export default class HDChain {
   }
 }
 
+
+function rmd160sha256(data: Uint8Array) {
+  return RIPEMD160.digest(SHA256.digest(data))
+}

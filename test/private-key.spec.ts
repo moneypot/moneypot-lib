@@ -33,12 +33,12 @@ describe('PrivateKey', () => {
     strictEqual(pub2.toBech(), serialized);
   });
 
-  it('should derive properly', async () => {
+  it('should derive properly', () => {
     const priv = PrivateKey.fromRand(); // randomized
     const pub = priv.toPublicKey();
 
-    const privD = await priv.derive(new TextEncoder().encode('cat soup'));
-    const pubD = await pub.derive(new TextEncoder().encode('cat soup'));
+    const privD = priv.derive(new TextEncoder().encode('cat soup'));
+    const pubD = pub.derive(new TextEncoder().encode('cat soup'));
 
     strictEqual(privD.toPublicKey().toBech(), pubD.toBech());
   });

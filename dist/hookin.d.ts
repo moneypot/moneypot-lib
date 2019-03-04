@@ -12,6 +12,6 @@ export default class Hookin {
     deriveIndex: number;
     constructor(txid: Uint8Array, vout: number, amount: number, creditTo: PublicKey, deriveIndex: number);
     hash(): Hash;
-    getTweak(): Promise<PrivateKey>;
+    getTweak(): PrivateKey;
     toPOD(): POD.Hookin;
 }

@@ -51,7 +51,7 @@ export function sign(message: Uint8Array, secret: bigint): Signature {
   return { r: R.x, s };
 }
 
-export async function verify(pubkey: Point, message: Uint8Array, sig: Signature): Promise<boolean> {
+export function verify(pubkey: Point, message: Uint8Array, sig: Signature): boolean {
   const m = message;
   const P = pubkey;
 

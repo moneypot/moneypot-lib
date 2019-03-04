@@ -11,5 +11,5 @@ export default class PublicKey {
     tweak(n: PublicKey): PublicKey;
     derive(n: Uint8Array): PublicKey;
     hash(): Hash;
-    toBitcoinAddress(testnet?: boolean): Promise<string>;
+    toBitcoinAddress(testnet?: boolean): string;
 }

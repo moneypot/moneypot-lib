@@ -9,6 +9,6 @@ export default class Signature {
     s: ecc.Scalar;
     constructor(r: ecc.Scalar, s: ecc.Scalar);
     readonly buffer: Uint8Array;
-    verify(message: Uint8Array, pubkey: PublicKey): Promise<boolean>;
+    verify(message: Uint8Array, pubkey: PublicKey): boolean;
     toBech(): string;
 }

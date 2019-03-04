@@ -1,19 +1,17 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const claimable_coin_set_1 = require("./claimable-coin-set");
-const hash_1 = require("./hash");
-const spent_coin_set_1 = require("./spent-coin-set");
+import ClaimableCoinSet from './claimable-coin-set';
+import Hash from './hash';
+import SpentCoinSet from './spent-coin-set';
 // c2ct
-class TransferCoinToCoin {
+export default class TransferCoinToCoin {
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('TransferCoinToCoin was expecting an object');
         }
-        const source = spent_coin_set_1.default.fromPOD(data.input);
+        const source = SpentCoinSet.fromPOD(data.input);
         if (source instanceof Error) {
             return source;
         }
-        const output = claimable_coin_set_1.default.fromPOD(data.output);
+        const output = ClaimableCoinSet.fromPOD(data.output);
         if (output instanceof Error) {
             return output;
         }
@@ -24,7 +22,7 @@ class TransferCoinToCoin {
         this.output = output;
     }
     hash() {
-        const h = hash_1.default.newBuilder('TransferCoinToCoin');
+        const h = Hash.newBuilder('TransferCoinToCoin');
         h.update((this.input.hash()).buffer);
         h.update((this.output.hash()).buffer);
         return h.digest();
@@ -36,5 +34,4 @@ class TransferCoinToCoin {
         };
     }
 }
-exports.default = TransferCoinToCoin;
 //# sourceMappingURL=transfer-coin-to-coin.js.map

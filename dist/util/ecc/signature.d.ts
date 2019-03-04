@@ -9,4 +9,4 @@ export declare const Signature: {
     toHex(sig: Signature): string;
 };
 export declare function sign(message: Uint8Array, secret: bigint): Signature;
-export declare function verify(pubkey: Point, message: Uint8Array, sig: Signature): Promise<boolean>;
+export declare function verify(pubkey: Point, message: Uint8Array, sig: Signature): boolean;

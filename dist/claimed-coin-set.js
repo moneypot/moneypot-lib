@@ -1,17 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const claimed_coin_1 = require("./claimed-coin");
-const assert = require("./util/assert");
-const hash_1 = require("./hash");
-const buffutils = require("./util/buffutils");
-class ClaimedCoinSet {
+import ClaimedCoin from './claimed-coin';
+import * as assert from './util/assert';
+import Hash from './hash';
+import * as buffutils from './util/buffutils';
+export default class ClaimedCoinSet {
     static fromPOD(data) {
         if (!Array.isArray(data)) {
             return new Error('ClaimedCoinSet was expecting an array');
         }
         const inputs = [];
         for (const input of data) {
-            const cc = claimed_coin_1.default.fromPOD(input);
+            const cc = ClaimedCoin.fromPOD(input);
             if (cc instanceof Error) {
                 return cc;
             }
@@ -50,7 +48,7 @@ class ClaimedCoinSet {
     }
     hash() {
         this.canonicalize();
-        const h = hash_1.default.newBuilder('ClaimedCoinSet');
+        const h = Hash.newBuilder('ClaimedCoinSet');
         for (const input of this.coins) {
             h.update((input.hash()).buffer);
         }
@@ -65,7 +63,6 @@ class ClaimedCoinSet {
         return true;
     }
 }
-exports.default = ClaimedCoinSet;
 function compare(a, b) {
     const r = a.magnitude - b.magnitude;
     if (r !== 0) {

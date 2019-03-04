@@ -1,18 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const claimable_coin_1 = require("./claimable-coin");
-const hash_1 = require("./hash");
-const assert = require("./util/assert");
-const buffutils = require("./util/buffutils");
-const coins_1 = require("./util/coins");
-class ClaimableCoinSet {
+import ClaimableCoin from './claimable-coin';
+import Hash from './hash';
+import * as assert from './util/assert';
+import * as buffutils from './util/buffutils';
+import { amountToMagnitudes } from './util/coins';
+export default class ClaimableCoinSet {
     static fromPOD(data) {
         if (!Array.isArray(data)) {
             return new Error('ClaimableCoinSet was expecting an array of ClaimableCoins');
         }
         const coins = [];
         for (const d of data) {
-            const coin = claimable_coin_1.default.fromPOD(d);
+            const coin = ClaimableCoin.fromPOD(d);
             if (coin instanceof Error) {
                 return coin;
             }
@@ -24,11 +22,11 @@ class ClaimableCoinSet {
         return new ClaimableCoinSet(coins);
     }
     static fromPayTo(creditTo, amount) {
-        const coins = coins_1.amountToMagnitudes(amount);
+        const coins = amountToMagnitudes(amount);
         const claimableOutputs = [];
         for (let i = 0; i < coins.length; i++) {
             const claimant = creditTo.derive(buffutils.fromUint8(i));
-            claimableOutputs.push(new claimable_coin_1.default(claimant, coins[i]));
+            claimableOutputs.push(new ClaimableCoin(claimant, coins[i]));
         }
         return new ClaimableCoinSet(claimableOutputs);
     }
@@ -69,14 +67,13 @@ class ClaimableCoinSet {
     }
     hash() {
         assert.equal(this.isCanonicalized(), true);
-        const h = hash_1.default.newBuilder('ClaimableCoinSet');
+        const h = Hash.newBuilder('ClaimableCoinSet');
         for (const coin of this.coins) {
             h.update(coin.hash().buffer);
         }
         return h.digest();
     }
 }
-exports.default = ClaimableCoinSet;
 function compare(a, b) {
     const r = a.magnitude - b.magnitude;
     if (r !== 0) {

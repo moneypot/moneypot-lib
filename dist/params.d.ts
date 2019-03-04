@@ -1,6 +1,6 @@
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
-declare const _default: {
+declare const t: {
     acknowledgementPrivateKey: PrivateKey;
     acknowledgementPublicKey: PublicKey;
     basicTransferFee: number;
@@ -11,4 +11,4 @@ declare const _default: {
     templateTransactionWeight: number;
     transactionConsolidationFee: number;
 };
-export default _default;
+export default t;

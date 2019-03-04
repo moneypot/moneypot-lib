@@ -15,6 +15,6 @@ export default class ClaimRequest {
     constructor(coin: ClaimableCoin, blindingNonce: PublicKey, blindedOwner: BlindedMessage, authorization: Signature);
     static hashOf(coinHash: Hash, blindingNonce: PublicKey, blindedOwner: BlindedMessage): Hash;
     hash(): Hash;
-    isAuthorized(): Promise<boolean>;
+    isAuthorized(): boolean;
     toPOD(): POD.ClaimRequest;
 }

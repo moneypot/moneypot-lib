@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("./assert");
-const types = require("./types");
-function toHex(buff) {
+import * as assert from './assert';
+import * as types from './types';
+export function toHex(buff) {
     let result = '';
     for (let i = 0; i < buff.length; i++) {
         const value = buff[i].toString(16);
@@ -10,13 +8,11 @@ function toHex(buff) {
     }
     return result;
 }
-exports.toHex = toHex;
-function fromHex(hexString) {
+export function fromHex(hexString) {
     return new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
 }
-exports.fromHex = fromHex;
 // returns amount of bytes copied. Does not support partial copies (i.e. target must be big enough)
-function copy(buff, target, targetStart = 0, sourceStart = 0, sourceEnd = buff.length) {
+export function copy(buff, target, targetStart = 0, sourceStart = 0, sourceEnd = buff.length) {
     assert.is(buff, Uint8Array);
     assert.is(target, Uint8Array);
     // TODO: this can be optimized with .set
@@ -25,13 +21,11 @@ function copy(buff, target, targetStart = 0, sourceStart = 0, sourceEnd = buff.l
     }
     return sourceEnd - sourceStart;
 }
-exports.copy = copy;
-function slice(buff, begin, end) {
+export function slice(buff, begin, end) {
     assert.is(buff, Uint8Array);
     return new Uint8Array(buff.buffer, buff.byteOffset + begin, end - begin);
 }
-exports.slice = slice;
-function concat(...buffs) {
+export function concat(...buffs) {
     let totalSize = 0;
     for (let i = 0; i < buffs.length; i++) {
         assert.is(buffs[i], Uint8Array);
@@ -45,16 +39,14 @@ function concat(...buffs) {
     }
     return res;
 }
-exports.concat = concat;
-function fromUint32(x) {
+export function fromUint32(x) {
     assert.check(types.isUint32, x);
     const buff = new ArrayBuffer(4);
     const view = new DataView(buff);
     view.setUint32(0, x);
     return new Uint8Array(buff);
 }
-exports.fromUint32 = fromUint32;
-function fromUint64(x) {
+export function fromUint64(x) {
     assert.check(types.isUint64, x);
     const buff = new ArrayBuffer(8);
     const view = new DataView(buff);
@@ -64,20 +56,17 @@ function fromUint64(x) {
     view.setUint32(4, low);
     return new Uint8Array(buff);
 }
-exports.fromUint64 = fromUint64;
-function fromUint8(x) {
+export function fromUint8(x) {
     assert.check(types.isUint8, x);
     const buff = new Uint8Array(1);
     buff[0] = x;
     return buff;
 }
-exports.fromUint8 = fromUint8;
-function fromString(x) {
+export function fromString(x) {
     assert.check(types.isString, x);
     return new TextEncoder().encode(x);
 }
-exports.fromString = fromString;
-function isAllZero(buff) {
+export function isAllZero(buff) {
     for (let i = 0; i < buff.length; i++) {
         if (buff[i] !== 0) {
             return false;
@@ -85,8 +74,7 @@ function isAllZero(buff) {
     }
     return true;
 }
-exports.isAllZero = isAllZero;
-function compare(a, b) {
+export function compare(a, b) {
     assert.is(a, Uint8Array);
     assert.is(b, Uint8Array);
     const m = Math.min(a.length, b.length);
@@ -104,9 +92,8 @@ function compare(a, b) {
     }
     return 0;
 }
-exports.compare = compare;
 // only constant time if both arrays are the same length
-function constTimeEqual(a, b) {
+export function constTimeEqual(a, b) {
     if (a.length !== b.length) {
         return false;
     }
@@ -118,5 +105,4 @@ function constTimeEqual(a, b) {
     }
     return equal;
 }
-exports.constTimeEqual = constTimeEqual;
 //# sourceMappingURL=buffutils.js.map
