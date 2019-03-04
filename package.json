@@ -23,6 +23,6 @@
     "typescript": "^3.3.3333"
   },
   "browser": {
-    "./dist/util/node-crypto/random.js": "./dist/util/browser-crypto/random.js"
+    "./dist/util/random.js": "./dist/util/random-browser.js"
   }
 }

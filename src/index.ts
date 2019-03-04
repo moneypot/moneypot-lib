@@ -65,4 +65,7 @@ export type AcknowledgedTransferHookinToCoin = Acknowledged<TransferHookinToCoin
 export { Buffutils };
 
 // crypto, should be in it's own lib too..
+export { default as random } from "./util/random";
 export { default as SHA256 } from "./util/bcrypto/sha256";
+export { default as SHA512 } from "./util/bcrypto/sha512";
+export { default as RIPEMD160 } from "./util/bcrypto/ripemd160";

@@ -4,7 +4,7 @@ import Hash from './hash';
 import PublicKey from './public-key';
 import * as bech32 from './util/bech32';
 import * as wif from './util/wif';
-import random from './util/node-crypto/random';
+import random from './util/random';
 
 const serializedPrefix = 'privhi'; // private key hookedin
 
