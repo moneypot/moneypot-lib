@@ -12,6 +12,6 @@ describe('public key', () => {
       throw pubkey;
     }
 
-    assert.strictEqual( pubkey.toBitcoinAddress(false), scriptAddress);
+    assert.strictEqual(pubkey.toBitcoinAddress(false), scriptAddress);
   });
 });

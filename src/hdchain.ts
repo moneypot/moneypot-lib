@@ -53,7 +53,6 @@ export default class HDChain {
     return identifierView.getUint32(0, false);
   }
 
-
   get privateKeyScalar() {
     if (this.__d === null) {
       return null;
@@ -363,7 +362,6 @@ export default class HDChain {
   }
 }
 
-
 function rmd160sha256(data: Uint8Array) {
-  return RIPEMD160.digest(SHA256.digest(data))
+  return RIPEMD160.digest(SHA256.digest(data));
 }

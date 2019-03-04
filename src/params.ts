@@ -1,10 +1,7 @@
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 
-
 import * as buffutils from './util/buffutils';
-
-
 
 // obviously for dev only...
 const masterPriv = PrivateKey.fromBech('privhi1gqfkvnju6n9qqmz4hgvq3dd8rg5lgl72tmz63pjxay3wm4rz39eqy2jtly');
@@ -33,8 +30,7 @@ for (let i = 0; i < 31; i++) {
   t.blindingCoinPublicKeys[i] = t.blindingCoinPrivateKeys[i].toPublicKey();
 }
 
-  export default t;
-
+export default t;
 
 //
 //

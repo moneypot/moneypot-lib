@@ -72,7 +72,7 @@ export default class ClaimRequest {
   }
 
   public isAuthorized() {
-    return this.authorization.verify((this.hash()).buffer, this.coin.claimant);
+    return this.authorization.verify(this.hash().buffer, this.coin.claimant);
   }
 
   public toPOD(): POD.ClaimRequest {

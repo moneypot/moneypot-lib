@@ -7,7 +7,7 @@ import Hash from '../src/hash';
 import PrivateKey from '../src/private-key';
 
 describe('blinding', () => {
-  it('should work',  () => {
+  it('should work', () => {
     const bechNonce = 'privhi1vxag33mx6p8wakp3r704mdjcuvpftz7w6um5lpkqmdpj0hmkgcsqc8ne28';
     const privNonce = PrivateKey.fromBech(bechNonce);
     if (privNonce instanceof Error) {
@@ -64,6 +64,6 @@ describe('blinding', () => {
 
     strictEqual(sUnblinded.toBech(), unblinded.toBech());
 
-    strictEqual( unblinded.verify(message, signerPub), true);
+    strictEqual(unblinded.verify(message, signerPub), true);
   });
 });

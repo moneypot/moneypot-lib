@@ -8,7 +8,7 @@ function checksumFn(buffer: Uint8Array) {
 }
 
 export function encode(payload: Uint8Array) {
-  const checksum = (checksumFn(payload)).slice(0, 4);
+  const checksum = checksumFn(payload).slice(0, 4);
 
   return base58.encode(buffutils.concat(payload, checksum));
 }

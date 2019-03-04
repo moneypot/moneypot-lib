@@ -71,7 +71,7 @@ export default class ClaimedCoinSet {
     const h = Hash.newBuilder('ClaimedCoinSet');
 
     for (const input of this.coins) {
-      h.update((input.hash()).buffer);
+      h.update(input.hash().buffer);
     }
 
     return h.digest();

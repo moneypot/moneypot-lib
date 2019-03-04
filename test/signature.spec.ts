@@ -8,7 +8,7 @@ describe('signature', () => {
 
     const message = Buffer.from('Wow, such a message');
 
-    const sig =  Signature.compute(message, priv);
+    const sig = Signature.compute(message, priv);
 
     const serialized = sig.toBech();
 
@@ -19,6 +19,6 @@ describe('signature', () => {
 
     strictEqual(sig2.toBech(), serialized);
 
-    strictEqual( sig2.verify(message, priv.toPublicKey()), true);
+    strictEqual(sig2.verify(message, priv.toPublicKey()), true);
   });
 });

@@ -34,8 +34,8 @@ export default class TransferCoinToHookout {
   public hash() {
     const h = Hash.newBuilder('TransferCoinToHookout');
 
-    h.update((this.input.hash()).buffer);
-    h.update((this.output.hash()).buffer);
+    h.update(this.input.hash().buffer);
+    h.update(this.output.hash().buffer);
 
     return h.digest();
   }

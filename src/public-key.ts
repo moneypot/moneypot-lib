@@ -3,17 +3,12 @@ import Hash from './hash';
 import * as ecc from './util/ecc/elliptic';
 import * as bech32 from './util/bech32';
 
-
 import RIPEMD160 from './util/bcrypto/ripemd160';
 import SHA256 from './util/bcrypto/sha256';
-
 
 import * as buffutils from './util/buffutils';
 
 const serializedPrefix = 'pubhi'; // public key hookedin
-
-
-
 
 export default class PublicKey {
   public static fromBech(serialized: string) {
@@ -58,7 +53,7 @@ export default class PublicKey {
   }
 
   public derive(n: Uint8Array): PublicKey {
-    const tweakBy = (Hash.fromMessage('derive', this.buffer, n)).buffer;
+    const tweakBy = Hash.fromMessage('derive', this.buffer, n).buffer;
     const tweakByN = ecc.Scalar.fromBytes(tweakBy);
     if (tweakByN instanceof Error) {
       throw tweakByN;
@@ -86,7 +81,6 @@ export default class PublicKey {
   }
 }
 
-
 function rmd160sha256(data: Uint8Array) {
-  return RIPEMD160.digest(SHA256.digest(data))
+  return RIPEMD160.digest(SHA256.digest(data));
 }

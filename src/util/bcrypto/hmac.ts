@@ -1,4 +1,4 @@
-import assert from "../assert";
+import assert from '../assert';
 
 interface HashType {
   init(): void;
@@ -8,7 +8,6 @@ interface HashType {
 type HashCtor = () => HashType;
 
 export default class HMAC {
-
   hash: HashCtor;
   size: number;
   inner: HashType;
@@ -23,7 +22,6 @@ export default class HMAC {
   }
 
   init(key: Uint8Array) {
-
     // Shorten key
     if (key.length > this.size) {
       const h = this.hash();
@@ -39,20 +37,16 @@ export default class HMAC {
     // Pad key
     const pad = Buffer.allocUnsafe(this.size);
 
-    for (let i = 0; i < key.length; i++)
-      pad[i] = key[i] ^ 0x36;
+    for (let i = 0; i < key.length; i++) pad[i] = key[i] ^ 0x36;
 
-    for (let i = key.length; i < pad.length; i++)
-      pad[i] = 0x36;
+    for (let i = key.length; i < pad.length; i++) pad[i] = 0x36;
 
     this.inner.init();
     this.inner.update(pad);
 
-    for (let i = 0; i < key.length; i++)
-      pad[i] = key[i] ^ 0x5c;
+    for (let i = 0; i < key.length; i++) pad[i] = key[i] ^ 0x5c;
 
-    for (let i = key.length; i < pad.length; i++)
-      pad[i] = 0x5c;
+    for (let i = key.length; i < pad.length; i++) pad[i] = 0x5c;
 
     this.outer.init();
     this.outer.update(pad);
@@ -60,12 +54,10 @@ export default class HMAC {
     return this;
   }
 
-
   update(data: Uint8Array) {
     this.inner.update(data);
     return this;
   }
-
 
   final() {
     this.outer.update(this.inner.final());
