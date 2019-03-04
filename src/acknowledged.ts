@@ -6,7 +6,7 @@ import Params from './params';
 
 // P is used as the POD type that it returns
 interface Acknowledgable<P> {
-  hash(): Promise<Hash>;
+  hash(): Hash;
   toPOD(): P;
 }
 
@@ -17,16 +17,16 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
   public acknowledgement: Signature;
   public contents: T;
 
-  public static async acknowledge<T extends Acknowledgable<P>, P>(contents: T, acknowledgeKey: PrivateKey) {
-    const hash = await contents.hash();
-    const acknowledgement = await Signature.compute(hash.buffer, acknowledgeKey);
+  public static acknowledge<T extends Acknowledgable<P>, P>(contents: T, acknowledgeKey: PrivateKey) {
+    const hash = contents.hash();
+    const acknowledgement = Signature.compute(hash.buffer, acknowledgeKey);
     return new Acknowledged<T, P>(contents, acknowledgement);
   }
 
-  public static async fromPOD<T extends Acknowledgable<P>, P>(
+  public static fromPOD<T extends Acknowledgable<P>, P>(
     creator: (data: any) => T | Error,
     data: any
-  ): Promise<Acknowledged<T, P>> {
+  ): Acknowledged<T, P> {
     const contents = creator(data);
     if (contents instanceof Error) {
       throw contents;
@@ -37,7 +37,7 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
       throw acknowledgement;
     }
 
-    const hash = await contents.hash();
+    const hash = contents.hash();
 
     if (!acknowledgement.verify(hash.buffer, Params.acknowledgementPublicKey)) {
       throw new Error('acknowledgement does not verify');

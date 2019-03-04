@@ -63,3 +63,6 @@ export type AcknowledgedTransferHookinToCoin = Acknowledged<TransferHookinToCoin
 
 // util, should be refactored into its own library
 export { Buffutils };
+
+// crypto, should be in it's own lib too..
+export { default as SHA256 } from "./util/bcrypto/sha256";

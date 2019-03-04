@@ -52,8 +52,8 @@ export default class PublicKey {
     return new PublicKey(newQ.x, newQ.y);
   }
 
-  public async derive(n: Uint8Array): Promise<PublicKey> {
-    const tweakBy = (await Hash.fromMessage('derive', this.buffer, n)).buffer;
+  public derive(n: Uint8Array): PublicKey {
+    const tweakBy = (Hash.fromMessage('derive', this.buffer, n)).buffer;
     const tweakByN = ecc.Scalar.fromBytes(tweakBy);
     if (tweakByN instanceof Error) {
       throw tweakByN;

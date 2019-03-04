@@ -68,8 +68,8 @@ export default class PrivateKey {
     return wif.encode(prefix, this.buffer, true);
   }
 
-  public async derive(n: Uint8Array): Promise<PrivateKey> {
-    const tweakBy = (await Hash.fromMessage('derive', this.toPublicKey().buffer, n)).buffer;
+  public derive(n: Uint8Array): PrivateKey {
+    const tweakBy = Hash.fromMessage('derive', this.toPublicKey().buffer, n).buffer;
     const tweakByN = ecc.Scalar.fromBytes(tweakBy);
     if (tweakByN instanceof Error) {
       throw tweakByN;

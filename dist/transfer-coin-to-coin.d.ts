@@ -7,6 +7,6 @@ export default class TransferCoinToCoin {
     input: SpentCoinSet;
     output: ClaimableCoinSet;
     constructor(input: SpentCoinSet, output: ClaimableCoinSet);
-    hash(): Promise<Hash>;
+    hash(): Hash;
     toPOD(): POD.TransferCoinToCoin;
 }

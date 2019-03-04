@@ -1,5 +1,7 @@
-import * as assert from '../assert';
-export const secp256k1 = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("../assert");
+exports.secp256k1 = {
     a: BigInt(0),
     b: BigInt(7),
     p: BigInt('115792089237316195423570985008687907853269984665640564039457584007908834671663'),
@@ -14,11 +16,12 @@ export const secp256k1 = {
 //
 //      -34 % 23 === -11
 //      mod(-34, 23) === 12
-export function mod(a, b) {
+function mod(a, b) {
     return ((a % b) + b) % b;
 }
+exports.mod = mod;
 // pows then mods, but uses intermediate mods to keep intermediate number within bigint range
-export function powmod(base, exp, m) {
+function powmod(base, exp, m) {
     if (exp === BigInt(0))
         return BigInt(1);
     if (exp % BigInt(2) === BigInt(0)) {
@@ -28,7 +31,8 @@ export function powmod(base, exp, m) {
         return mod(base * powmod(base, exp - BigInt(1), m), m);
     }
 }
-export function modInverse(a, m) {
+exports.powmod = powmod;
+function modInverse(a, m) {
     if (a < 0 || m <= a) {
         a = mod(a, m);
     }
@@ -49,6 +53,7 @@ export function modInverse(a, m) {
         return ud + m;
     }
 }
+exports.modInverse = modInverse;
 function bigIntSqrt(n) {
     if (n < BigInt(0)) {
         throw new Error('cannot sqrt negative number');
@@ -65,7 +70,7 @@ function bigIntSqrt(n) {
     }
     return newtonIteration(n, BigInt(1));
 }
-export function bufferToHex(buf) {
+function bufferToHex(buf) {
     let result = '';
     for (let i = 0; i < buf.length; i++) {
         const value = buf[i].toString(16);
@@ -73,16 +78,18 @@ export function bufferToHex(buf) {
     }
     return result;
 }
-export function bufferFromHex(hex) {
+exports.bufferToHex = bufferToHex;
+function bufferFromHex(hex) {
     if (hex.length % 2 === 1) {
         throw new Error(`hex string had odd length`);
     }
     return new Uint8Array(hex.match(/.{1,2}/g).map(byte => Number.parseInt(byte, 16)));
 }
+exports.bufferFromHex = bufferFromHex;
 // export function bufferToBigInt(buf: Uint8Array): bigint {
 //     return BigInt('0x' + bufferToHex(buf))
 // }
-export function bufferToBigInt(bytes) {
+function bufferToBigInt(bytes) {
     let result = BigInt(0);
     const n = bytes.length;
     // Read input in 8 byte slices
@@ -99,8 +106,9 @@ export function bufferToBigInt(bytes) {
     }
     return result;
 }
+exports.bufferToBigInt = bufferToBigInt;
 // Buffer is fixed-length 32bytes
-export function bufferFromBigInt(n) {
+function bufferFromBigInt(n) {
     const out = [];
     const base = BigInt(256);
     while (n >= base) {
@@ -115,7 +123,8 @@ export function bufferFromBigInt(n) {
     buf.set(out.reverse(), 32 - out.length);
     return buf;
 }
-export function concatBuffers(...buffs) {
+exports.bufferFromBigInt = bufferFromBigInt;
+function concatBuffers(...buffs) {
     let totalSize = 0;
     for (let i = 0; i < buffs.length; i++) {
         assert.is(buffs[i], Uint8Array);
@@ -129,8 +138,9 @@ export function concatBuffers(...buffs) {
     }
     return res;
 }
+exports.concatBuffers = concatBuffers;
 // 33 bytes: // first byte represents y, next 32 bytes are x coord
-export function pointFromBuffer(buf) {
+function pointFromBuffer(buf) {
     if (buf.length !== 33) {
         return new TypeError('unexpected length for point buffer');
     }
@@ -140,7 +150,7 @@ export function pointFromBuffer(buf) {
     // odd is 1n or 0n
     const odd = BigInt(buf[0] - 0x02);
     const x = bufferToBigInt(buf.slice(1, 33));
-    const { p } = secp256k1;
+    const { p } = exports.secp256k1;
     const ysq = (powmod(x, BigInt(3), p) + BigInt(7)) % p;
     const y0 = powmod(ysq, (p + BigInt(1)) / BigInt(4), p);
     if (powmod(y0, BigInt(2), p) !== ysq) {
@@ -149,7 +159,8 @@ export function pointFromBuffer(buf) {
     const y = (y0 & BigInt(1)) !== odd ? p - y0 : y0;
     return { x, y };
 }
-export function pointToBuffer(point) {
+exports.pointFromBuffer = pointFromBuffer;
+function pointToBuffer(point) {
     // 0x02: y is even
     // 0x03: y is odd
     const b0 = point.y % BigInt(2) === BigInt(0) ? 0x02 : 0x03;
@@ -160,7 +171,8 @@ export function pointToBuffer(point) {
     result.set(xbuf, 1);
     return result;
 }
-export function constantTimeBufferEquals(a, b) {
+exports.pointToBuffer = pointToBuffer;
+function constantTimeBufferEquals(a, b) {
     const aLen = a.length;
     const bLen = b.length;
     const len = Math.max(aLen, bLen);
@@ -171,14 +183,18 @@ export function constantTimeBufferEquals(a, b) {
     result |= aLen ^ bLen;
     return result === 0;
 }
-export function utf8ToBuffer(text) {
+exports.constantTimeBufferEquals = constantTimeBufferEquals;
+function utf8ToBuffer(text) {
     return new TextEncoder().encode(text);
 }
-export function isPointOnCurve({ x, y }) {
-    const { p, a, b } = secp256k1;
+exports.utf8ToBuffer = utf8ToBuffer;
+function isPointOnCurve({ x, y }) {
+    const { p, a, b } = exports.secp256k1;
     return (y * y - (x * x * x + a * x + b)) % p === BigInt(0);
 }
-export function jacobi(y) {
-    return powmod(y, (secp256k1.p - BigInt(1)) / BigInt(2), secp256k1.p);
+exports.isPointOnCurve = isPointOnCurve;
+function jacobi(y) {
+    return powmod(y, (exports.secp256k1.p - BigInt(1)) / BigInt(2), exports.secp256k1.p);
 }
+exports.jacobi = jacobi;
 //# sourceMappingURL=util.js.map

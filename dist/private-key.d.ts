@@ -11,5 +11,5 @@ export default class PrivateKey {
     toPublicKey(): PublicKey;
     tweak(n: PrivateKey): PrivateKey;
     toWif(testnet?: boolean): Promise<string>;
-    derive(n: Uint8Array): Promise<PrivateKey>;
+    derive(n: Uint8Array): PrivateKey;
 }

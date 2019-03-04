@@ -11,8 +11,8 @@ const serializedPrefix = 'sighi'; // signature hookedin
 
 export default class Signature {
   // actually creates a schnorr sig. This takes a message, not a hash to prevent existential forgeries
-  public static async compute(message: Uint8Array, privkey: PrivateKey) {
-    const sig = await ecc.sign(message, privkey.scalar);
+  public static compute(message: Uint8Array, privkey: PrivateKey) {
+    const sig = ecc.sign(message, privkey.scalar);
     return new Signature(sig.r, sig.s);
   }
 

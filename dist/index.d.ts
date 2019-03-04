@@ -36,3 +36,4 @@ export declare type AcknowledgedTransferCoinToCoin = Acknowledged<TransferCoinTo
 export declare type AcknowledgedTransferCoinToHookout = Acknowledged<TransferCoinToHookout, POD.TransferCoinToHookout>;
 export declare type AcknowledgedTransferHookinToCoin = Acknowledged<TransferHookinToCoin, POD.TransferHookinToCoin>;
 export { Buffutils };
+export { default as SHA256 } from "./util/bcrypto/sha256";

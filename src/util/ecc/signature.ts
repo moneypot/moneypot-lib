@@ -2,7 +2,7 @@ import * as assert from '../assert';
 import { secp256k1 as curve, bufferToHex } from './util';
 import { jacobi, concatBuffers as concat, bufferToBigInt as int, pointToBuffer, bufferFromBigInt } from './util';
 import { pointMultiply, pointSubtract, INFINITE_POINT } from './elliptic';
-import hash from '../node-crypto/sha256';
+import hash from '../bcrypto/sha256';
 import { Point } from '.';
 
 // Schnorr Signatures
@@ -29,13 +29,13 @@ export const Signature = {
   },
 };
 
-export async function sign(message: Uint8Array, secret: bigint): Promise<Signature> {
+export function sign(message: Uint8Array, secret: bigint): Signature {
   const m = message;
   const d = secret;
   if (d < BigInt(1) || d > curve.n - BigInt(1)) {
     throw new Error('secret must 1 <= d <= n-1');
   }
-  const k0 = int(await hash(concat(bufferFromBigInt(d), m))) % curve.n;
+  const k0 = int(hash.digest(bufferFromBigInt(d), m)) % curve.n;
   if (k0 === BigInt(0)) {
     throw new Error('sig failed');
   }
@@ -45,11 +45,10 @@ export async function sign(message: Uint8Array, secret: bigint): Promise<Signatu
   const k = jacobi(R.y) === BigInt(1) ? k0 : curve.n - k0;
 
   // challenge
-  const e = int(await hash(concat(bufferFromBigInt(R.x), pointToBuffer(pointMultiply(curve.g, d)), m))) % curve.n;
+  const e = int(hash.digest(bufferFromBigInt(R.x), pointToBuffer(pointMultiply(curve.g, d)), m)) % curve.n;
 
   const s = (k + e * d) % curve.n;
-  const sig = { r: R.x, s };
-  return sig;
+  return { r: R.x, s };
 }
 
 export async function verify(pubkey: Point, message: Uint8Array, sig: Signature): Promise<boolean> {
@@ -67,7 +66,7 @@ export async function verify(pubkey: Point, message: Uint8Array, sig: Signature)
     return false;
   }
 
-  const e = int(await hash(concat(bufferFromBigInt(r), pointToBuffer(P), m))) % curve.n;
+  const e = int(hash.digest(bufferFromBigInt(r), pointToBuffer(P), m)) % curve.n;
   const R = pointSubtract(pointMultiply(curve.g, s), pointMultiply(P, e));
 
   if (R === INFINITE_POINT) {

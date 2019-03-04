@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const ARRAY16 = new Array(16);
 const zl = [
     0,
@@ -329,7 +331,7 @@ const sr = [
 ];
 const hl = [0x00000000, 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xa953fd4e];
 const hr = [0x50a28be6, 0x5c4dd124, 0x6d703ef3, 0x7a6d76e9, 0x00000000];
-export default class RIPEMD160 {
+class RIPEMD160 {
     get _blockSize() {
         return 64;
     }
@@ -462,6 +464,7 @@ export default class RIPEMD160 {
         return new Uint8Array(buffer);
     }
 }
+exports.default = RIPEMD160;
 function rotl(x, n) {
     return (x << n) | (x >>> (32 - n));
 }

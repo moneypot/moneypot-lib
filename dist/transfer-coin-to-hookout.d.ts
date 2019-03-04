@@ -7,6 +7,6 @@ export default class TransferCoinToHookout {
     input: SpentCoinSet;
     output: Hookout;
     constructor(input: SpentCoinSet, output: Hookout);
-    hash(): Promise<Hash>;
+    hash(): Hash;
     toPOD(): POD.TransferCoinToHookout;
 }

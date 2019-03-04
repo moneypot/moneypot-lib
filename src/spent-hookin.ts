@@ -29,8 +29,8 @@ export default class SpentHookin {
     return this.hookin.amount;
   }
 
-  public async hash() {
-    return await this.hookin.hash();
+  public hash() {
+    return this.hookin.hash();
   }
 
   public toPOD(): POD.SpentHookin {

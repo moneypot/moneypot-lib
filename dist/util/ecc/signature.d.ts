@@ -8,5 +8,5 @@ export declare const Signature: {
     toBytes({ r, s }: Signature): Uint8Array;
     toHex(sig: Signature): string;
 };
-export declare function sign(message: Uint8Array, secret: bigint): Promise<Signature>;
+export declare function sign(message: Uint8Array, secret: bigint): Signature;
 export declare function verify(pubkey: Point, message: Uint8Array, sig: Signature): Promise<boolean>;

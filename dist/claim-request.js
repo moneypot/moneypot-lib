@@ -1,31 +1,33 @@
-import BlindedMessage from './blinded-message';
-import ClaimableCoin from './claimable-coin';
-import Hash from './hash';
-import PublicKey from './public-key';
-import Signature from './signature';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const blinded_message_1 = require("./blinded-message");
+const claimable_coin_1 = require("./claimable-coin");
+const hash_1 = require("./hash");
+const public_key_1 = require("./public-key");
+const signature_1 = require("./signature");
 // represents a claim request
-export default class ClaimRequest {
-    static async newAuthorized(claimantPrivateKey, magnitude, blindingNonce, blindedOwner) {
+class ClaimRequest {
+    static newAuthorized(claimantPrivateKey, magnitude, blindingNonce, blindedOwner) {
         const pubkey = claimantPrivateKey.toPublicKey();
-        const coin = new ClaimableCoin(pubkey, magnitude);
-        const hash = await ClaimRequest.hashOf(await coin.hash(), blindingNonce, blindedOwner);
-        const authorization = await Signature.compute(hash.buffer, claimantPrivateKey);
+        const coin = new claimable_coin_1.default(pubkey, magnitude);
+        const hash = ClaimRequest.hashOf(coin.hash(), blindingNonce, blindedOwner);
+        const authorization = signature_1.default.compute(hash.buffer, claimantPrivateKey);
         return new ClaimRequest(coin, blindingNonce, blindedOwner, authorization);
     }
     static fromPOD(data) {
-        const coin = ClaimableCoin.fromPOD(data.coin);
+        const coin = claimable_coin_1.default.fromPOD(data.coin);
         if (coin instanceof Error) {
             return coin;
         }
-        const blindNonce = PublicKey.fromBech(data.blindingNonce);
+        const blindNonce = public_key_1.default.fromBech(data.blindingNonce);
         if (blindNonce instanceof Error) {
             return blindNonce;
         }
-        const blindedOwner = BlindedMessage.fromBech(data.blindedOwner);
+        const blindedOwner = blinded_message_1.default.fromBech(data.blindedOwner);
         if (blindedOwner instanceof Error) {
             return blindedOwner;
         }
-        const authorization = Signature.fromBech(data.authorization);
+        const authorization = signature_1.default.fromBech(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
@@ -38,17 +40,17 @@ export default class ClaimRequest {
         this.authorization = authorization;
     }
     static hashOf(coinHash, blindingNonce, blindedOwner) {
-        const h = Hash.newBuilder('ClaimRequest');
+        const h = hash_1.default.newBuilder('ClaimRequest');
         h.update(coinHash.buffer);
         h.update(blindingNonce.buffer);
         h.update(blindedOwner.buffer);
         return h.digest();
     }
-    async hash() {
-        return ClaimRequest.hashOf(await this.coin.hash(), this.blindingNonce, this.blindedOwner);
+    hash() {
+        return ClaimRequest.hashOf(this.coin.hash(), this.blindingNonce, this.blindedOwner);
     }
-    async isAuthorized() {
-        return this.authorization.verify((await this.hash()).buffer, this.coin.claimant);
+    isAuthorized() {
+        return this.authorization.verify((this.hash()).buffer, this.coin.claimant);
     }
     toPOD() {
         return {
@@ -59,4 +61,5 @@ export default class ClaimRequest {
         };
     }
 }
+exports.default = ClaimRequest;
 //# sourceMappingURL=claim-request.js.map

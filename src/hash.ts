@@ -1,14 +1,14 @@
 import * as assert from './util/assert';
 import * as bech32 from './util/bech32';
-import hmacSha256 from './util/node-crypto/hmac-sha256';
+import SHA256 from './util/bcrypto/sha256';
 import * as Buffutil from './util/buffutils';
 
 const serializedPrefix = 'hshi'; // hash hookedin
 
 export default class Hash {
   // actually hashes a message(s)
-  public static async fromMessage(prefix: string, ...message: Uint8Array[]): Promise<Hash> {
-    const buff = await hmacSha256(Buffutil.fromString(prefix), Buffutil.concat(...message));
+  public static fromMessage(prefix: string, ...message: Uint8Array[]): Hash {
+    const buff = SHA256.mac(Buffutil.fromString(prefix), Buffutil.concat(...message));
     return new Hash(buff);
   }
 

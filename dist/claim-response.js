@@ -1,13 +1,15 @@
-import BlindedSignature from './blinded-signature';
-import ClaimRequest from './claim-request';
-import Hash from './hash';
-export default class ClaimResponse {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const blinded_signature_1 = require("./blinded-signature");
+const claim_request_1 = require("./claim-request");
+const hash_1 = require("./hash");
+class ClaimResponse {
     static fromPOD(data) {
-        const claimRequest = ClaimRequest.fromPOD(data.claimRequest);
+        const claimRequest = claim_request_1.default.fromPOD(data.claimRequest);
         if (claimRequest instanceof Error) {
             return claimRequest;
         }
-        const blindedExistenceProof = BlindedSignature.fromBech(data.blindedExistenceProof);
+        const blindedExistenceProof = blinded_signature_1.default.fromBech(data.blindedExistenceProof);
         if (blindedExistenceProof instanceof Error) {
             return blindedExistenceProof;
         }
@@ -17,9 +19,9 @@ export default class ClaimResponse {
         this.claimRequest = claimRequest;
         this.blindedExistenceProof = blindedExistenceProof;
     }
-    async hash() {
-        const h = Hash.newBuilder('ClaimResponse');
-        h.update((await this.claimRequest.hash()).buffer);
+    hash() {
+        const h = hash_1.default.newBuilder('ClaimResponse');
+        h.update(this.claimRequest.hash().buffer);
         h.update(this.blindedExistenceProof.buffer);
         return h.digest();
     }
@@ -30,4 +32,5 @@ export default class ClaimResponse {
         };
     }
 }
+exports.default = ClaimResponse;
 //# sourceMappingURL=claim-response.js.map

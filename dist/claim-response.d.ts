@@ -7,6 +7,6 @@ export default class ClaimResponse {
     blindedExistenceProof: BlindedSignature;
     claimRequest: ClaimRequest;
     constructor(claimRequest: ClaimRequest, blindedExistenceProof: BlindedSignature);
-    hash(): Promise<Hash>;
+    hash(): Hash;
     toPOD(): POD.ClaimResponse;
 }

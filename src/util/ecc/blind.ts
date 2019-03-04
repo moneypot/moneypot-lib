@@ -10,8 +10,7 @@ import {
 } from './util';
 import * as buffutils from '../buffutils';
 
-import hash from '../node-crypto/sha256';
-import hmac from '../node-crypto/hmac-sha256';
+import hash from '../bcrypto/sha256';
 
 export interface BlindedMessage {
   c: bigint /* c = challenge */;
@@ -24,17 +23,17 @@ export interface BlindedSignature {
   s: bigint;
 }
 
-export async function blindMessage(
+export function blindMessage(
   secret: Uint8Array,
   nonce: Point,
   signer: Point,
   message: Uint8Array
-): Promise<[Unblinder, BlindedMessage]> {
+): [Unblinder, BlindedMessage] {
   const R = nonce;
   const P = signer;
 
   const alpha = bufferToBigInt(
-    await hmac(
+    hash.mac(
       buffutils.fromString('alpha'),
       buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message)
     )
@@ -46,7 +45,7 @@ export async function blindMessage(
   let RPrime;
   while (true) {
     beta = bufferToBigInt(
-      await hmac(
+      hash.mac(
         buffutils.fromString('beta'),
         buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message, Uint8Array.of(retry))
       )
@@ -62,7 +61,7 @@ export async function blindMessage(
   }
 
   // the challenge
-  const cPrime = bufferToBigInt(await hash(concat(bufferFromBigInt(RPrime.x), pointToBuffer(P), message))) % curve.n;
+  const cPrime = bufferToBigInt(hash.digest(bufferFromBigInt(RPrime.x), pointToBuffer(P), message)) % curve.n;
 
   // the blinded challenge
   const c = scalarAdd(cPrime, beta);

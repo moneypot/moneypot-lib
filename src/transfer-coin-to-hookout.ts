@@ -31,11 +31,11 @@ export default class TransferCoinToHookout {
     this.output = output;
   }
 
-  public async hash() {
+  public hash() {
     const h = Hash.newBuilder('TransferCoinToHookout');
 
-    h.update((await this.input.hash()).buffer);
-    h.update((await this.output.hash()).buffer);
+    h.update((this.input.hash()).buffer);
+    h.update((this.output.hash()).buffer);
 
     return h.digest();
   }

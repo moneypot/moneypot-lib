@@ -6,13 +6,13 @@ import PublicKey from './public-key';
 import Signature from './signature';
 import * as ecc from './util/ecc';
 
-export async function blindMessage(
+export function blindMessage(
   secretRandomSeed: Uint8Array,
   nonce: PublicKey,
   signer: PublicKey,
   message: Uint8Array
-): Promise<[ecc.Unblinder, BlindedMessage]> {
-  const [unblinder, bm] = await ecc.blindMessage(secretRandomSeed, nonce, signer, message);
+): [ecc.Unblinder, BlindedMessage] {
+  const [unblinder, bm] = ecc.blindMessage(secretRandomSeed, nonce, signer, message);
   return [unblinder, new BlindedMessage(bm.c)];
 }
 

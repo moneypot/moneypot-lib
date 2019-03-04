@@ -1,11 +1,13 @@
-import ClaimedCoinSet from './claimed-coin-set';
-import Signature from './signature';
-export default class SpentCoinSet {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const claimed_coin_set_1 = require("./claimed-coin-set");
+const signature_1 = require("./signature");
+class SpentCoinSet {
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('expected object for a spentCoinSet');
         }
-        const coins = ClaimedCoinSet.fromPOD(data.coins);
+        const coins = claimed_coin_set_1.default.fromPOD(data.coins);
         if (coins instanceof Error) {
             return coins;
         }
@@ -17,7 +19,7 @@ export default class SpentCoinSet {
             if (typeof sig !== 'string') {
                 return new Error('An spendAuthorization signature is not a string');
             }
-            const s = Signature.fromBech(sig);
+            const s = signature_1.default.fromBech(sig);
             if (s instanceof Error) {
                 return s;
             }
@@ -64,4 +66,5 @@ export default class SpentCoinSet {
         return this.coins.hash();
     }
 }
+exports.default = SpentCoinSet;
 //# sourceMappingURL=spent-coin-set.js.map

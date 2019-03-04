@@ -6,6 +6,6 @@ export default class ClaimableCoin {
     claimant: PublicKey;
     magnitude: number;
     constructor(claimant: PublicKey, magnitude: POD.Magnitude);
-    hash(): Promise<Hash>;
+    hash(): Hash;
     toPOD(): POD.ClaimableCoin;
 }

@@ -49,7 +49,7 @@ export default class Hookin {
     this.deriveIndex = deriveIndex;
   }
 
-  public async hash(): Promise<Hash> {
+  public hash(): Hash {
     return Hookin.hashOf(this.txid, this.vout, this.amount, this.creditTo, this.deriveIndex);
   }
 

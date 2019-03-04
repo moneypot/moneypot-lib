@@ -14,5 +14,5 @@ export default class SpentCoinSet {
     get(n: number): ClaimedCoin;
     readonly length: number;
     toPOD(): POD.SpentCoinSet;
-    hash(): Promise<Hash>;
+    hash(): Hash;
 }

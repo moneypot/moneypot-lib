@@ -9,7 +9,7 @@ import * as POD from './pod';
 // represents a claim request
 
 export default class ClaimRequest {
-  public static async newAuthorized(
+  public static newAuthorized(
     claimantPrivateKey: PrivateKey,
     magnitude: number,
     blindingNonce: PublicKey,
@@ -17,8 +17,8 @@ export default class ClaimRequest {
   ) {
     const pubkey = claimantPrivateKey.toPublicKey();
     const coin = new ClaimableCoin(pubkey, magnitude);
-    const hash = await ClaimRequest.hashOf(await coin.hash(), blindingNonce, blindedOwner);
-    const authorization = await Signature.compute(hash.buffer, claimantPrivateKey);
+    const hash = ClaimRequest.hashOf(coin.hash(), blindingNonce, blindedOwner);
+    const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
     return new ClaimRequest(coin, blindingNonce, blindedOwner, authorization);
   }
@@ -67,12 +67,12 @@ export default class ClaimRequest {
     return h.digest();
   }
 
-  public async hash(): Promise<Hash> {
-    return ClaimRequest.hashOf(await this.coin.hash(), this.blindingNonce, this.blindedOwner);
+  public hash(): Hash {
+    return ClaimRequest.hashOf(this.coin.hash(), this.blindingNonce, this.blindedOwner);
   }
 
-  public async isAuthorized() {
-    return this.authorization.verify((await this.hash()).buffer, this.coin.claimant);
+  public isAuthorized() {
+    return this.authorization.verify((this.hash()).buffer, this.coin.claimant);
   }
 
   public toPOD(): POD.ClaimRequest {

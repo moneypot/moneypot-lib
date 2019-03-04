@@ -1,13 +1,15 @@
+"use strict";
 // This works very similar to bip32, except that it's not limited to 32 bit
-import * as assert from './util/assert';
-import * as types from './util/types';
-import hmacSHA512 from './util/node-crypto/hmac-sha512';
-import * as buffutils from './util/buffutils';
-import * as ecc from './util/ecc';
-import PublicKey from './public-key';
-import * as bs58check from './util/bs58check';
-import rmd160sha256 from './util/node-crypto/rmd160-sha256';
-import * as wif from './util/wif';
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("./util/assert");
+const types = require("./util/types");
+const hmac_sha512_1 = require("./util/node-crypto/hmac-sha512");
+const buffutils = require("./util/buffutils");
+const ecc = require("./util/ecc");
+const public_key_1 = require("./public-key");
+const bs58check = require("./util/bs58check");
+const rmd160_sha256_1 = require("./util/node-crypto/rmd160-sha256");
+const wif = require("./util/wif");
 function isNetworkType(net) {
     return types.isUint8(net.wif) && net.bip32 && types.isUint32(net.bip32.public) && types.isUint32(net.bip32.private);
 }
@@ -25,9 +27,9 @@ const BITCOIN = {
         private: 0x4b2430c,
     },
 };
-export default class HDChain {
+class HDChain {
     async getIdentifier() {
-        return await rmd160sha256(this.publicKey);
+        return await rmd160_sha256_1.default(this.publicKey);
     }
     async getFingerprint() {
         return (await this.getIdentifier()).slice(0, 4);
@@ -141,7 +143,7 @@ export default class HDChain {
         if (seed.length > 64) {
             throw new TypeError('Seed should be at most 512 bits');
         }
-        const I = await hmacSHA512(buffutils.fromString('Bitcoin seed'), seed);
+        const I = await hmac_sha512_1.default(buffutils.fromString('Bitcoin seed'), seed);
         const IL = I.slice(0, 32);
         const IR = I.slice(32);
         return HDChain.fromPrivateKey(IL, IR, network);
@@ -159,7 +161,7 @@ export default class HDChain {
         this.parentFingerprint = 0x00000000;
     }
     toPublicKey() {
-        return PublicKey.fromBytes(this.publicKey);
+        return public_key_1.default.fromBytes(this.publicKey);
     }
     isNeutered() {
         return this.__d === null;
@@ -229,7 +231,7 @@ export default class HDChain {
             buffutils.copy(this.publicKey, data, 0);
             dataView.setUint32(33, index, false);
         }
-        const I = await hmacSHA512(this.chainCode, data);
+        const I = await hmac_sha512_1.default(this.chainCode, data);
         const IL = I.slice(0, 32);
         const IR = I.slice(32);
         const ILScalar = ecc.Scalar.fromBytes(IL);
@@ -270,4 +272,5 @@ export default class HDChain {
         return this.derive(index + HIGHEST_BIT);
     }
 }
+exports.default = HDChain;
 //# sourceMappingURL=hdchain.js.map

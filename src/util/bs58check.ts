@@ -1,10 +1,10 @@
-import sha256 from './node-crypto/sha256';
+import sha256 from './bcrypto/sha256';
 import * as base58 from './base58';
 
 import * as buffutils from './buffutils';
 
 async function checksumFn(buffer: Uint8Array) {
-  return await sha256(await sha256(buffer));
+  return sha256.digest(sha256.digest(buffer));
 }
 
 export async function encode(payload: Uint8Array) {
