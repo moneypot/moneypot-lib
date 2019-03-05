@@ -48,7 +48,7 @@ export default class ClaimRequest {
         return ClaimRequest.hashOf(this.coin.hash(), this.blindingNonce, this.blindedOwner);
     }
     isAuthorized() {
-        return this.authorization.verify((this.hash()).buffer, this.coin.claimant);
+        return this.authorization.verify(this.hash().buffer, this.coin.claimant);
     }
     toPOD() {
         return {

@@ -23,8 +23,8 @@ export default class TransferHookinToCoin {
     }
     hash() {
         const h = Hash.newBuilder('TransferHookinToCoin');
-        h.update((this.input.hash()).buffer);
-        h.update((this.output.hash()).buffer);
+        h.update(this.input.hash().buffer);
+        h.update(this.output.hash().buffer);
         return h.digest();
     }
     toPOD() {

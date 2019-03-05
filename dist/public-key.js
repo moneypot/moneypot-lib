@@ -36,7 +36,7 @@ export default class PublicKey {
         return new PublicKey(newQ.x, newQ.y);
     }
     derive(n) {
-        const tweakBy = (Hash.fromMessage('derive', this.buffer, n)).buffer;
+        const tweakBy = Hash.fromMessage('derive', this.buffer, n).buffer;
         const tweakByN = ecc.Scalar.fromBytes(tweakBy);
         if (tweakByN instanceof Error) {
             throw tweakByN;

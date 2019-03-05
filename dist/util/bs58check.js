@@ -5,7 +5,7 @@ function checksumFn(buffer) {
     return sha256.digest(sha256.digest(buffer));
 }
 export function encode(payload) {
-    const checksum = (checksumFn(payload)).slice(0, 4);
+    const checksum = checksumFn(payload).slice(0, 4);
     return base58.encode(buffutils.concat(payload, checksum));
 }
 function decodeRaw(buffer) {

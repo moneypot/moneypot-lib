@@ -1,4 +1,4 @@
-import assert from "../assert";
+import assert from '../assert';
 export default class HMAC {
     constructor(Hash, size, x = [], y = []) {
         this.hash = Hash;
