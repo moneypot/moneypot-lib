@@ -21,11 +21,14 @@ export default class TransferCoinToHookout {
         this.input = input;
         this.output = output;
     }
-    hash() {
+    static hashOf(input, output) {
         const h = Hash.newBuilder('TransferCoinToHookout');
-        h.update(this.input.hash().buffer);
-        h.update(this.output.hash().buffer);
+        h.update(input.buffer);
+        h.update(output.buffer);
         return h.digest();
+    }
+    hash() {
+        return TransferCoinToHookout.hashOf(this.input.hash(), this.output.hash());
     }
     toPOD() {
         return {

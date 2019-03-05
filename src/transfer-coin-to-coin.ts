@@ -30,13 +30,17 @@ export default class TransferCoinToCoin {
     this.output = output;
   }
 
-  public hash() {
+  public static hashOf(input: Hash, output: Hash) {
     const h = Hash.newBuilder('TransferCoinToCoin');
 
-    h.update(this.input.hash().buffer);
-    h.update(this.output.hash().buffer);
+    h.update(input.buffer);
+    h.update(output.buffer);
 
     return h.digest();
+  }
+
+  public hash() {
+    return TransferCoinToCoin.hashOf(this.input.hash(), this.output.hash());
   }
 
   public toPOD(): POD.TransferCoinToCoin {

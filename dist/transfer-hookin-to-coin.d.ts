@@ -7,6 +7,7 @@ export default class TransferHookinToCoin {
     input: SpentHookin;
     output: ClaimableCoinSet;
     constructor(input: SpentHookin, output: ClaimableCoinSet);
+    static hashOf(input: Hash, output: Hash): Hash;
     hash(): Hash;
     toPOD(): POD.TransferHookinToCoin;
 }
