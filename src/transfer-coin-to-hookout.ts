@@ -1,6 +1,7 @@
+import Signature from './signature';
 import Transfer from './transfer';
 import * as POD from './pod';
-import SpentCoinSet from './spent-coin-set';
+import ClaimedCoinSet from './claimed-coin-set';
 import Hookout from './hookout';
 
 // c2h
@@ -10,7 +11,7 @@ export default class TransferCoinToHookout {
       return new Error('expected an obj to parse a TransferHookinToCoin');
     }
 
-    const input = SpentCoinSet.fromPOD(data.input);
+    const input = ClaimedCoinSet.fromPOD(data.input);
     if (input instanceof Error) {
       return input;
     }
@@ -20,15 +21,24 @@ export default class TransferCoinToHookout {
       return output;
     }
 
-    return new TransferCoinToHookout(input, output);
+
+    const authorization = Signature.fromBech(data.authorization);
+    if (authorization instanceof Error) {
+      return authorization;
+    }
+
+
+    return new TransferCoinToHookout(input, output, authorization);
   }
 
-  public input: SpentCoinSet;
+  public input: ClaimedCoinSet;
   public output: Hookout;
+  public authorization: Signature;
 
-  constructor(input: SpentCoinSet, output: Hookout) {
+  constructor(input: ClaimedCoinSet, output: Hookout, authorization: Signature) {
     this.input = input;
     this.output = output;
+    this.authorization = authorization;
   }
 
 
@@ -38,6 +48,7 @@ export default class TransferCoinToHookout {
 
   public toPOD(): POD.TransferCoinToHookout {
     return {
+      authorization: this.authorization.toBech(),
       input: this.input.toPOD(),
       output: this.output.toPOD(),
     };

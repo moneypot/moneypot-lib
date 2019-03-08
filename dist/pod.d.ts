@@ -22,10 +22,6 @@ export interface ClaimedCoin {
     owner: string;
 }
 export declare type ClaimedCoinSet = ClaimedCoin[];
-export interface SpentCoinSet {
-    coins: ClaimedCoinSet;
-    spendAuthorization: string[];
-}
 export interface ClaimableCoin {
     claimant: string;
     magnitude: Magnitude;
@@ -43,25 +39,26 @@ export interface Hookin {
     creditTo: string;
     deriveIndex: number;
 }
-export interface SpentHookin extends Hookin {
-    spendAuthorization: string;
-}
 export declare type ClaimableCoinSet = ClaimableCoin[];
 export interface Transfer {
     input: string;
     output: string;
+    authorization: string;
 }
 export interface TransferCoinToCoin {
-    input: SpentCoinSet;
+    input: ClaimedCoinSet;
     output: ClaimableCoinSet;
+    authorization: string;
 }
 export interface TransferHookinToCoin {
-    input: SpentHookin;
+    input: Hookin;
     output: ClaimableCoinSet;
+    authorization: string;
 }
 export interface TransferCoinToHookout {
-    input: SpentCoinSet;
+    input: ClaimedCoinSet;
     output: Hookout;
+    authorization: string;
 }
 export interface TransferHash {
     transferHash: string;

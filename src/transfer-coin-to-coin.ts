@@ -1,6 +1,7 @@
 import ClaimableCoinSet from './claimable-coin-set';
+import ClaimedCoinSet from './claimed-coin-set';
 import * as POD from './pod';
-import SpentCoinSet from './spent-coin-set';
+import Signature from './signature';
 import Transfer from './transfer'
 
 // tc2c
@@ -10,7 +11,7 @@ export default class TransferCoinToCoin {
     if (typeof data !== 'object') {
       return new Error('TransferCoinToCoin was expecting an object');
     }
-    const source = SpentCoinSet.fromPOD(data.input);
+    const source = ClaimedCoinSet.fromPOD(data.input);
     if (source instanceof Error) {
       return source;
     }
@@ -19,15 +20,24 @@ export default class TransferCoinToCoin {
       return output;
     }
 
-    return new TransferCoinToCoin(source, output);
+    const authorization = Signature.fromBech(data.authorization);
+    if (authorization instanceof Error) {
+      return authorization;
+    }
+
+    return new TransferCoinToCoin(source, output, authorization);
   }
 
-  public input: SpentCoinSet;
+  public input: ClaimedCoinSet;
   public output: ClaimableCoinSet;
 
-  constructor(input: SpentCoinSet, output: ClaimableCoinSet) {
+  public authorization: Signature;
+
+
+  constructor(input: ClaimedCoinSet, output: ClaimableCoinSet, authorization: Signature) {
     this.input = input;
     this.output = output;
+    this.authorization = authorization;
   }
 
   public hash() {
@@ -36,6 +46,7 @@ export default class TransferCoinToCoin {
 
   public toPOD(): POD.TransferCoinToCoin {
     return {
+      authorization: this.authorization.toBech(),
       input: this.input.toPOD(),
       output: this.output.toPOD(),
     };

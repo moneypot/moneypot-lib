@@ -1,24 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hash_1 = require("./hash");
+const signature_1 = require("./signature");
 class Transfer {
-    static fromPOD(d) {
-        if (typeof d !== 'object') {
+    static fromPOD(data) {
+        if (typeof data !== 'object') {
             return new Error('expected an object to deserialize a Transfer');
         }
-        const input = hash_1.default.fromBech(d.input);
+        const input = hash_1.default.fromBech(data.input);
         if (input instanceof Error) {
             return input;
         }
-        const output = hash_1.default.fromBech(d.output);
+        const output = hash_1.default.fromBech(data.output);
         if (output instanceof Error) {
             return output;
         }
-        return new Transfer(input, output);
+        const authorization = signature_1.default.fromBech(data.authorization);
+        if (authorization instanceof Error) {
+            return authorization;
+        }
+        return new Transfer(input, output, authorization);
     }
-    constructor(input, output) {
+    constructor(input, output, authorization) {
         this.input = input;
         this.output = output;
+        this.authorization = authorization;
     }
     static hashOf(input, output) {
         const h = hash_1.default.newBuilder('Transfer');
@@ -31,6 +37,7 @@ class Transfer {
     }
     toPOD() {
         return {
+            authorization: this.authorization.toBech(),
             input: this.input.toBech(),
             output: this.output.toBech(),
         };

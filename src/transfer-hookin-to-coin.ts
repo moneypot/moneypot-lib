@@ -1,7 +1,8 @@
 import ClaimableCoinSet from './claimable-coin-set';
 import Transfer from './transfer';
 import * as POD from './pod';
-import SpentHookin from './spent-hookin';
+import Hookin from './hookin';
+import Signature from './signature';
 
 // th2c
 
@@ -11,7 +12,7 @@ export default class TransferHookinToCoin {
       return new Error('expected an obj to parse a TransferHookinToCoin');
     }
 
-    const input = SpentHookin.fromPOD(data.input);
+    const input = Hookin.fromPOD(data.input);
     if (input instanceof Error) {
       return input;
     }
@@ -21,15 +22,23 @@ export default class TransferHookinToCoin {
       return output;
     }
 
-    return new TransferHookinToCoin(input, output);
+    const authorization = Signature.fromBech(data.authorization);
+    if (authorization instanceof Error) {
+      return authorization;
+    }
+
+
+    return new TransferHookinToCoin(input, output, authorization);
   }
 
-  public input: SpentHookin;
+  public input: Hookin;
   public output: ClaimableCoinSet;
+  public authorization: Signature;
 
-  constructor(input: SpentHookin, output: ClaimableCoinSet) {
+  constructor(input: Hookin, output: ClaimableCoinSet, authorization: Signature) {
     this.input = input;
     this.output = output;
+    this.authorization = authorization;
   }
 
   public hash() {
@@ -39,6 +48,7 @@ export default class TransferHookinToCoin {
 
   public toPOD(): POD.TransferHookinToCoin {
     return {
+      authorization: this.authorization.toBech(),
       input: this.input.toPOD(),
       output: this.output.toPOD(),
     };

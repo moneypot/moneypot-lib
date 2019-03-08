@@ -25,7 +25,6 @@ export { default as ClaimedCoin } from './claimed-coin';
 export { default as ClaimedCoinSet } from './claimed-coin-set';
 
 export { default as Hookin } from './hookin';
-export { default as SpentHookin } from './spent-hookin';
 
 export { default as Hookout } from './hookout';
 
@@ -42,7 +41,6 @@ export { TransferCoinToHookout };
 import TransferHookinToCoin from './transfer-hookin-to-coin';
 export { TransferHookinToCoin };
 
-export { default as SpentCoinSet } from './spent-coin-set';
 export { default as ClaimableCoin } from './claimable-coin';
 export { default as ClaimableCoinSet } from './claimable-coin-set';
 

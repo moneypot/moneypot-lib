@@ -1,11 +1,13 @@
+import Signature from './signature';
 import * as POD from './pod';
-import SpentCoinSet from './spent-coin-set';
+import ClaimedCoinSet from './claimed-coin-set';
 import Hookout from './hookout';
 export default class TransferCoinToHookout {
     static fromPOD(data: any): TransferCoinToHookout | Error;
-    input: SpentCoinSet;
+    input: ClaimedCoinSet;
     output: Hookout;
-    constructor(input: SpentCoinSet, output: Hookout);
+    authorization: Signature;
+    constructor(input: ClaimedCoinSet, output: Hookout, authorization: Signature);
     hash(): import("./hash").default;
     toPOD(): POD.TransferCoinToHookout;
 }

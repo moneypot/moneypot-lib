@@ -1,11 +1,13 @@
 import ClaimableCoinSet from './claimable-coin-set';
 import * as POD from './pod';
-import SpentHookin from './spent-hookin';
+import Hookin from './hookin';
+import Signature from './signature';
 export default class TransferHookinToCoin {
     static fromPOD(data: any): TransferHookinToCoin | Error;
-    input: SpentHookin;
+    input: Hookin;
     output: ClaimableCoinSet;
-    constructor(input: SpentHookin, output: ClaimableCoinSet);
+    authorization: Signature;
+    constructor(input: Hookin, output: ClaimableCoinSet, authorization: Signature);
     hash(): import("./hash").default;
     toPOD(): POD.TransferHookinToCoin;
 }
