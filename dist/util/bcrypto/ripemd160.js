@@ -1,6 +1,8 @@
-import assert from '../assert';
-import * as buffutils from '../buffutils';
-import HMAC from './hmac';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert_1 = require("../assert");
+const buffutils = require("../buffutils");
+const hmac_1 = require("./hmac");
 const FINALIZED = -1;
 const DESC = new Uint8Array(8);
 const PADDING = new Uint8Array(64);
@@ -333,7 +335,7 @@ const sh = [
     11,
     11,
 ];
-export default class RIPEMD160 {
+class RIPEMD160 {
     constructor() {
         this.state = new Uint32Array(5);
         this.msg = new Uint32Array(16);
@@ -358,7 +360,7 @@ export default class RIPEMD160 {
         return this._final(new Uint8Array(20));
     }
     _update(data, len) {
-        assert(this.size !== FINALIZED);
+        assert_1.default(this.size !== FINALIZED);
         let pos = this.size & 0x3f;
         let off = 0;
         this.size += len;
@@ -390,7 +392,7 @@ export default class RIPEMD160 {
      * @returns {Buffer}
      */
     _final(out) {
-        assert(this.size !== FINALIZED);
+        assert_1.default(this.size !== FINALIZED);
         const pos = this.size % 64;
         const len = this.size * 8;
         writeU32(DESC, len, 0);
@@ -451,7 +453,7 @@ export default class RIPEMD160 {
         return new RIPEMD160();
     }
     static hmac() {
-        return new HMAC(RIPEMD160.hash, 64);
+        return new hmac_1.default(RIPEMD160.hash, 64);
     }
     static digest(...data) {
         const h = new RIPEMD160();
@@ -467,6 +469,7 @@ export default class RIPEMD160 {
         return m.final();
     }
 }
+exports.default = RIPEMD160;
 /*
  * Helpers
  */

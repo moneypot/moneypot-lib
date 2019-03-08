@@ -1,6 +1,8 @@
-import * as assert from './assert';
-import * as POD from '../pod';
-export function amountToMagnitudes(amount) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("./assert");
+const POD = require("../pod");
+function amountToMagnitudes(amount) {
     assert.check(Number.isInteger, amount);
     assert.check(x => x >= 0, amount);
     const maxCoinAmount = 2 ** POD.MaxMagnitude;
@@ -22,4 +24,5 @@ export function amountToMagnitudes(amount) {
     }
     return coins;
 }
+exports.amountToMagnitudes = amountToMagnitudes;
 //# sourceMappingURL=coins.js.map

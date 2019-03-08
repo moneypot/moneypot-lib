@@ -1,5 +1,7 @@
+"use strict";
 // taken from npm package bech32
-import * as assert from './assert';
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("./assert");
 const ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 // pre-compute lookup table
 const ALPHABET_MAP = new Map();
@@ -10,7 +12,7 @@ for (let z = 0; z < ALPHABET.length; z++) {
     }
     ALPHABET_MAP.set(x, z);
 }
-export function polymodStep(pre) {
+function polymodStep(pre) {
     const b = pre >> 25;
     return (((pre & 0x1ffffff) << 5) ^
         (-((b >> 0) & 1) & 0x3b6a57b2) ^
@@ -19,7 +21,8 @@ export function polymodStep(pre) {
         (-((b >> 3) & 1) & 0x3d4233dd) ^
         (-((b >> 4) & 1) & 0x2a1462b3));
 }
-export function prefixChk(prefix) {
+exports.polymodStep = polymodStep;
+function prefixChk(prefix) {
     let chk = 1;
     for (let i = 0; i < prefix.length; ++i) {
         const c = prefix.charCodeAt(i);
@@ -35,7 +38,8 @@ export function prefixChk(prefix) {
     }
     return chk;
 }
-export function encode(prefix, words) {
+exports.prefixChk = prefixChk;
+function encode(prefix, words) {
     // TODO: ..
     prefix = prefix.toLowerCase();
     // determine chk mod
@@ -59,7 +63,8 @@ export function encode(prefix, words) {
     }
     return result;
 }
-export function decode(str) {
+exports.encode = encode;
+function decode(str) {
     if (str.length < 8) {
         throw new TypeError(str + ' too short');
     }
@@ -102,7 +107,8 @@ export function decode(str) {
     }
     return { prefix, words };
 }
-export function convert(data, inBits, outBits, pad) {
+exports.decode = decode;
+function convert(data, inBits, outBits, pad) {
     // data must be array-like
     const totalBits = data.length * inBits;
     let totalBytes = totalBits / outBits;
@@ -136,10 +142,13 @@ export function convert(data, inBits, outBits, pad) {
     assert.equal(buffIndex, buff.length);
     return buff;
 }
-export function toWords(bytes) {
+exports.convert = convert;
+function toWords(bytes) {
     return convert(bytes, 8, 5, true);
 }
-export function fromWords(words) {
+exports.toWords = toWords;
+function fromWords(words) {
     return convert(words, 5, 8, false);
 }
+exports.fromWords = fromWords;
 //# sourceMappingURL=bech32.js.map

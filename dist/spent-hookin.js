@@ -1,12 +1,14 @@
-import Signature from './signature';
-import Hookin from './hookin';
-export default class SpentHookin {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const signature_1 = require("./signature");
+const hookin_1 = require("./hookin");
+class SpentHookin {
     static fromPOD(data) {
-        const spendAuthorization = Signature.fromBech(data.spendAuthorization);
+        const spendAuthorization = signature_1.default.fromBech(data.spendAuthorization);
         if (spendAuthorization instanceof Error) {
             return spendAuthorization;
         }
-        const hookin = Hookin.fromPOD(data);
+        const hookin = hookin_1.default.fromPOD(data);
         if (hookin instanceof Error) {
             return hookin;
         }
@@ -29,4 +31,5 @@ export default class SpentHookin {
         };
     }
 }
+exports.default = SpentHookin;
 //# sourceMappingURL=spent-hookin.js.map

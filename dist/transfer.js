@@ -1,14 +1,16 @@
-import Hash from './hash';
-export default class Transfer {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const hash_1 = require("./hash");
+class Transfer {
     static fromPOD(d) {
         if (typeof d !== 'object') {
             return new Error('expected an object to deserialize a Transfer');
         }
-        const input = Hash.fromBech(d.input);
+        const input = hash_1.default.fromBech(d.input);
         if (input instanceof Error) {
             return input;
         }
-        const output = Hash.fromBech(d.output);
+        const output = hash_1.default.fromBech(d.output);
         if (output instanceof Error) {
             return output;
         }
@@ -19,7 +21,7 @@ export default class Transfer {
         this.output = output;
     }
     static hashOf(input, output) {
-        const h = Hash.newBuilder('Transfer');
+        const h = hash_1.default.newBuilder('Transfer');
         h.update(input.buffer);
         h.update(output.buffer);
         return h.digest();
@@ -34,4 +36,5 @@ export default class Transfer {
         };
     }
 }
+exports.default = Transfer;
 //# sourceMappingURL=transfer.js.map

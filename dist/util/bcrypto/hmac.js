@@ -1,5 +1,7 @@
-import assert from '../assert';
-export default class HMAC {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert_1 = require("../assert");
+class HMAC {
     constructor(Hash, size, x = [], y = []) {
         this.hash = Hash;
         this.size = size;
@@ -13,7 +15,7 @@ export default class HMAC {
             h.init();
             h.update(key);
             key = h.final();
-            assert(key.length <= this.size);
+            assert_1.default(key.length <= this.size);
         }
         // Pad key
         const pad = Buffer.allocUnsafe(this.size);
@@ -40,4 +42,5 @@ export default class HMAC {
         return this.outer.final();
     }
 }
+exports.default = HMAC;
 //# sourceMappingURL=hmac.js.map

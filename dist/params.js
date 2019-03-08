@@ -1,7 +1,9 @@
-import PrivateKey from './private-key';
-import * as buffutils from './util/buffutils';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const private_key_1 = require("./private-key");
+const buffutils = require("./util/buffutils");
 // obviously for dev only...
-const masterPriv = PrivateKey.fromBech('privhi1gqfkvnju6n9qqmz4hgvq3dd8rg5lgl72tmz63pjxay3wm4rz39eqy2jtly');
+const masterPriv = private_key_1.default.fromBech('privhi1gqfkvnju6n9qqmz4hgvq3dd8rg5lgl72tmz63pjxay3wm4rz39eqy2jtly');
 if (masterPriv instanceof Error) {
     throw masterPriv;
 }
@@ -23,7 +25,7 @@ for (let i = 0; i < 31; i++) {
     t.blindingCoinPrivateKeys[i] = blindPriv.derive(buffutils.fromUint8(i));
     t.blindingCoinPublicKeys[i] = t.blindingCoinPrivateKeys[i].toPublicKey();
 }
-export default t;
+exports.default = t;
 //
 //
 // let param: any = {};

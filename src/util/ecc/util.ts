@@ -1,5 +1,6 @@
 import * as assert from '../assert';
 import { Point } from './elliptic';
+import * as Buffutils from '../buffutils';
 
 export const secp256k1 = {
   a: BigInt(0),
@@ -97,27 +98,7 @@ export function bufferFromHex(hex: string): Uint8Array {
 //     return BigInt('0x' + bufferToHex(buf))
 // }
 
-export function bufferToBigInt(bytes: Uint8Array): bigint {
-  let result = BigInt(0);
-  const n = bytes.length;
 
-  // Read input in 8 byte slices
-  if (n >= 8) {
-    const view = new DataView(bytes.buffer, bytes.byteOffset);
-
-    for (let i = 0, k = n & ~7; i < k; i += 8) {
-      const x = view.getBigUint64(i, false);
-      result = (result << BigInt(64)) + x;
-    }
-  }
-
-  // Mop up any remaining bytes
-  for (let i = n & ~7; i < n; i++) {
-    result = result * BigInt(256) + BigInt(bytes[i]);
-  }
-
-  return result;
-}
 
 // Buffer is fixed-length 32bytes
 export function bufferFromBigInt(n: bigint): Uint8Array {
@@ -168,7 +149,7 @@ export function pointFromBuffer(buf: Uint8Array): Point | Error {
   // odd is 1n or 0n
   const odd = BigInt(buf[0] - 0x02);
 
-  const x = bufferToBigInt(buf.slice(1, 33));
+  const x = Buffutils.toBigInt(buf.slice(1, 33));
 
   const { p } = secp256k1;
   const ysq = (powmod(x, BigInt(3), p) + BigInt(7)) % p;

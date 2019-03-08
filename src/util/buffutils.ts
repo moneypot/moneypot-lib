@@ -91,6 +91,28 @@ export function fromUint8(x: number) {
   return buff;
 }
 
+export function toBigInt(bytes: Uint8Array): bigint {
+  let result = BigInt(0);
+  const n = bytes.length;
+
+  // Read input in 8 byte slices
+  if (n >= 8) {
+    const view = new DataView(bytes.buffer, bytes.byteOffset);
+
+    for (let i = 0, k = n & ~7; i < k; i += 8) {
+      const x = view.getBigUint64(i, false);
+      result = (result << BigInt(64)) + x;
+    }
+  }
+
+  // Mop up any remaining bytes
+  for (let i = n & ~7; i < n; i++) {
+    result = result * BigInt(256) + BigInt(bytes[i]);
+  }
+
+  return result;
+}
+
 export function fromString(x: string) {
   assert.check(types.isString, x);
 

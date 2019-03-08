@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 if (ALPHABET.length >= 255) {
     throw new TypeError('Alphabet too long');
@@ -16,7 +18,7 @@ const BASE = ALPHABET.length;
 const LEADER = ALPHABET.charAt(0);
 const FACTOR = Math.log(BASE) / Math.log(256); // log(BASE) / log(256), rounded up
 const iFACTOR = Math.log(256) / Math.log(BASE); // log(256) / log(BASE), rounded up
-export function encode(source) {
+function encode(source) {
     if (source.length === 0) {
         return '';
     }
@@ -60,7 +62,8 @@ export function encode(source) {
     }
     return str;
 }
-export function decodeUnsafe(source) {
+exports.encode = encode;
+function decodeUnsafe(source) {
     if (typeof source !== 'string') {
         throw new TypeError('Expected String');
     }
@@ -119,11 +122,13 @@ export function decodeUnsafe(source) {
     }
     return vch;
 }
-export function decode(str) {
+exports.decodeUnsafe = decodeUnsafe;
+function decode(str) {
     const buffer = decodeUnsafe(str);
     if (buffer) {
         return buffer;
     }
     throw new Error('Non-base' + BASE + ' character');
 }
+exports.decode = decode;
 //# sourceMappingURL=base58.js.map

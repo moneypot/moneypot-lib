@@ -1,11 +1,13 @@
-import Hash from './hash';
-import * as ecc from './util/ecc/elliptic';
-import * as bech32 from './util/bech32';
-import RIPEMD160 from './util/bcrypto/ripemd160';
-import SHA256 from './util/bcrypto/sha256';
-import * as buffutils from './util/buffutils';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const hash_1 = require("./hash");
+const ecc = require("./util/ecc/elliptic");
+const bech32 = require("./util/bech32");
+const ripemd160_1 = require("./util/bcrypto/ripemd160");
+const sha256_1 = require("./util/bcrypto/sha256");
+const buffutils = require("./util/buffutils");
 const serializedPrefix = 'pubhi'; // public key hookedin
-export default class PublicKey {
+class PublicKey {
     static fromBech(serialized) {
         const { prefix, words } = bech32.decode(serialized);
         if (prefix !== serializedPrefix) {
@@ -36,7 +38,7 @@ export default class PublicKey {
         return new PublicKey(newQ.x, newQ.y);
     }
     derive(n) {
-        const tweakBy = Hash.fromMessage('derive', this.buffer, n).buffer;
+        const tweakBy = hash_1.default.fromMessage('derive', this.buffer, n).buffer;
         const tweakByN = ecc.Scalar.fromBytes(tweakBy);
         if (tweakByN instanceof Error) {
             throw tweakByN;
@@ -46,7 +48,7 @@ export default class PublicKey {
         return new PublicKey(newQ.x, newQ.y);
     }
     hash() {
-        return Hash.fromMessage('PublicKey', this.buffer);
+        return hash_1.default.fromMessage('PublicKey', this.buffer);
     }
     toBitcoinAddress(testnet = true) {
         const prefix = testnet ? 'tb' : 'bc';
@@ -56,7 +58,8 @@ export default class PublicKey {
         return bech32.encode(prefix, buffutils.concat(version, words));
     }
 }
+exports.default = PublicKey;
 function rmd160sha256(data) {
-    return RIPEMD160.digest(SHA256.digest(data));
+    return ripemd160_1.default.digest(sha256_1.default.digest(data));
 }
 //# sourceMappingURL=public-key.js.map

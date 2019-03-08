@@ -3,11 +3,13 @@ import {
   powmod,
   secp256k1 as curve,
   bufferFromBigInt,
-  bufferToBigInt,
   pointFromBuffer,
   pointToBuffer,
   bufferFromHex,
 } from './util';
+
+import * as Buffutils from '../buffutils';
+
 import assert from '../assert';
 
 const P = curve.p;
@@ -20,7 +22,7 @@ export const Scalar = {
       return new TypeError('EXPECTED_32_BYTES');
     }
 
-    const s = bufferToBigInt(buf);
+    const s = Buffutils.toBigInt(buf);
 
     if (s === BigInt(0) || s >= curve.n) {
       return new TypeError('Private key not in range [1, n)');

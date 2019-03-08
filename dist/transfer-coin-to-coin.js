@@ -1,17 +1,19 @@
-import ClaimableCoinSet from './claimable-coin-set';
-import SpentCoinSet from './spent-coin-set';
-import Transfer from './transfer';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const claimable_coin_set_1 = require("./claimable-coin-set");
+const spent_coin_set_1 = require("./spent-coin-set");
+const transfer_1 = require("./transfer");
 // tc2c
-export default class TransferCoinToCoin {
+class TransferCoinToCoin {
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('TransferCoinToCoin was expecting an object');
         }
-        const source = SpentCoinSet.fromPOD(data.input);
+        const source = spent_coin_set_1.default.fromPOD(data.input);
         if (source instanceof Error) {
             return source;
         }
-        const output = ClaimableCoinSet.fromPOD(data.output);
+        const output = claimable_coin_set_1.default.fromPOD(data.output);
         if (output instanceof Error) {
             return output;
         }
@@ -22,7 +24,7 @@ export default class TransferCoinToCoin {
         this.output = output;
     }
     hash() {
-        return Transfer.hashOf(this.input.hash(), this.output.hash());
+        return transfer_1.default.hashOf(this.input.hash(), this.output.hash());
     }
     toPOD() {
         return {
@@ -31,4 +33,5 @@ export default class TransferCoinToCoin {
         };
     }
 }
+exports.default = TransferCoinToCoin;
 //# sourceMappingURL=transfer-coin-to-coin.js.map

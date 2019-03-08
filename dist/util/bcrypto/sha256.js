@@ -1,6 +1,8 @@
-import assert from '../assert';
-import HMAC from './hmac';
-import * as buffutils from '../buffutils';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert_1 = require("../assert");
+const hmac_1 = require("./hmac");
+const buffutils = require("../buffutils");
 /*
  * Constants
  */
@@ -77,7 +79,7 @@ const K = new Uint32Array([
 /**
  * SHA256
  */
-export default class SHA256 {
+class SHA256 {
     constructor() {
         this.state = new Uint32Array(8);
         this.msg = new Uint32Array(64);
@@ -105,7 +107,7 @@ export default class SHA256 {
         return this._final(new Uint8Array(32));
     }
     _update(data, len) {
-        assert(this.size !== FINALIZED);
+        assert_1.default(this.size !== FINALIZED);
         let pos = this.size & 0x3f;
         let off = 0;
         this.size += len;
@@ -131,7 +133,7 @@ export default class SHA256 {
         }
     }
     _final(out) {
-        assert(this.size !== FINALIZED);
+        assert_1.default(this.size !== FINALIZED);
         const pos = this.size % 64;
         const len = this.size * 8;
         writeU32(DESC, len * (1 / 0x100000000), 0);
@@ -192,7 +194,7 @@ export default class SHA256 {
         return new SHA256();
     }
     static hmac() {
-        return new HMAC(SHA256.hash, 64);
+        return new hmac_1.default(SHA256.hash, 64);
     }
     static digest(...data) {
         const h = new SHA256();
@@ -208,6 +210,7 @@ export default class SHA256 {
         return m.final();
     }
 }
+exports.default = SHA256;
 function Sigma0(x) {
     return ((x >>> 2) | (x << 30)) ^ ((x >>> 13) | (x << 19)) ^ ((x >>> 22) | (x << 10));
 }

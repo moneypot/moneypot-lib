@@ -1,14 +1,16 @@
+"use strict";
 // This works very similar to bip32, except that it's not limited to 32 bit
-import * as assert from './util/assert';
-import RIPEMD160 from './util/bcrypto/ripemd160';
-import SHA256 from './util/bcrypto/sha256';
-import * as types from './util/types';
-import sha512 from './util/bcrypto/sha512';
-import * as buffutils from './util/buffutils';
-import * as ecc from './util/ecc';
-import PublicKey from './public-key';
-import * as bs58check from './util/bs58check';
-import * as wif from './util/wif';
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("./util/assert");
+const ripemd160_1 = require("./util/bcrypto/ripemd160");
+const sha256_1 = require("./util/bcrypto/sha256");
+const types = require("./util/types");
+const sha512_1 = require("./util/bcrypto/sha512");
+const buffutils = require("./util/buffutils");
+const ecc = require("./util/ecc");
+const public_key_1 = require("./public-key");
+const bs58check = require("./util/bs58check");
+const wif = require("./util/wif");
 function isNetworkType(net) {
     return types.isUint8(net.wif) && net.bip32 && types.isUint32(net.bip32.public) && types.isUint32(net.bip32.private);
 }
@@ -26,7 +28,7 @@ const BITCOIN = {
         private: 0x4b2430c,
     },
 };
-export default class HDChain {
+class HDChain {
     getIdentifier() {
         return rmd160sha256(this.publicKey);
     }
@@ -142,7 +144,7 @@ export default class HDChain {
         if (seed.length > 64) {
             throw new TypeError('Seed should be at most 512 bits');
         }
-        const I = sha512.mac(buffutils.fromString('Bitcoin seed'), seed);
+        const I = sha512_1.default.mac(buffutils.fromString('Bitcoin seed'), seed);
         const IL = I.slice(0, 32);
         const IR = I.slice(32);
         return HDChain.fromPrivateKey(IL, IR, network);
@@ -160,7 +162,7 @@ export default class HDChain {
         this.parentFingerprint = 0x00000000;
     }
     toPublicKey() {
-        return PublicKey.fromBytes(this.publicKey);
+        return public_key_1.default.fromBytes(this.publicKey);
     }
     isNeutered() {
         return this.__d === null;
@@ -230,7 +232,7 @@ export default class HDChain {
             buffutils.copy(this.publicKey, data, 0);
             dataView.setUint32(33, index, false);
         }
-        const I = sha512.mac(this.chainCode, data);
+        const I = sha512_1.default.mac(this.chainCode, data);
         const IL = I.slice(0, 32);
         const IR = I.slice(32);
         const ILScalar = ecc.Scalar.fromBytes(IL);
@@ -271,7 +273,8 @@ export default class HDChain {
         return this.derive(index + HIGHEST_BIT);
     }
 }
+exports.default = HDChain;
 function rmd160sha256(data) {
-    return RIPEMD160.digest(SHA256.digest(data));
+    return ripemd160_1.default.digest(sha256_1.default.digest(data));
 }
 //# sourceMappingURL=hdchain.js.map

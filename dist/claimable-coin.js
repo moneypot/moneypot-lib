@@ -1,10 +1,12 @@
-import PublicKey from './public-key';
-import * as POD from './pod';
-import Hash from './hash';
-import * as buffutils from './util/buffutils';
-export default class ClaimableCoin {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const public_key_1 = require("./public-key");
+const POD = require("./pod");
+const hash_1 = require("./hash");
+const buffutils = require("./util/buffutils");
+class ClaimableCoin {
     static fromPOD(data) {
-        const claimant = PublicKey.fromBech(data.claimant);
+        const claimant = public_key_1.default.fromBech(data.claimant);
         if (claimant instanceof Error) {
             return claimant;
         }
@@ -19,7 +21,7 @@ export default class ClaimableCoin {
         this.magnitude = magnitude;
     }
     hash() {
-        const h = Hash.newBuilder('ClaimableCoin');
+        const h = hash_1.default.newBuilder('ClaimableCoin');
         h.update(this.claimant.buffer);
         h.update(buffutils.fromUint8(this.magnitude));
         return h.digest();
@@ -31,4 +33,5 @@ export default class ClaimableCoin {
         };
     }
 }
+exports.default = ClaimableCoin;
 //# sourceMappingURL=claimable-coin.js.map

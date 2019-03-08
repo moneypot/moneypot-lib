@@ -3,7 +3,6 @@ import * as bech32 from './util/bech32';
 import * as Buffutils from './util/buffutils';
 import * as ecc from './util/ecc';
 
-import Hash from './hash';
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 

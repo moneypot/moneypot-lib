@@ -1,8 +1,10 @@
-import * as POD from './pod';
-import * as Buffutils from './util/buffutils';
-import Hash from './hash';
-import * as assert from './util/assert';
-export default class Hookout {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const POD = require("./pod");
+const Buffutils = require("./util/buffutils");
+const hash_1 = require("./hash");
+const assert = require("./util/assert");
+class Hookout {
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('Hookout.fromPOD is not object');
@@ -41,7 +43,7 @@ export default class Hookout {
         };
     }
     hash() {
-        const h = Hash.newBuilder('Hookout');
+        const h = hash_1.default.newBuilder('Hookout');
         h.update(Buffutils.fromUint64(this.amount));
         h.update(Buffutils.fromString(this.bitcoinAddress));
         h.update(Buffutils.fromUint8(this.immediate ? 1 : 0));
@@ -49,4 +51,5 @@ export default class Hookout {
         return h.digest();
     }
 }
+exports.default = Hookout;
 //# sourceMappingURL=hookout.js.map

@@ -1,6 +1,8 @@
-import assert from '../assert';
-import * as buffutils from '../buffutils';
-import HMAC from './hmac';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert_1 = require("../assert");
+const buffutils = require("../buffutils");
+const hmac_1 = require("./hmac");
 /*
  * Constants
  */
@@ -170,7 +172,7 @@ const K = new Uint32Array([
     0x6c44198c,
     0x4a475817,
 ]);
-export default class SHA512 {
+class SHA512 {
     constructor() {
         this.state = new Uint32Array(16);
         this.msg = new Uint32Array(160);
@@ -209,7 +211,7 @@ export default class SHA512 {
         return this._final(new Uint8Array(64));
     }
     _update(data, len) {
-        assert(this.size !== FINALIZED);
+        assert_1.default(this.size !== FINALIZED);
         let pos = this.size & 0x7f;
         let off = 0;
         this.size += len;
@@ -235,7 +237,7 @@ export default class SHA512 {
         }
     }
     _final(out) {
-        assert(this.size !== FINALIZED);
+        assert_1.default(this.size !== FINALIZED);
         const pos = this.size % 128;
         const len = this.size * 8;
         writeU32(DESC, len * (1 / 0x100000000), 8);
@@ -339,7 +341,7 @@ export default class SHA512 {
         return new SHA512();
     }
     static hmac() {
-        return new HMAC(SHA512.hash, 128);
+        return new hmac_1.default(SHA512.hash, 128);
     }
     static digest(...data) {
         const h = new SHA512();
@@ -355,6 +357,7 @@ export default class SHA512 {
         return m.final();
     }
 }
+exports.default = SHA512;
 /*
  * Helpers
  */

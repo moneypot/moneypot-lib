@@ -1,12 +1,14 @@
-import * as assert from './util/assert';
-import * as bech32 from './util/bech32';
-import SHA256 from './util/bcrypto/sha256';
-import * as Buffutil from './util/buffutils';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("./util/assert");
+const bech32 = require("./util/bech32");
+const sha256_1 = require("./util/bcrypto/sha256");
+const Buffutil = require("./util/buffutils");
 const serializedPrefix = 'hshi'; // hash hookedin
-export default class Hash {
+class Hash {
     // actually hashes a message(s)
     static fromMessage(prefix, ...message) {
-        const buff = SHA256.mac(Buffutil.fromString(prefix), Buffutil.concat(...message));
+        const buff = sha256_1.default.mac(Buffutil.fromString(prefix), Buffutil.concat(...message));
         return new Hash(buff);
     }
     static newBuilder(prefix) {
@@ -43,4 +45,5 @@ export default class Hash {
         return bech32.encode(serializedPrefix, words);
     }
 }
+exports.default = Hash;
 //# sourceMappingURL=hash.js.map
