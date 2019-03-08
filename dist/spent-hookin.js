@@ -6,7 +6,7 @@ export default class SpentHookin {
         if (spendAuthorization instanceof Error) {
             return spendAuthorization;
         }
-        const hookin = Hookin.fromPOD(data.hookin);
+        const hookin = Hookin.fromPOD(data);
         if (hookin instanceof Error) {
             return hookin;
         }
@@ -24,7 +24,7 @@ export default class SpentHookin {
     }
     toPOD() {
         return {
-            hookin: this.hookin.toPOD(),
+            ...this.hookin.toPOD(),
             spendAuthorization: this.spendAuthorization.toBech(),
         };
     }

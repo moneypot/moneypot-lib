@@ -9,7 +9,7 @@ export default class SpentHookin {
       return spendAuthorization;
     }
 
-    const hookin = Hookin.fromPOD(data.hookin);
+    const hookin = Hookin.fromPOD(data);
     if (hookin instanceof Error) {
       return hookin;
     }
@@ -35,7 +35,7 @@ export default class SpentHookin {
 
   public toPOD(): POD.SpentHookin {
     return {
-      hookin: this.hookin.toPOD(),
+      ...this.hookin.toPOD(),
       spendAuthorization: this.spendAuthorization.toBech(),
     };
   }

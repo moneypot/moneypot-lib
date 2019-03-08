@@ -43,9 +43,8 @@ export interface Hookin {
     creditTo: string;
     deriveIndex: number;
 }
-export interface SpentHookin {
+export interface SpentHookin extends Hookin {
     spendAuthorization: string;
-    hookin: Hookin;
 }
 export declare type ClaimableCoinSet = ClaimableCoin[];
 export interface Transfer {

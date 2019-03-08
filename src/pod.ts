@@ -61,9 +61,8 @@ export interface Hookin {
   deriveIndex: number;
 }
 
-export interface SpentHookin {
+export interface SpentHookin extends Hookin {
   spendAuthorization: string;
-  hookin: Hookin;
 }
 
 export type ClaimableCoinSet = ClaimableCoin[];
