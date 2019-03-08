@@ -1,5 +1,4 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from './hash';
 import * as POD from './pod';
 import SpentCoinSet from './spent-coin-set';
 export default class TransferCoinToCoin {
@@ -7,7 +6,6 @@ export default class TransferCoinToCoin {
     input: SpentCoinSet;
     output: ClaimableCoinSet;
     constructor(input: SpentCoinSet, output: ClaimableCoinSet);
-    static hashOf(input: Hash, output: Hash): Hash;
-    hash(): Hash;
+    hash(): import("./hash").default;
     toPOD(): POD.TransferCoinToCoin;
 }

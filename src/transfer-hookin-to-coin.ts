@@ -1,5 +1,5 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from './hash';
+import Transfer from './transfer';
 import * as POD from './pod';
 import SpentHookin from './spent-hookin';
 
@@ -32,17 +32,8 @@ export default class TransferHookinToCoin {
     this.output = output;
   }
 
-  public static hashOf(input: Hash, output: Hash) {
-    const h = Hash.newBuilder('TransferHookinToCoin');
-
-    h.update(input.buffer);
-    h.update(output.buffer);
-
-    return h.digest();
-  }
-
   public hash() {
-    return TransferHookinToCoin.hashOf(this.input.hash(), this.output.hash());
+    return Transfer.hashOf(this.input.hash(), this.output.hash());
   }
 
 

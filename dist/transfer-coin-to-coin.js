@@ -1,7 +1,7 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from './hash';
 import SpentCoinSet from './spent-coin-set';
-// c2ct
+import Transfer from './transfer';
+// tc2c
 export default class TransferCoinToCoin {
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -21,14 +21,8 @@ export default class TransferCoinToCoin {
         this.input = input;
         this.output = output;
     }
-    static hashOf(input, output) {
-        const h = Hash.newBuilder('TransferCoinToCoin');
-        h.update(input.buffer);
-        h.update(output.buffer);
-        return h.digest();
-    }
     hash() {
-        return TransferCoinToCoin.hashOf(this.input.hash(), this.output.hash());
+        return Transfer.hashOf(this.input.hash(), this.output.hash());
     }
     toPOD() {
         return {

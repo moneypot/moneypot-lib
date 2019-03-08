@@ -1,4 +1,4 @@
-import Hash from './hash';
+import Transfer from './transfer';
 import SpentCoinSet from './spent-coin-set';
 import Hookout from './hookout';
 // c2h
@@ -21,14 +21,8 @@ export default class TransferCoinToHookout {
         this.input = input;
         this.output = output;
     }
-    static hashOf(input, output) {
-        const h = Hash.newBuilder('TransferCoinToHookout');
-        h.update(input.buffer);
-        h.update(output.buffer);
-        return h.digest();
-    }
     hash() {
-        return TransferCoinToHookout.hashOf(this.input.hash(), this.output.hash());
+        return Transfer.hashOf(this.input.hash(), this.output.hash());
     }
     toPOD() {
         return {

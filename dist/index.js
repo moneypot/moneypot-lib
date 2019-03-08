@@ -18,6 +18,8 @@ export { default as ClaimedCoinSet } from './claimed-coin-set';
 export { default as Hookin } from './hookin';
 export { default as SpentHookin } from './spent-hookin';
 export { default as Hookout } from './hookout';
+import Transfer from './transfer';
+export { Transfer };
 import TransferCoinToCoin from './transfer-coin-to-coin';
 export { TransferCoinToCoin };
 import TransferCoinToHookout from './transfer-coin-to-hookout';

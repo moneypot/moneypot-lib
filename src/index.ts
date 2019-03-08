@@ -29,6 +29,10 @@ export { default as SpentHookin } from './spent-hookin';
 
 export { default as Hookout } from './hookout';
 
+import Transfer from './transfer';
+export { Transfer };
+
+
 import TransferCoinToCoin from './transfer-coin-to-coin';
 export { TransferCoinToCoin };
 
@@ -57,6 +61,7 @@ import Acknowledged from './acknowledged';
 export { Acknowledged };
 
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
+export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
 export type AcknowledgedTransferCoinToCoin = Acknowledged<TransferCoinToCoin, POD.TransferCoinToCoin>;
 export type AcknowledgedTransferCoinToHookout = Acknowledged<TransferCoinToHookout, POD.TransferCoinToHookout>;
 export type AcknowledgedTransferHookinToCoin = Acknowledged<TransferHookinToCoin, POD.TransferHookinToCoin>;

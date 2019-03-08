@@ -53,17 +53,6 @@ export interface Hookout {
   nonce: string;
 }
 
-export interface LightningHookout {
-  invoice: string;
-  amount: number;
-}
-
-export interface LightningHookin {
-  amount: number;
-  creditTo: string;
-  invoice: string;
-}
-
 export interface Hookin {
   txid: string;
   vout: number;
@@ -78,6 +67,11 @@ export interface SpentHookin {
 }
 
 export type ClaimableCoinSet = ClaimableCoin[];
+
+export interface Transfer {
+  input: string; // hash
+  output: string; // hash
+}
 
 export interface TransferCoinToCoin {
   input: SpentCoinSet;

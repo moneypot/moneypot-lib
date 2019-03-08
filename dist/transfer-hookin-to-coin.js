@@ -1,5 +1,5 @@
 import ClaimableCoinSet from './claimable-coin-set';
-import Hash from './hash';
+import Transfer from './transfer';
 import SpentHookin from './spent-hookin';
 // th2c
 export default class TransferHookinToCoin {
@@ -21,14 +21,8 @@ export default class TransferHookinToCoin {
         this.input = input;
         this.output = output;
     }
-    static hashOf(input, output) {
-        const h = Hash.newBuilder('TransferHookinToCoin');
-        h.update(input.buffer);
-        h.update(output.buffer);
-        return h.digest();
-    }
     hash() {
-        return TransferHookinToCoin.hashOf(this.input.hash(), this.output.hash());
+        return Transfer.hashOf(this.input.hash(), this.output.hash());
     }
     toPOD() {
         return {
