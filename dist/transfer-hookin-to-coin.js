@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const claimable_coin_set_1 = require("./claimable-coin-set");
+const claimable_coins_1 = require("./claimable-coins");
 const transfer_1 = require("./transfer");
 const hookin_1 = require("./hookin");
 const signature_1 = require("./signature");
@@ -14,7 +14,7 @@ class TransferHookinToCoin {
         if (input instanceof Error) {
             return input;
         }
-        const output = claimable_coin_set_1.default.fromPOD(data.output);
+        const output = claimable_coins_1.default.fromPOD(data.output);
         if (output instanceof Error) {
             return output;
         }

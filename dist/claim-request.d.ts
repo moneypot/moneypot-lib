@@ -1,19 +1,24 @@
 import BlindedMessage from './blinded-message';
-import ClaimableCoin from './claimable-coin';
+import ClaimableCoins from './claimable-coins';
 import Hash from './hash';
+import { Magnitude } from './pod';
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 import Signature from './signature';
 import * as POD from './pod';
-export default class ClaimRequest {
-    static newAuthorized(claimantPrivateKey: PrivateKey, magnitude: number, blindingNonce: PublicKey, blindedOwner: BlindedMessage): ClaimRequest;
-    static fromPOD(data: any): ClaimRequest | Error;
-    coin: ClaimableCoin;
+export interface CoinClaim {
     blindingNonce: PublicKey;
     blindedOwner: BlindedMessage;
+    magnitude: Magnitude;
+}
+export default class ClaimRequest {
+    static newAuthorized(claimantPrivateKey: PrivateKey, amount: number, coins: CoinClaim[]): ClaimRequest;
+    static fromPOD(data: any): ClaimRequest | Error;
+    claim: ClaimableCoins;
+    coins: CoinClaim[];
     authorization: Signature;
-    constructor(coin: ClaimableCoin, blindingNonce: PublicKey, blindedOwner: BlindedMessage, authorization: Signature);
-    static hashOf(coinHash: Hash, blindingNonce: PublicKey, blindedOwner: BlindedMessage): Hash;
+    constructor(claim: ClaimableCoins, coins: CoinClaim[], authorization: Signature);
+    static hashOf(claimableHash: Hash, coins: CoinClaim[]): Hash;
     hash(): Hash;
     isAuthorized(): boolean;
     toPOD(): POD.ClaimRequest;

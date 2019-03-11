@@ -1,4 +1,4 @@
-import ClaimableCoinSet from './claimable-coin-set';
+import ClaimableCoins from './claimable-coins';
 import ClaimedCoinSet from './claimed-coin-set';
 import * as POD from './pod';
 import Signature from './signature';
@@ -15,7 +15,7 @@ export default class TransferCoinToCoin {
     if (source instanceof Error) {
       return source;
     }
-    const output = ClaimableCoinSet.fromPOD(data.output);
+    const output = ClaimableCoins.fromPOD(data.output);
     if (output instanceof Error) {
       return output;
     }
@@ -29,12 +29,12 @@ export default class TransferCoinToCoin {
   }
 
   public input: ClaimedCoinSet;
-  public output: ClaimableCoinSet;
+  public output: ClaimableCoins;
 
   public authorization: Signature;
 
 
-  constructor(input: ClaimedCoinSet, output: ClaimableCoinSet, authorization: Signature) {
+  constructor(input: ClaimedCoinSet, output: ClaimableCoins, authorization: Signature) {
     this.input = input;
     this.output = output;
     this.authorization = authorization;

@@ -41,8 +41,7 @@ export { TransferCoinToHookout };
 import TransferHookinToCoin from './transfer-hookin-to-coin';
 export { TransferHookinToCoin };
 
-export { default as ClaimableCoin } from './claimable-coin';
-export { default as ClaimableCoinSet } from './claimable-coin-set';
+export { default as ClaimableCoins } from './claimable-coins';
 
 // blind functions
 export * from './blind';

@@ -1,4 +1,4 @@
-import ClaimableCoinSet from './claimable-coin-set';
+import Claimables from './claimable-coins';
 import Transfer from './transfer';
 import * as POD from './pod';
 import Hookin from './hookin';
@@ -17,7 +17,7 @@ export default class TransferHookinToCoin {
       return input;
     }
 
-    const output = ClaimableCoinSet.fromPOD(data.output);
+    const output = Claimables.fromPOD(data.output);
     if (output instanceof Error) {
       return output;
     }
@@ -32,10 +32,10 @@ export default class TransferHookinToCoin {
   }
 
   public input: Hookin;
-  public output: ClaimableCoinSet;
+  public output: Claimables;
   public authorization: Signature;
 
-  constructor(input: Hookin, output: ClaimableCoinSet, authorization: Signature) {
+  constructor(input: Hookin, output: Claimables, authorization: Signature) {
     this.input = input;
     this.output = output;
     this.authorization = authorization;

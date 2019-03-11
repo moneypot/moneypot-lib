@@ -1,34 +1,45 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const blinded_signature_1 = require("./blinded-signature");
-const claim_request_1 = require("./claim-request");
 const hash_1 = require("./hash");
 class ClaimResponse {
     static fromPOD(data) {
-        const claimRequest = claim_request_1.default.fromPOD(data.claimRequest);
+        if (typeof data !== 'object') {
+            throw new Error('ClaimResponse must be an object');
+        }
+        const claimRequest = hash_1.default.fromBech(data.claimRequestHash);
         if (claimRequest instanceof Error) {
             return claimRequest;
         }
-        const blindedExistenceProof = blinded_signature_1.default.fromBech(data.blindedExistenceProof);
-        if (blindedExistenceProof instanceof Error) {
-            return blindedExistenceProof;
+        if (!Array.isArray(data.blindedExistenceProofs)) {
+            return new Error('expected blindedExistenceProofs in ClaimResponse to be an array');
         }
-        return new ClaimResponse(claimRequest, blindedExistenceProof);
+        const blindedExistenceProofs = [];
+        for (const bep of data.blindedExistenceProofs) {
+            const blindedExistenceProof = blinded_signature_1.default.fromBech(bep);
+            if (blindedExistenceProof instanceof Error) {
+                return blindedExistenceProof;
+            }
+            blindedExistenceProofs.push(blindedExistenceProof);
+        }
+        return new ClaimResponse(claimRequest, blindedExistenceProofs);
     }
-    constructor(claimRequest, blindedExistenceProof) {
-        this.claimRequest = claimRequest;
-        this.blindedExistenceProof = blindedExistenceProof;
+    constructor(claimRequestHash, blindedExistenceProofs) {
+        this.claimRequestHash = claimRequestHash;
+        this.blindedExistenceProofs = blindedExistenceProofs;
     }
     hash() {
         const h = hash_1.default.newBuilder('ClaimResponse');
-        h.update(this.claimRequest.hash().buffer);
-        h.update(this.blindedExistenceProof.buffer);
+        h.update(this.claimRequestHash.buffer);
+        for (const blindedExistenceProof of this.blindedExistenceProofs) {
+            h.update(blindedExistenceProof.buffer);
+        }
         return h.digest();
     }
     toPOD() {
         return {
-            blindedExistenceProof: this.blindedExistenceProof.toBech(),
-            claimRequest: this.claimRequest.toPOD(),
+            blindedExistenceProofs: this.blindedExistenceProofs.map(x => x.toBech()),
+            claimRequestHash: this.claimRequestHash.toBech(),
         };
     }
 }

@@ -18,20 +18,25 @@ export interface Acknowledged {
 
 export interface ClaimRequest {
   authorization: string;
-  blindingNonce: string;
-  blindedOwner: string;
-  coin: ClaimableCoin;
+  claim: ClaimableCoins;
+  coins: { blindingNonce: string, blindedOwner: string, magnitude: Magnitude }[]
 }
 
 export interface ClaimResponse {
-  blindedExistenceProof: string;
-  claimRequest: ClaimRequest;
+  blindedExistenceProofs: string[];
+  claimRequestHash: string;
+
 }
 
 export interface ClaimedCoin {
   existenceProof: string;
   magnitude: Magnitude;
   owner: string;
+}
+
+export interface ClaimableCoins {
+  claimant: string;
+  amount: number;
 }
 
 export type ClaimedCoinSet = ClaimedCoin[];
@@ -56,7 +61,6 @@ export interface Hookin {
   deriveIndex: number;
 }
 
-export type ClaimableCoinSet = ClaimableCoin[];
 
 export interface Transfer {
   input: string; // hash
@@ -66,13 +70,13 @@ export interface Transfer {
 
 export interface TransferCoinToCoin {
   input: ClaimedCoinSet;
-  output: ClaimableCoinSet;
+  output: ClaimableCoins;
   authorization: string;
 }
 
 export interface TransferHookinToCoin {
   input: Hookin;
-  output: ClaimableCoinSet;
+  output: ClaimableCoins;
   authorization: string;
 }
 

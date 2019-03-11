@@ -44,10 +44,8 @@ const transfer_coin_to_hookout_1 = require("./transfer-coin-to-hookout");
 exports.TransferCoinToHookout = transfer_coin_to_hookout_1.default;
 const transfer_hookin_to_coin_1 = require("./transfer-hookin-to-coin");
 exports.TransferHookinToCoin = transfer_hookin_to_coin_1.default;
-var claimable_coin_1 = require("./claimable-coin");
-exports.ClaimableCoin = claimable_coin_1.default;
-var claimable_coin_set_1 = require("./claimable-coin-set");
-exports.ClaimableCoinSet = claimable_coin_set_1.default;
+var claimable_coins_1 = require("./claimable-coins");
+exports.ClaimableCoins = claimable_coins_1.default;
 // blind functions
 __export(require("./blind"));
 // helper coin function

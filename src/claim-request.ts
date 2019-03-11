@@ -1,86 +1,120 @@
 import BlindedMessage from './blinded-message';
-import ClaimableCoin from './claimable-coin';
+import ClaimableCoins from './claimable-coins';
 import Hash from './hash';
+import { Magnitude } from './pod';
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 import Signature from './signature';
 import * as POD from './pod';
+import * as Buffutils from './util/buffutils';
 
 // represents a claim request
+
+export interface CoinClaim {
+  blindingNonce: PublicKey,
+  blindedOwner: BlindedMessage,
+  magnitude: Magnitude
+}
+
+
 
 export default class ClaimRequest {
   public static newAuthorized(
     claimantPrivateKey: PrivateKey,
-    magnitude: number,
-    blindingNonce: PublicKey,
-    blindedOwner: BlindedMessage
+    amount: number,
+    coins: CoinClaim[],
   ) {
     const pubkey = claimantPrivateKey.toPublicKey();
-    const coin = new ClaimableCoin(pubkey, magnitude);
-    const hash = ClaimRequest.hashOf(coin.hash(), blindingNonce, blindedOwner);
+    const claimable = new ClaimableCoins(amount, pubkey);
+    const hash = ClaimRequest.hashOf(claimable.hash(), coins);
     const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
-    return new ClaimRequest(coin, blindingNonce, blindedOwner, authorization);
+    return new ClaimRequest(claimable, coins, authorization);
   }
 
   public static fromPOD(data: any): ClaimRequest | Error {
-    const coin = ClaimableCoin.fromPOD(data.coin);
-    if (coin instanceof Error) {
-      return coin;
+    const claim = ClaimableCoins.fromPOD(data.claim);
+    if (claim instanceof Error) {
+      return claim;
     }
 
-    const blindNonce = PublicKey.fromBech(data.blindingNonce);
-    if (blindNonce instanceof Error) {
-      return blindNonce;
+    if (!Array.isArray(data.coins)) {
+      return new Error('ClaimRequest expected an array of coins');
     }
 
-    const blindedOwner = BlindedMessage.fromBech(data.blindedOwner);
-    if (blindedOwner instanceof Error) {
-      return blindedOwner;
+    const coins = [];
+    for (const coin of data.coins) {
+
+      const blindingNonce = PublicKey.fromBech(coin.blindingNonce);
+      if (blindingNonce instanceof Error) {
+        return blindingNonce;
+      }
+
+      const blindedOwner = BlindedMessage.fromBech(coin.blindedOwner);
+      if (blindedOwner instanceof Error) {
+        return blindedOwner;
+      }
+
+      const magnitude = coin.magnitude;
+      if (!POD.isMagnitude(magnitude)) {
+        return new Error('all coins must have a magnitude in ClaimRequest');
+      }
+
+      coins.push({ blindingNonce, blindedOwner, magnitude })
+
     }
+
+
+
+
 
     const authorization = Signature.fromBech(data.authorization);
     if (authorization instanceof Error) {
       return authorization;
     }
 
-    return new ClaimRequest(coin, blindNonce, blindedOwner, authorization);
+    return new ClaimRequest(claim, [], authorization);
   }
 
-  public coin: ClaimableCoin;
-  public blindingNonce: PublicKey;
-  public blindedOwner: BlindedMessage;
+  public claim: ClaimableCoins;
+  public coins: CoinClaim[];
   public authorization: Signature;
 
-  constructor(coin: ClaimableCoin, blindingNonce: PublicKey, blindedOwner: BlindedMessage, authorization: Signature) {
-    this.coin = coin;
-    this.blindingNonce = blindingNonce;
-    this.blindedOwner = blindedOwner;
+  constructor(claim: ClaimableCoins, coins: CoinClaim[], authorization: Signature) {
+    this.claim = claim;
+    this.coins = coins;
     this.authorization = authorization;
   }
 
-  public static hashOf(coinHash: Hash, blindingNonce: PublicKey, blindedOwner: BlindedMessage) {
+  public static hashOf(claimableHash: Hash, coins: CoinClaim[]) {
     const h = Hash.newBuilder('ClaimRequest');
-    h.update(coinHash.buffer);
-    h.update(blindingNonce.buffer);
-    h.update(blindedOwner.buffer);
+    h.update(claimableHash.buffer);
+    for (const coin of coins) {
+      h.update(coin.blindedOwner.buffer);
+      h.update(coin.blindingNonce.buffer);
+      h.update(Buffutils.fromUint8(coin.magnitude));
+    }
+
     return h.digest();
   }
 
   public hash(): Hash {
-    return ClaimRequest.hashOf(this.coin.hash(), this.blindingNonce, this.blindedOwner);
+    return ClaimRequest.hashOf(this.claim.hash(), this.coins);
   }
 
   public isAuthorized() {
-    return this.authorization.verify(this.hash().buffer, this.coin.claimant);
+    return this.authorization.verify(this.hash().buffer, this.claim.claimant);
   }
 
   public toPOD(): POD.ClaimRequest {
     return {
       authorization: this.authorization.toBech(),
-      blindedOwner: this.blindedOwner.toBech(),
-      blindingNonce: this.blindingNonce.toBech(),
-      coin: this.coin.toPOD(),
+      claim: this.claim.toPOD(),
+      coins: this.coins.map(coin => ({
+        blindingNonce: coin.blindingNonce.toBech(),
+        blindedOwner: coin.blindedOwner.toBech(),
+        magnitude: coin.magnitude
+      })),
     };
   }
 }
