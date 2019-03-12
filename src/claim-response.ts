@@ -1,8 +1,10 @@
 import BlindedSignature from './blinded-signature';
+import ClaimRequest from './claim-request';
 import Hash from './hash';
 import * as POD from './pod';
 
 
+// The response embeds the request, to make it easier to store/verify
 
 export default class ClaimResponse {
   public static fromPOD(data: any): ClaimResponse | Error {
@@ -10,7 +12,7 @@ export default class ClaimResponse {
       throw new Error('ClaimResponse must be an object');
     }
 
-    const claimRequest = Hash.fromBech(data.claimRequestHash);
+    const claimRequest = ClaimRequest.fromPOD(data.claimRequest);
     if (claimRequest instanceof Error) {
       return claimRequest;
     }
@@ -33,17 +35,17 @@ export default class ClaimResponse {
     return new ClaimResponse(claimRequest, blindedExistenceProofs);
   }
 
-  public claimRequestHash: Hash;
+  public claimRequest: ClaimRequest;
   public blindedExistenceProofs: BlindedSignature[];
 
-  constructor(claimRequestHash: Hash, blindedExistenceProofs: BlindedSignature[]) {
-    this.claimRequestHash = claimRequestHash;
+  constructor(claimRequest: ClaimRequest, blindedExistenceProofs: BlindedSignature[]) {
+    this.claimRequest = claimRequest;
     this.blindedExistenceProofs = blindedExistenceProofs;
   }
 
   public hash() {
     const h = Hash.newBuilder('ClaimResponse');
-    h.update(this.claimRequestHash.buffer);
+    h.update(this.claimRequest.hash().buffer);
     for (const blindedExistenceProof of this.blindedExistenceProofs) {
       h.update(blindedExistenceProof.buffer);
     }
@@ -53,7 +55,7 @@ export default class ClaimResponse {
   public toPOD(): POD.ClaimResponse {
     return {
       blindedExistenceProofs: this.blindedExistenceProofs.map(x => x.toBech()),
-      claimRequestHash: this.claimRequestHash.toBech(),
+      claimRequest: this.claimRequest.toPOD(),
     };
   }
 }

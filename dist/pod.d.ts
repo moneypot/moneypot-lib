@@ -16,8 +16,8 @@ export interface ClaimRequest {
     }[];
 }
 export interface ClaimResponse {
+    claimRequest: ClaimRequest;
     blindedExistenceProofs: string[];
-    claimRequestHash: string;
 }
 export interface ClaimedCoin {
     existenceProof: string;

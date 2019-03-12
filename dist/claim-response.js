@@ -1,13 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const blinded_signature_1 = require("./blinded-signature");
+const claim_request_1 = require("./claim-request");
 const hash_1 = require("./hash");
+// The response embeds the request, to make it easier to store/verify
 class ClaimResponse {
     static fromPOD(data) {
         if (typeof data !== 'object') {
             throw new Error('ClaimResponse must be an object');
         }
-        const claimRequest = hash_1.default.fromBech(data.claimRequestHash);
+        const claimRequest = claim_request_1.default.fromPOD(data.claimRequest);
         if (claimRequest instanceof Error) {
             return claimRequest;
         }
@@ -24,13 +26,13 @@ class ClaimResponse {
         }
         return new ClaimResponse(claimRequest, blindedExistenceProofs);
     }
-    constructor(claimRequestHash, blindedExistenceProofs) {
-        this.claimRequestHash = claimRequestHash;
+    constructor(claimRequest, blindedExistenceProofs) {
+        this.claimRequest = claimRequest;
         this.blindedExistenceProofs = blindedExistenceProofs;
     }
     hash() {
         const h = hash_1.default.newBuilder('ClaimResponse');
-        h.update(this.claimRequestHash.buffer);
+        h.update(this.claimRequest.hash().buffer);
         for (const blindedExistenceProof of this.blindedExistenceProofs) {
             h.update(blindedExistenceProof.buffer);
         }
@@ -39,7 +41,7 @@ class ClaimResponse {
     toPOD() {
         return {
             blindedExistenceProofs: this.blindedExistenceProofs.map(x => x.toBech()),
-            claimRequestHash: this.claimRequestHash.toBech(),
+            claimRequest: this.claimRequest.toPOD(),
         };
     }
 }
