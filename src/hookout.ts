@@ -25,9 +25,9 @@ export default class Hookout {
       return new Error('Hookout.fromPOD invalid immediate');
     }
 
-    const nonce = Buffutils.fromHex(data.nonce);
-    if (nonce.length !== 32) {
-      return new Error('Hookout.fromPOD invalid nonce');
+    const nonce = Buffutils.fromHex(data.nonce, 32);
+    if (nonce instanceof Error) {
+      return nonce;
     }
 
     return new Hookout(amount, bitcoinAddress, immediate, nonce);

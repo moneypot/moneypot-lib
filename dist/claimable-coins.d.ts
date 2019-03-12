@@ -5,7 +5,8 @@ export default class ClaimableCoins {
     static fromPOD(data: any): ClaimableCoins | Error;
     amount: number;
     claimant: PublicKey;
-    constructor(amount: number, claimant: PublicKey);
+    nonce: Uint8Array;
+    constructor(amount: number, claimant: PublicKey, nonce: Uint8Array);
     toPOD(): POD.ClaimableCoins;
     hash(): Hash;
 }

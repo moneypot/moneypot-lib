@@ -11,8 +11,16 @@ function toHex(buff) {
     return result;
 }
 exports.toHex = toHex;
-function fromHex(hexString) {
-    return new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+function fromHex(hexString, expectedLength = 0) {
+    if (typeof hexString !== 'string') {
+        return new Error('hexString must actually be hex');
+    }
+    // TODO: check for invalid chars
+    const buff = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    if (expectedLength > 0 && buff.length !== expectedLength) {
+        return new Error('unexpected length in hex string');
+    }
+    return buff;
 }
 exports.fromHex = fromHex;
 // returns amount of bytes copied. Does not support partial copies (i.e. target must be big enough)

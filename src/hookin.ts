@@ -12,9 +12,24 @@ import Params from './params';
 
 export default class Hookin {
   public static fromPOD(data: any): Hookin | Error {
-    const txid = buffutils.fromHex(data.txid);
+    if (typeof data !== 'object') {
+      return new Error('hookin expected an object');
+    }
+
+    const txid = buffutils.fromHex(data.txid, 32);
+    if (txid instanceof Error) {
+      return txid;
+    }
+
     const vout = data.vout;
+    if (!Number.isSafeInteger(vout) || vout < 0 || vout > 65536) {
+      return new Error("hookin was given an invalid vout");
+    }
     const amount = data.amount;
+    if (POD.isAmount(amount)) {
+      return new Error("invalid amount for hookin");
+    }
+
     const creditTo = PublicKey.fromBech(data.creditTo);
     if (creditTo instanceof Error) {
       return creditTo;

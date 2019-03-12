@@ -21,19 +21,17 @@ export interface CoinClaim {
 export default class ClaimRequest {
   public static newAuthorized(
     claimantPrivateKey: PrivateKey,
-    amount: number,
+    claim: Hash,
     coins: CoinClaim[],
   ) {
-    const pubkey = claimantPrivateKey.toPublicKey();
-    const claimable = new ClaimableCoins(amount, pubkey);
-    const hash = ClaimRequest.hashOf(claimable.hash(), coins);
+    const hash = ClaimRequest.hashOf(claim, coins);
     const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
-    return new ClaimRequest(claimable, coins, authorization);
+    return new ClaimRequest(claim, coins, authorization);
   }
 
   public static fromPOD(data: any): ClaimRequest | Error {
-    const claim = ClaimableCoins.fromPOD(data.claim);
+    const claim = Hash.fromBech(data.claim);
     if (claim instanceof Error) {
       return claim;
     }
@@ -61,10 +59,7 @@ export default class ClaimRequest {
       }
 
       coins.push({ blindingNonce, blindedOwner, magnitude })
-
     }
-
-
 
 
 
@@ -73,14 +68,14 @@ export default class ClaimRequest {
       return authorization;
     }
 
-    return new ClaimRequest(claim, [], authorization);
+    return new ClaimRequest(claim, coins, authorization);
   }
 
-  public claim: ClaimableCoins;
+  public claim: Hash;
   public coins: CoinClaim[];
   public authorization: Signature;
 
-  constructor(claim: ClaimableCoins, coins: CoinClaim[], authorization: Signature) {
+  constructor(claim: Hash, coins: CoinClaim[], authorization: Signature) {
     this.claim = claim;
     this.coins = coins;
     this.authorization = authorization;
@@ -99,17 +94,14 @@ export default class ClaimRequest {
   }
 
   public hash(): Hash {
-    return ClaimRequest.hashOf(this.claim.hash(), this.coins);
+    return ClaimRequest.hashOf(this.claim, this.coins);
   }
 
-  public isAuthorized() {
-    return this.authorization.verify(this.hash().buffer, this.claim.claimant);
-  }
 
   public toPOD(): POD.ClaimRequest {
     return {
       authorization: this.authorization.toBech(),
-      claim: this.claim.toPOD(),
+      claim: this.claim.toBech(),
       coins: this.coins.map(coin => ({
         blindingNonce: coin.blindingNonce.toBech(),
         blindedOwner: coin.blindedOwner.toBech(),

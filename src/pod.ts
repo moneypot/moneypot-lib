@@ -18,7 +18,7 @@ export interface Acknowledged {
 
 export interface ClaimRequest {
   authorization: string;
-  claim: ClaimableCoins;
+  claim: string;
   coins: { blindingNonce: string, blindedOwner: string, magnitude: Magnitude }[]
 }
 
@@ -37,6 +37,7 @@ export interface ClaimedCoin {
 export interface ClaimableCoins {
   claimant: string;
   amount: number;
+  nonce: string;
 }
 
 export type ClaimedCoinSet = ClaimedCoin[];

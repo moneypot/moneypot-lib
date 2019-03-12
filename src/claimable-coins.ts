@@ -2,7 +2,8 @@
 import Hash from './hash';
 
 import PublicKey from './public-key';
-import * as buffutils from './util/buffutils';
+import * as assert from './util/assert';
+import * as Buffutils from './util/buffutils';
 import * as POD from './pod';
 
 export default class ClaimableCoins {
@@ -12,7 +13,7 @@ export default class ClaimableCoins {
       return new Error('ClaimableCoins was expected to be an object');
     }
     const amount = data.amount;
-    if (!Number.isSafeInteger(amount) || amount <= 0) {
+    if (!POD.isAmount(amount)) {
       return new Error('ClaimableCoins should be a positive integer');
     }
 
@@ -21,30 +22,38 @@ export default class ClaimableCoins {
       return claimant;
     }
 
-    return new ClaimableCoins(amount, claimant);
+    const nonce = Buffutils.fromHex(data.nonce, 32);
+    if (nonce instanceof Error) {
+      return nonce;
+    }
+
+    return new ClaimableCoins(amount, claimant, nonce);
   }
 
   amount: number;
   claimant: PublicKey;
+  nonce: Uint8Array;
 
-  constructor(amount: number, claimant: PublicKey) {
+  constructor(amount: number, claimant: PublicKey, nonce: Uint8Array) {
     this.amount = amount;
     this.claimant = claimant;
+    assert.equal(nonce.length, 32);
+    this.nonce = nonce;
   }
 
   public toPOD(): POD.ClaimableCoins {
     return {
       amount: this.amount,
-      claimant: this.claimant.toBech()
+      claimant: this.claimant.toBech(),
+      nonce: Buffutils.toHex(this.nonce)
     }
   }
 
   public hash() {
-
     const h = Hash.newBuilder('ClaimableCoins');
-    h.update(buffutils.fromUint64(this.amount));
+    h.update(Buffutils.fromUint64(this.amount));
     h.update(this.claimant.buffer);
-
+    h.update(this.nonce);
     return h.digest();
   }
 }
