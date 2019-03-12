@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const blinded_message_1 = require("./blinded-message");
+const claimable_coins_1 = require("./claimable-coins");
 const hash_1 = require("./hash");
 const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
@@ -8,13 +9,15 @@ const POD = require("./pod");
 const Buffutils = require("./util/buffutils");
 class ClaimRequest {
     static newAuthorized(claimantPrivateKey, claim, coins) {
-        const pubkey = claimantPrivateKey.toPublicKey();
-        const hash = ClaimRequest.hashOf(claim, coins);
+        const hash = ClaimRequest.hashOf(claim.hash(), coins);
         const authorization = signature_1.default.compute(hash.buffer, claimantPrivateKey);
         return new ClaimRequest(claim, coins, authorization);
     }
     static fromPOD(data) {
-        const claim = hash_1.default.fromBech(data.claim);
+        if (typeof data !== 'object') {
+            return new Error('ClaimRequest.fromPOD expected an object');
+        }
+        const claim = claimable_coins_1.default.fromPOD(data.claim);
         if (claim instanceof Error) {
             return claim;
         }
@@ -59,12 +62,12 @@ class ClaimRequest {
         return h.digest();
     }
     hash() {
-        return ClaimRequest.hashOf(this.claim, this.coins);
+        return ClaimRequest.hashOf(this.claim.hash(), this.coins);
     }
     toPOD() {
         return {
             authorization: this.authorization.toBech(),
-            claim: this.claim.toBech(),
+            claim: this.claim.toPOD(),
             coins: this.coins.map(coin => ({
                 blindingNonce: coin.blindingNonce.toBech(),
                 blindedOwner: coin.blindedOwner.toBech(),

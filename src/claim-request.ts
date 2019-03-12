@@ -21,17 +21,22 @@ export interface CoinClaim {
 export default class ClaimRequest {
   public static newAuthorized(
     claimantPrivateKey: PrivateKey,
-    claim: Hash,
+    claim: ClaimableCoins,
     coins: CoinClaim[],
   ) {
-    const hash = ClaimRequest.hashOf(claim, coins);
+    const hash = ClaimRequest.hashOf(claim.hash(), coins);
     const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
     return new ClaimRequest(claim, coins, authorization);
   }
 
   public static fromPOD(data: any): ClaimRequest | Error {
-    const claim = Hash.fromBech(data.claim);
+    if (typeof data !== 'object') {
+      return new Error('ClaimRequest.fromPOD expected an object');
+    }
+
+
+    const claim = ClaimableCoins.fromPOD(data.claim);
     if (claim instanceof Error) {
       return claim;
     }
@@ -71,11 +76,11 @@ export default class ClaimRequest {
     return new ClaimRequest(claim, coins, authorization);
   }
 
-  public claim: Hash;
+  public claim: ClaimableCoins;
   public coins: CoinClaim[];
   public authorization: Signature;
 
-  constructor(claim: Hash, coins: CoinClaim[], authorization: Signature) {
+  constructor(claim: ClaimableCoins, coins: CoinClaim[], authorization: Signature) {
     this.claim = claim;
     this.coins = coins;
     this.authorization = authorization;
@@ -94,14 +99,14 @@ export default class ClaimRequest {
   }
 
   public hash(): Hash {
-    return ClaimRequest.hashOf(this.claim, this.coins);
+    return ClaimRequest.hashOf(this.claim.hash(), this.coins);
   }
 
 
   public toPOD(): POD.ClaimRequest {
     return {
       authorization: this.authorization.toBech(),
-      claim: this.claim.toBech(),
+      claim: this.claim.toPOD(),
       coins: this.coins.map(coin => ({
         blindingNonce: coin.blindingNonce.toBech(),
         blindedOwner: coin.blindedOwner.toBech(),

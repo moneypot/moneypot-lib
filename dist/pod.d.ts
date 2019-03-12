@@ -8,7 +8,7 @@ export interface Acknowledged {
 }
 export interface ClaimRequest {
     authorization: string;
-    claim: string;
+    claim: ClaimableCoins;
     coins: {
         blindingNonce: string;
         blindedOwner: string;
