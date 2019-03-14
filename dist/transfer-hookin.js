@@ -1,20 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const claimable_coins_1 = require("./claimable-coins");
+const bounty_1 = require("./bounty");
 const transfer_1 = require("./transfer");
 const hookin_1 = require("./hookin");
 const signature_1 = require("./signature");
 // th2c
-class TransferHookinToCoin {
+class TransferHookin {
     static fromPOD(data) {
         if (!data || typeof data !== 'object') {
-            return new Error('expected an obj to parse a TransferHookinToCoin');
+            return new Error('expected an obj to parse a TransferHookin');
         }
         const input = hookin_1.default.fromPOD(data.input);
         if (input instanceof Error) {
             return input;
         }
-        const output = claimable_coins_1.default.fromPOD(data.output);
+        const output = bounty_1.default.fromPOD(data.output);
         if (output instanceof Error) {
             return output;
         }
@@ -22,7 +22,7 @@ class TransferHookinToCoin {
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new TransferHookinToCoin(input, output, authorization);
+        return new TransferHookin(input, output, authorization);
     }
     constructor(input, output, authorization) {
         this.input = input;
@@ -40,5 +40,5 @@ class TransferHookinToCoin {
         };
     }
 }
-exports.default = TransferHookinToCoin;
-//# sourceMappingURL=transfer-hookin-to-coin.js.map
+exports.default = TransferHookin;
+//# sourceMappingURL=transfer-hookin.js.map

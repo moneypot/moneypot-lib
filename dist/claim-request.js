@@ -1,25 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const blinded_message_1 = require("./blinded-message");
-const claimable_coins_1 = require("./claimable-coins");
+const bounty_1 = require("./bounty");
 const hash_1 = require("./hash");
 const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
 const POD = require("./pod");
 const Buffutils = require("./util/buffutils");
 class ClaimRequest {
-    static newAuthorized(claimantPrivateKey, claim, coins) {
-        const hash = ClaimRequest.hashOf(claim.hash(), coins);
+    static newAuthorized(claimantPrivateKey, bounty, coins) {
+        const hash = ClaimRequest.hashOf(bounty.hash(), coins);
         const authorization = signature_1.default.compute(hash.buffer, claimantPrivateKey);
-        return new ClaimRequest(claim, coins, authorization);
+        return new ClaimRequest(bounty, coins, authorization);
     }
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('ClaimRequest.fromPOD expected an object');
         }
-        const claim = claimable_coins_1.default.fromPOD(data.claim);
-        if (claim instanceof Error) {
-            return claim;
+        const bounty = bounty_1.default.fromPOD(data.bounty);
+        if (bounty instanceof Error) {
+            return bounty;
         }
         if (!Array.isArray(data.coins)) {
             return new Error('ClaimRequest expected an array of coins');
@@ -44,10 +44,10 @@ class ClaimRequest {
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new ClaimRequest(claim, coins, authorization);
+        return new ClaimRequest(bounty, coins, authorization);
     }
-    constructor(claim, coins, authorization) {
-        this.claim = claim;
+    constructor(bounty, coins, authorization) {
+        this.bounty = bounty;
         this.coins = coins;
         this.authorization = authorization;
     }
@@ -62,12 +62,12 @@ class ClaimRequest {
         return h.digest();
     }
     hash() {
-        return ClaimRequest.hashOf(this.claim.hash(), this.coins);
+        return ClaimRequest.hashOf(this.bounty.hash(), this.coins);
     }
     toPOD() {
         return {
             authorization: this.authorization.toBech(),
-            claim: this.claim.toPOD(),
+            claim: this.bounty.toPOD(),
             coins: this.coins.map(coin => ({
                 blindingNonce: coin.blindingNonce.toBech(),
                 blindedOwner: coin.blindedOwner.toBech(),

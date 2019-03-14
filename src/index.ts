@@ -32,16 +32,16 @@ import Transfer from './transfer';
 export { Transfer };
 
 
-import TransferCoinToCoin from './transfer-coin-to-coin';
-export { TransferCoinToCoin };
+import TransferBounty from './transfer-bounty';
+export { TransferBounty };
 
-import TransferCoinToHookout from './transfer-coin-to-hookout';
-export { TransferCoinToHookout };
+import TransferHookout from './transfer-hookout';
+export { TransferHookout };
 
-import TransferHookinToCoin from './transfer-hookin-to-coin';
-export { TransferHookinToCoin };
+import TransferHookin from './transfer-hookin';
+export { TransferHookin };
 
-export { default as ClaimableCoins } from './claimable-coins';
+export { default as Bounty } from './bounty';
 
 // blind functions
 export * from './blind';
@@ -59,9 +59,9 @@ export { Acknowledged };
 
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
 export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
-export type AcknowledgedTransferCoinToCoin = Acknowledged<TransferCoinToCoin, POD.TransferCoinToCoin>;
-export type AcknowledgedTransferCoinToHookout = Acknowledged<TransferCoinToHookout, POD.TransferCoinToHookout>;
-export type AcknowledgedTransferHookinToCoin = Acknowledged<TransferHookinToCoin, POD.TransferHookinToCoin>;
+export type AcknowledgedTransferBounty = Acknowledged<TransferBounty, POD.TransferBounty>;
+export type AcknowledgedTransferHookout = Acknowledged<TransferHookout, POD.TransferHookout>;
+export type AcknowledgedTransferHookin = Acknowledged<TransferHookin, POD.TransferHookin>;
 
 // util, should be refactored into its own library
 export { Buffutils };

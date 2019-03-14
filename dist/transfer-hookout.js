@@ -5,10 +5,10 @@ const transfer_1 = require("./transfer");
 const claimed_coin_set_1 = require("./claimed-coin-set");
 const hookout_1 = require("./hookout");
 // c2h
-class TransferCoinToHookout {
+class TransferHookout {
     static fromPOD(data) {
         if (!data || typeof data !== 'object') {
-            return new Error('expected an obj to parse a TransferHookinToCoin');
+            return new Error('expected an obj to parse a TransferHookin');
         }
         const input = claimed_coin_set_1.default.fromPOD(data.input);
         if (input instanceof Error) {
@@ -22,7 +22,7 @@ class TransferCoinToHookout {
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new TransferCoinToHookout(input, output, authorization);
+        return new TransferHookout(input, output, authorization);
     }
     constructor(input, output, authorization) {
         this.input = input;
@@ -40,5 +40,5 @@ class TransferCoinToHookout {
         };
     }
 }
-exports.default = TransferCoinToHookout;
-//# sourceMappingURL=transfer-coin-to-hookout.js.map
+exports.default = TransferHookout;
+//# sourceMappingURL=transfer-hookout.js.map

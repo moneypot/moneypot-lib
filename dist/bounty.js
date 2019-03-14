@@ -5,14 +5,14 @@ const public_key_1 = require("./public-key");
 const assert = require("./util/assert");
 const Buffutils = require("./util/buffutils");
 const POD = require("./pod");
-class ClaimableCoins {
+class Bounty {
     static fromPOD(data) {
         if (typeof data !== 'object') {
-            return new Error('ClaimableCoins was expected to be an object');
+            return new Error('Bounty was expected to be an object');
         }
         const amount = data.amount;
         if (!POD.isAmount(amount)) {
-            return new Error('ClaimableCoins should be a positive integer');
+            return new Error('Bounty should be a positive integer');
         }
         const claimant = public_key_1.default.fromBech(data.claimant);
         if (claimant instanceof Error) {
@@ -22,7 +22,7 @@ class ClaimableCoins {
         if (nonce instanceof Error) {
             return nonce;
         }
-        return new ClaimableCoins(amount, claimant, nonce);
+        return new Bounty(amount, claimant, nonce);
     }
     constructor(amount, claimant, nonce) {
         this.amount = amount;
@@ -38,12 +38,12 @@ class ClaimableCoins {
         };
     }
     hash() {
-        const h = hash_1.default.newBuilder('ClaimableCoins');
+        const h = hash_1.default.newBuilder('Bounty');
         h.update(Buffutils.fromUint64(this.amount));
         h.update(this.claimant.buffer);
         h.update(this.nonce);
         return h.digest();
     }
 }
-exports.default = ClaimableCoins;
-//# sourceMappingURL=claimable-coins.js.map
+exports.default = Bounty;
+//# sourceMappingURL=bounty.js.map

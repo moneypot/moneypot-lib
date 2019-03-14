@@ -1,5 +1,5 @@
 import BlindedMessage from './blinded-message';
-import ClaimableCoins from './claimable-coins';
+import Bounty from './bounty';
 import Hash from './hash';
 import { Magnitude } from './pod';
 import PrivateKey from './private-key';
@@ -12,12 +12,12 @@ export interface CoinClaim {
     magnitude: Magnitude;
 }
 export default class ClaimRequest {
-    static newAuthorized(claimantPrivateKey: PrivateKey, claim: ClaimableCoins, coins: CoinClaim[]): ClaimRequest;
+    static newAuthorized(claimantPrivateKey: PrivateKey, bounty: Bounty, coins: CoinClaim[]): ClaimRequest;
     static fromPOD(data: any): ClaimRequest | Error;
-    claim: ClaimableCoins;
+    bounty: Bounty;
     coins: CoinClaim[];
     authorization: Signature;
-    constructor(claim: ClaimableCoins, coins: CoinClaim[], authorization: Signature);
+    constructor(bounty: Bounty, coins: CoinClaim[], authorization: Signature);
     static hashOf(claimableHash: Hash, coins: CoinClaim[]): Hash;
     hash(): Hash;
     toPOD(): POD.ClaimRequest;

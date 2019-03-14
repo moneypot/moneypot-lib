@@ -1,20 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const claimable_coins_1 = require("./claimable-coins");
+const bounty_1 = require("./bounty");
 const claimed_coin_set_1 = require("./claimed-coin-set");
 const signature_1 = require("./signature");
 const transfer_1 = require("./transfer");
-// tc2c
-class TransferCoinToCoin {
+class TransferBounty {
     static fromPOD(data) {
         if (typeof data !== 'object') {
-            return new Error('TransferCoinToCoin was expecting an object');
+            return new Error('TransferBounty was expecting an object');
         }
         const source = claimed_coin_set_1.default.fromPOD(data.input);
         if (source instanceof Error) {
             return source;
         }
-        const output = claimable_coins_1.default.fromPOD(data.output);
+        const output = bounty_1.default.fromPOD(data.output);
         if (output instanceof Error) {
             return output;
         }
@@ -22,7 +21,7 @@ class TransferCoinToCoin {
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new TransferCoinToCoin(source, output, authorization);
+        return new TransferBounty(source, output, authorization);
     }
     constructor(input, output, authorization) {
         this.input = input;
@@ -40,5 +39,5 @@ class TransferCoinToCoin {
         };
     }
 }
-exports.default = TransferCoinToCoin;
-//# sourceMappingURL=transfer-coin-to-coin.js.map
+exports.default = TransferBounty;
+//# sourceMappingURL=transfer-bounty.js.map

@@ -8,7 +8,7 @@ export interface Acknowledged {
 }
 export interface ClaimRequest {
     authorization: string;
-    claim: ClaimableCoins;
+    claim: Bounty;
     coins: {
         blindingNonce: string;
         blindedOwner: string;
@@ -24,7 +24,7 @@ export interface ClaimedCoin {
     magnitude: Magnitude;
     owner: string;
 }
-export interface ClaimableCoins {
+export interface Bounty {
     claimant: string;
     amount: number;
     nonce: string;
@@ -52,17 +52,17 @@ export interface Transfer {
     output: string;
     authorization: string;
 }
-export interface TransferCoinToCoin {
+export interface TransferBounty {
     input: ClaimedCoinSet;
-    output: ClaimableCoins;
+    output: Bounty;
     authorization: string;
 }
-export interface TransferHookinToCoin {
+export interface TransferHookin {
     input: Hookin;
-    output: ClaimableCoins;
+    output: Bounty;
     authorization: string;
 }
-export interface TransferCoinToHookout {
+export interface TransferHookout {
     input: ClaimedCoinSet;
     output: Hookout;
     authorization: string;
