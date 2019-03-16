@@ -27,7 +27,6 @@ export default class TransferHookin {
       return authorization;
     }
 
-
     return new TransferHookin(input, output, authorization);
   }
 
@@ -44,7 +43,6 @@ export default class TransferHookin {
   public hash() {
     return Transfer.hashOf(this.input.hash(), this.output.hash());
   }
-
 
   public toPOD(): POD.TransferHookin {
     return {

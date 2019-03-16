@@ -1,7 +1,7 @@
 import * as assert from '../assert';
 import { secp256k1 as curve, bufferToHex } from './util';
 import { jacobi, pointToBuffer, bufferFromBigInt } from './util';
-import * as Buffutils from '../buffutils'
+import * as Buffutils from '../buffutils';
 import { pointMultiply, pointSubtract, INFINITE_POINT } from './elliptic';
 import hash from '../bcrypto/sha256';
 import { Point } from '.';
@@ -46,7 +46,8 @@ export function sign(message: Uint8Array, secret: bigint): Signature {
   const k = jacobi(R.y) === BigInt(1) ? k0 : curve.n - k0;
 
   // challenge
-  const e = Buffutils.toBigInt(hash.digest(bufferFromBigInt(R.x), pointToBuffer(pointMultiply(curve.g, d)), m)) % curve.n;
+  const e =
+    Buffutils.toBigInt(hash.digest(bufferFromBigInt(R.x), pointToBuffer(pointMultiply(curve.g, d)), m)) % curve.n;
 
   const s = (k + e * d) % curve.n;
   return { r: R.x, s };

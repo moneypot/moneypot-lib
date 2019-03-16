@@ -11,19 +11,13 @@ import * as Buffutils from './util/buffutils';
 // represents a bounty request
 
 export interface CoinClaim {
-  blindingNonce: PublicKey,
-  blindedOwner: BlindedMessage,
-  magnitude: Magnitude
+  blindingNonce: PublicKey;
+  blindedOwner: BlindedMessage;
+  magnitude: Magnitude;
 }
 
-
-
 export default class ClaimRequest {
-  public static newAuthorized(
-    claimantPrivateKey: PrivateKey,
-    bounty: Bounty,
-    coins: CoinClaim[],
-  ) {
+  public static newAuthorized(claimantPrivateKey: PrivateKey, bounty: Bounty, coins: CoinClaim[]) {
     const hash = ClaimRequest.hashOf(bounty.hash(), coins);
     const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
@@ -34,7 +28,6 @@ export default class ClaimRequest {
     if (typeof data !== 'object') {
       return new Error('ClaimRequest.fromPOD expected an object');
     }
-
 
     const bounty = Bounty.fromPOD(data.bounty);
     if (bounty instanceof Error) {
@@ -47,7 +40,6 @@ export default class ClaimRequest {
 
     const coins = [];
     for (const coin of data.coins) {
-
       const blindingNonce = PublicKey.fromBech(coin.blindingNonce);
       if (blindingNonce instanceof Error) {
         return blindingNonce;
@@ -63,10 +55,8 @@ export default class ClaimRequest {
         return new Error('all coins must have a magnitude in ClaimRequest');
       }
 
-      coins.push({ blindingNonce, blindedOwner, magnitude })
+      coins.push({ blindingNonce, blindedOwner, magnitude });
     }
-
-
 
     const authorization = Signature.fromBech(data.authorization);
     if (authorization instanceof Error) {
@@ -102,7 +92,6 @@ export default class ClaimRequest {
     return ClaimRequest.hashOf(this.bounty.hash(), this.coins);
   }
 
-
   public toPOD(): POD.ClaimRequest {
     return {
       authorization: this.authorization.toBech(),
@@ -110,7 +99,7 @@ export default class ClaimRequest {
       coins: this.coins.map(coin => ({
         blindingNonce: coin.blindingNonce.toBech(),
         blindedOwner: coin.blindedOwner.toBech(),
-        magnitude: coin.magnitude
+        magnitude: coin.magnitude,
       })),
     };
   }

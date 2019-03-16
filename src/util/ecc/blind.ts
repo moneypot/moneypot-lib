@@ -1,11 +1,6 @@
 import { Point, pointMultiply as mul, pointAdd as add, scalarAdd, scalarMultiply } from './elliptic';
 import { Signature } from './signature';
-import {
-  secp256k1 as curve,
-  bufferFromBigInt,
-  jacobi,
-  pointToBuffer,
-} from './util';
+import { secp256k1 as curve, bufferFromBigInt, jacobi, pointToBuffer } from './util';
 
 import * as buffutils from '../buffutils';
 
@@ -43,7 +38,7 @@ export function blindMessage(
   let beta;
   let RPrime;
   while (true) {
-    beta =  buffutils.toBigInt(
+    beta = buffutils.toBigInt(
       hash.mac(
         buffutils.fromString('beta'),
         buffutils.concat(secret, pointToBuffer(nonce), pointToBuffer(signer), message, Uint8Array.of(retry))
@@ -60,7 +55,7 @@ export function blindMessage(
   }
 
   // the challenge
-  const cPrime =  buffutils.toBigInt(hash.digest(bufferFromBigInt(RPrime.x), pointToBuffer(P), message)) % curve.n;
+  const cPrime = buffutils.toBigInt(hash.digest(bufferFromBigInt(RPrime.x), pointToBuffer(P), message)) % curve.n;
 
   // the blinded challenge
   const c = scalarAdd(cPrime, beta);

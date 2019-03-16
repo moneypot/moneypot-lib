@@ -98,8 +98,6 @@ export function bufferFromHex(hex: string): Uint8Array {
 //     return BigInt('0x' + bufferToHex(buf))
 // }
 
-
-
 // Buffer is fixed-length 32bytes
 export function bufferFromBigInt(n: bigint): Uint8Array {
   const out = [];

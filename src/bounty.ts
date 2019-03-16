@@ -1,4 +1,3 @@
-
 import Hash from './hash';
 
 import PublicKey from './public-key';
@@ -7,7 +6,6 @@ import * as Buffutils from './util/buffutils';
 import * as POD from './pod';
 
 export default class Bounty {
-
   public static fromPOD(data: any): Bounty | Error {
     if (typeof data !== 'object') {
       return new Error('Bounty was expected to be an object');
@@ -45,8 +43,8 @@ export default class Bounty {
     return {
       amount: this.amount,
       claimant: this.claimant.toBech(),
-      nonce: Buffutils.toHex(this.nonce)
-    }
+      nonce: Buffutils.toHex(this.nonce),
+    };
   }
 
   public hash() {

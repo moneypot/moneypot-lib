@@ -2,8 +2,7 @@ import Bounty from './bounty';
 import ClaimedCoinSet from './claimed-coin-set';
 import * as POD from './pod';
 import Signature from './signature';
-import Transfer from './transfer'
-
+import Transfer from './transfer';
 
 export default class TransferBounty {
   public static fromPOD(data: any): TransferBounty | Error {
@@ -31,7 +30,6 @@ export default class TransferBounty {
   public output: Bounty;
 
   public authorization: Signature;
-
 
   constructor(input: ClaimedCoinSet, output: Bounty, authorization: Signature) {
     this.input = input;

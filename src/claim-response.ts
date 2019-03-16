@@ -3,7 +3,6 @@ import ClaimRequest from './claim-request';
 import Hash from './hash';
 import * as POD from './pod';
 
-
 // The response embeds the request, to make it easier to store/verify
 
 export default class ClaimResponse {
@@ -21,9 +20,8 @@ export default class ClaimResponse {
       return new Error('expected blindedExistenceProofs in ClaimResponse to be an array');
     }
 
-    const blindedExistenceProofs:  BlindedSignature[] = [];
+    const blindedExistenceProofs: BlindedSignature[] = [];
     for (const bep of data.blindedExistenceProofs) {
-
       const blindedExistenceProof = BlindedSignature.fromBech(bep);
       if (blindedExistenceProof instanceof Error) {
         return blindedExistenceProof;

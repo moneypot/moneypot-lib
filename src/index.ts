@@ -31,7 +31,6 @@ export { default as Hookout } from './hookout';
 import Transfer from './transfer';
 export { Transfer };
 
-
 import TransferBounty from './transfer-bounty';
 export { TransferBounty };
 

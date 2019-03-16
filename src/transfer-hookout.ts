@@ -21,12 +21,10 @@ export default class TransferHookout {
       return output;
     }
 
-
     const authorization = Signature.fromBech(data.authorization);
     if (authorization instanceof Error) {
       return authorization;
     }
-
 
     return new TransferHookout(input, output, authorization);
   }
@@ -40,7 +38,6 @@ export default class TransferHookout {
     this.output = output;
     this.authorization = authorization;
   }
-
 
   public hash() {
     return Transfer.hashOf(this.input.hash(), this.output.hash());

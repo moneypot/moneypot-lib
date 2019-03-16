@@ -8,22 +8,16 @@ import Hash from './hash';
 
 import SHA256 from './util/bcrypto/sha256';
 
-
 const MUSIG_TAG = SHA256.digest(Buffutils.fromString('MuSig coefficient'));
 
-
-
 export default class MuSig {
-
   static computeEll(pubKeys: ecc.Point[]): Uint8Array {
     // concat all pubkeys in compressed form, and sha256 it..
-    return SHA256.digest(...pubKeys.map(p =>  ecc.Point.toBytes(p)));
+    return SHA256.digest(...pubKeys.map(p => ecc.Point.toBytes(p)));
   }
 
   static computeCoefficient(ell: Uint8Array, idx: number) {
-
     const idxBuf = Buffutils.fromUint32(idx);
-
 
     const data = Buffutils.concat(MUSIG_TAG, MUSIG_TAG, ell, idxBuf);
     const hash = SHA256.digest(data);
@@ -37,8 +31,6 @@ export default class MuSig {
   }
 
   static sign(privateKeys: PrivateKey[], message: Uint8Array): Signature {
-
-
     const rs: ecc.Scalar[] = [];
     const Xs: ecc.Point[] = [];
 
@@ -70,7 +62,6 @@ export default class MuSig {
 
     const ell = MuSig.computeEll(Xs);
 
-
     const coefficients: ecc.Scalar[] = [];
     let X: undefined | ecc.Point;
     for (let i = 0; i < Xs.length; i++) {
@@ -90,11 +81,9 @@ export default class MuSig {
     // TODO...
 
     throw new Error('TODO:...');
-
   }
 
   static combinePublicKeys(publicKeys: PublicKey[]): PublicKey {
-
     const ell = MuSig.computeEll(publicKeys);
     let X = null;
     for (let i = 0; i < publicKeys.length; i++) {
@@ -110,10 +99,7 @@ export default class MuSig {
     }
     return new PublicKey(X!.x, X!.y);
   }
-
 }
-
-
 
 function getE(Rx: bigint, P: ecc.Point, m: Uint8Array) {
   const hash = SHA256.digest(ecc.Scalar.toBytes(Rx), ecc.Point.toBytes(P), m);
@@ -123,4 +109,3 @@ function getE(Rx: bigint, P: ecc.Point, m: Uint8Array) {
   }
   return e;
 }
-

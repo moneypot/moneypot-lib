@@ -21,7 +21,7 @@ class Hookin {
             return new Error("hookin was given an invalid vout");
         }
         const amount = data.amount;
-        if (POD.isAmount(amount)) {
+        if (!POD.isAmount(amount)) {
             return new Error("invalid amount for hookin");
         }
         const creditTo = public_key_1.default.fromBech(data.creditTo);

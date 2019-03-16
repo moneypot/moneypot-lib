@@ -3,7 +3,6 @@ import Signature from './signature';
 import * as POD from './pod';
 
 export default class Transfer {
-
   static fromPOD(data: any): Transfer | Error {
     if (typeof data !== 'object') {
       return new Error('expected an object to deserialize a Transfer');
@@ -45,21 +44,15 @@ export default class Transfer {
     return h.digest();
   }
 
-
   hash(): Hash {
     return Transfer.hashOf(this.input, this.output);
   }
-
 
   toPOD(): POD.Transfer {
     return {
       authorization: this.authorization.toBech(),
       input: this.input.toBech(),
       output: this.output.toBech(),
-    }
+    };
   }
-
-
-
-
 }

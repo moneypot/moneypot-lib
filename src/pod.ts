@@ -19,7 +19,7 @@ export interface Acknowledged {
 export interface ClaimRequest {
   authorization: string;
   claim: Bounty;
-  coins: { blindingNonce: string, blindedOwner: string, magnitude: Magnitude }[]
+  coins: { blindingNonce: string; blindedOwner: string; magnitude: Magnitude }[];
 }
 
 export interface ClaimResponse {
@@ -60,7 +60,6 @@ export interface Hookin {
   creditTo: string;
   deriveIndex: number;
 }
-
 
 export interface Transfer {
   input: string; // hash
