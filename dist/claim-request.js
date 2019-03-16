@@ -67,11 +67,11 @@ class ClaimRequest {
     toPOD() {
         return {
             authorization: this.authorization.toBech(),
-            claim: this.bounty.toPOD(),
+            bounty: this.bounty.toPOD(),
             coins: this.coins.map(coin => ({
                 blindingNonce: coin.blindingNonce.toBech(),
                 blindedOwner: coin.blindedOwner.toBech(),
-                magnitude: coin.magnitude
+                magnitude: coin.magnitude,
             })),
         };
     }

@@ -34,7 +34,7 @@ class Bounty {
         return {
             amount: this.amount,
             claimant: this.claimant.toBech(),
-            nonce: Buffutils.toHex(this.nonce)
+            nonce: Buffutils.toHex(this.nonce),
         };
     }
     hash() {

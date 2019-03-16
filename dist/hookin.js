@@ -18,11 +18,11 @@ class Hookin {
         }
         const vout = data.vout;
         if (!Number.isSafeInteger(vout) || vout < 0 || vout > 65536) {
-            return new Error("hookin was given an invalid vout");
+            return new Error('hookin was given an invalid vout');
         }
         const amount = data.amount;
         if (!POD.isAmount(amount)) {
-            return new Error("invalid amount for hookin");
+            return new Error('invalid amount for hookin');
         }
         const creditTo = public_key_1.default.fromBech(data.creditTo);
         if (creditTo instanceof Error) {

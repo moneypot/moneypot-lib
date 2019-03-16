@@ -95,7 +95,7 @@ export default class ClaimRequest {
   public toPOD(): POD.ClaimRequest {
     return {
       authorization: this.authorization.toBech(),
-      claim: this.bounty.toPOD(),
+      bounty: this.bounty.toPOD(),
       coins: this.coins.map(coin => ({
         blindingNonce: coin.blindingNonce.toBech(),
         blindedOwner: coin.blindedOwner.toBech(),

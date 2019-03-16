@@ -18,7 +18,7 @@ export interface Acknowledged {
 
 export interface ClaimRequest {
   authorization: string;
-  claim: Bounty;
+  bounty: Bounty;
   coins: { blindingNonce: string; blindedOwner: string; magnitude: Magnitude }[];
 }
 
