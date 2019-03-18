@@ -1,4 +1,4 @@
-import ClaimedCoin from './claimed-coin';
+import Coin from './coin';
 import * as assert from './util/assert';
 
 import Hash from './hash';
@@ -6,28 +6,28 @@ import Hash from './hash';
 import * as POD from './pod';
 import * as buffutils from './util/buffutils';
 
-export default class ClaimedCoinSet {
-  public static fromPOD(data: any): ClaimedCoinSet | Error {
+export default class CoinSet {
+  public static fromPOD(data: any): CoinSet | Error {
     if (!Array.isArray(data)) {
-      return new Error('ClaimedCoinSet was expecting an array');
+      return new Error('CoinSet was expecting an array');
     }
 
-    const inputs: ClaimedCoin[] = [];
+    const inputs: Coin[] = [];
 
     for (const input of data) {
-      const cc = ClaimedCoin.fromPOD(input);
+      const cc = Coin.fromPOD(input);
       if (cc instanceof Error) {
         return cc;
       }
       inputs.push(cc);
     }
 
-    return new ClaimedCoinSet(inputs);
+    return new CoinSet(inputs);
   }
 
-  public readonly coins: ClaimedCoin[];
+  public readonly coins: Coin[];
 
-  constructor(inputs: ClaimedCoin[]) {
+  constructor(inputs: Coin[]) {
     this.coins = inputs;
   }
 
@@ -43,7 +43,7 @@ export default class ClaimedCoinSet {
     return sum;
   }
 
-  public get(n: number): ClaimedCoin {
+  public get(n: number): Coin {
     assert.equal(n >= 0, true);
     assert.equal(n < this.length, true);
 
@@ -59,7 +59,7 @@ export default class ClaimedCoinSet {
     return this.coins.length;
   }
 
-  public toPOD(): POD.ClaimedCoinSet {
+  public toPOD(): POD.CoinSet {
     assert.equal(this.isCanonicalized(), true);
 
     return this.coins.map(i => i.toPOD());
@@ -68,7 +68,7 @@ export default class ClaimedCoinSet {
   public hash() {
     this.canonicalize();
 
-    const h = Hash.newBuilder('ClaimedCoinSet');
+    const h = Hash.newBuilder('CoinSet');
 
     for (const input of this.coins) {
       h.update(input.hash().buffer);
@@ -88,7 +88,7 @@ export default class ClaimedCoinSet {
   }
 }
 
-function compare(a: ClaimedCoin, b: ClaimedCoin): number {
+function compare(a: Coin, b: Coin): number {
   const r = a.magnitude - b.magnitude;
   if (r !== 0) {
     return r;

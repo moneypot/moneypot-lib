@@ -2,12 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const hash_1 = require("./hash");
 const signature_1 = require("./signature");
+const coin_set_1 = require("./coin-set");
 class Transfer {
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('expected an object to deserialize a Transfer');
         }
-        const input = hash_1.default.fromBech(data.input);
+        const input = coin_set_1.default.fromPOD(data.input);
         if (input instanceof Error) {
             return input;
         }
@@ -33,12 +34,12 @@ class Transfer {
         return h.digest();
     }
     hash() {
-        return Transfer.hashOf(this.input, this.output);
+        return Transfer.hashOf(this.input.hash(), this.output);
     }
     toPOD() {
         return {
             authorization: this.authorization.toBech(),
-            input: this.input.toBech(),
+            input: this.input.toPOD(),
             output: this.output.toBech(),
         };
     }

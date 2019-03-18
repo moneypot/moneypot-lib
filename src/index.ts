@@ -21,8 +21,8 @@ export { default as Signature } from './signature';
 export { default as HDChain } from './hdchain';
 
 // models
-export { default as ClaimedCoin } from './claimed-coin';
-export { default as ClaimedCoinSet } from './claimed-coin-set';
+export { default as Coin } from './coin';
+export { default as CoinSet } from './coin-set';
 
 export { default as Hookin } from './hookin';
 
@@ -37,8 +37,6 @@ export { TransferBounty };
 import TransferHookout from './transfer-hookout';
 export { TransferHookout };
 
-import TransferHookin from './transfer-hookin';
-export { TransferHookin };
 
 export { default as Bounty } from './bounty';
 
@@ -50,6 +48,11 @@ export * from './util/coins';
 
 // responses
 export { default as ClaimRequest } from './claim-request';
+export { default as ClaimBountyRequest } from './claim-bounty-request';
+export { default as ClaimHookinRequest } from './claim-hookin-request';
+
+
+
 import ClaimResponse from './claim-response';
 export { ClaimResponse };
 
@@ -60,7 +63,6 @@ export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimRes
 export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
 export type AcknowledgedTransferBounty = Acknowledged<TransferBounty, POD.TransferBounty>;
 export type AcknowledgedTransferHookout = Acknowledged<TransferHookout, POD.TransferHookout>;
-export type AcknowledgedTransferHookin = Acknowledged<TransferHookin, POD.TransferHookin>;
 
 // util, should be refactored into its own library
 export { Buffutils };

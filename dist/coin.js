@@ -5,7 +5,7 @@ const POD = require("./pod");
 const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
 const Buffutils = require("./util/buffutils");
-class ClaimedCoin {
+class Coin {
     static fromPOD(data) {
         const owner = public_key_1.default.fromBech(data.owner);
         if (owner instanceof Error) {
@@ -19,7 +19,7 @@ class ClaimedCoin {
         if (existenceProof instanceof Error) {
             return existenceProof;
         }
-        return new ClaimedCoin(owner, magnitude, existenceProof);
+        return new Coin(owner, magnitude, existenceProof);
     }
     constructor(owner, magnitude, existenceProof) {
         this.owner = owner;
@@ -27,7 +27,7 @@ class ClaimedCoin {
         this.existenceProof = existenceProof;
     }
     hash() {
-        return hash_1.default.fromMessage('ClaimedCoin', this.owner.buffer, Buffutils.fromUint8(this.magnitude), this.existenceProof.buffer);
+        return hash_1.default.fromMessage('Coin', this.owner.buffer, Buffutils.fromUint8(this.magnitude), this.existenceProof.buffer);
     }
     toPOD() {
         return {
@@ -37,5 +37,5 @@ class ClaimedCoin {
         };
     }
 }
-exports.default = ClaimedCoin;
-//# sourceMappingURL=claimed-coin.js.map
+exports.default = Coin;
+//# sourceMappingURL=coin.js.map

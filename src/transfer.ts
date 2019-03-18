@@ -1,5 +1,6 @@
 import Hash from './hash';
 import Signature from './signature';
+import CoinSet from './coin-set';
 import * as POD from './pod';
 
 export default class Transfer {
@@ -7,7 +8,7 @@ export default class Transfer {
     if (typeof data !== 'object') {
       return new Error('expected an object to deserialize a Transfer');
     }
-    const input = Hash.fromBech(data.input);
+    const input = CoinSet.fromPOD(data.input);
     if (input instanceof Error) {
       return input;
     }
@@ -25,11 +26,11 @@ export default class Transfer {
     return new Transfer(input, output, authorization);
   }
 
-  input: Hash;
+  input: CoinSet;
   output: Hash;
   authorization: Signature;
 
-  constructor(input: Hash, output: Hash, authorization: Signature) {
+  constructor(input: CoinSet, output: Hash, authorization: Signature) {
     this.input = input;
     this.output = output;
     this.authorization = authorization;
@@ -45,13 +46,13 @@ export default class Transfer {
   }
 
   hash(): Hash {
-    return Transfer.hashOf(this.input, this.output);
+    return Transfer.hashOf(this.input.hash(), this.output);
   }
 
   toPOD(): POD.Transfer {
     return {
       authorization: this.authorization.toBech(),
-      input: this.input.toBech(),
+      input: this.input.toPOD(),
       output: this.output.toBech(),
     };
   }

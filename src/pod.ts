@@ -16,9 +16,22 @@ export interface Acknowledged {
   acknowledgement: string;
 }
 
+
 export interface ClaimRequest {
   authorization: string;
-  bounty: Bounty;
+  claim: string; // hash
+  coins: { blindingNonce: string; blindedOwner: string; magnitude: Magnitude }[];
+}
+
+export interface ClaimBountyRequest {
+  authorization: string;
+  claim: Bounty;
+  coins: { blindingNonce: string; blindedOwner: string; magnitude: Magnitude }[];
+}
+
+export interface ClaimHookinRequest {
+  authorization: string;
+  claim: Hookin;
   coins: { blindingNonce: string; blindedOwner: string; magnitude: Magnitude }[];
 }
 
@@ -27,23 +40,18 @@ export interface ClaimResponse {
   blindedExistenceProofs: string[];
 }
 
-export interface ClaimedCoin {
+
+export interface Coin {
   existenceProof: string;
   magnitude: Magnitude;
   owner: string;
 }
+export type CoinSet = Coin[];
 
 export interface Bounty {
   claimant: string;
   amount: number;
   nonce: string;
-}
-
-export type ClaimedCoinSet = ClaimedCoin[];
-
-export interface ClaimableCoin {
-  claimant: string;
-  magnitude: Magnitude;
 }
 
 export interface Hookout {
@@ -57,30 +65,25 @@ export interface Hookin {
   txid: string;
   vout: number;
   amount: number;
-  creditTo: string;
+  claimant: string;
   deriveIndex: number;
 }
 
 export interface Transfer {
-  input: string; // hash
+  input: CoinSet;
   output: string; // hash
   authorization: string;
 }
 
 export interface TransferBounty {
-  input: ClaimedCoinSet;
+  input: CoinSet;
   output: Bounty;
   authorization: string;
 }
 
-export interface TransferHookin {
-  input: Hookin;
-  output: Bounty;
-  authorization: string;
-}
 
 export interface TransferHookout {
-  input: ClaimedCoinSet;
+  input: CoinSet;
   output: Hookout;
   authorization: string;
 }

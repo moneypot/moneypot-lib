@@ -24,35 +24,35 @@ class Hookin {
         if (!POD.isAmount(amount)) {
             return new Error('invalid amount for hookin');
         }
-        const creditTo = public_key_1.default.fromBech(data.creditTo);
-        if (creditTo instanceof Error) {
-            return creditTo;
+        const claimant = public_key_1.default.fromBech(data.claimant);
+        if (claimant instanceof Error) {
+            return claimant;
         }
         const deriveIndex = data.deriveIndex;
-        return new Hookin(txid, vout, amount, creditTo, deriveIndex);
+        return new Hookin(txid, vout, amount, claimant, deriveIndex);
     }
-    static hashOf(txid, vout, amount, creditTo, deriveIndex) {
+    static hashOf(txid, vout, amount, claimant, deriveIndex) {
         const b = hash_1.default.newBuilder('Hookin');
         b.update(txid);
         b.update(buffutils.fromUint32(vout));
         b.update(buffutils.fromUint64(amount));
-        b.update(creditTo.buffer);
+        b.update(claimant.buffer);
         b.update(buffutils.fromUint32(deriveIndex));
         return b.digest();
     }
-    constructor(txid, vout, amount, creditTo, deriveIndex) {
+    constructor(txid, vout, amount, claimant, deriveIndex) {
         this.txid = txid;
         this.vout = vout;
         this.amount = amount;
-        this.creditTo = creditTo;
+        this.claimant = claimant;
         this.deriveIndex = deriveIndex;
     }
     hash() {
-        return Hookin.hashOf(this.txid, this.vout, this.amount, this.creditTo, this.deriveIndex);
+        return Hookin.hashOf(this.txid, this.vout, this.amount, this.claimant, this.deriveIndex);
     }
     getTweak() {
         const message = buffutils.concat(params_1.default.fundingPublicKey.buffer, buffutils.fromUint32(this.deriveIndex));
-        const I = sha512_1.default.mac(this.creditTo.hash().buffer, message);
+        const I = sha512_1.default.mac(this.claimant.hash().buffer, message);
         const IL = I.slice(0, 32);
         const pk = private_key_1.default.fromBytes(IL);
         if (pk instanceof Error) {
@@ -63,7 +63,7 @@ class Hookin {
     toPOD() {
         return {
             amount: this.amount,
-            creditTo: this.creditTo.toBech(),
+            claimant: this.claimant.toBech(),
             deriveIndex: this.deriveIndex,
             txid: buffutils.toHex(this.txid),
             vout: this.vout,

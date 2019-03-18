@@ -1,33 +1,35 @@
 import BlindedMessage from './blinded-message';
+import Bounty from './bounty';
 import Hash from './hash';
 import { Magnitude } from './pod';
+import PrivateKey from './private-key';
 import PublicKey from './public-key';
 import Signature from './signature';
 import * as POD from './pod';
-import * as Buffutils from './util/buffutils';
 
-// represents a pruned request
+import ClaimRequest, { CoinClaim } from './claim-request'
 
-export interface CoinClaim {
-  blindingNonce: PublicKey;
-  blindedOwner: BlindedMessage;
-  magnitude: Magnitude;
-}
 
-export default class ClaimRequest {
+export default class ClaimBountyRequest {
+  public static newAuthorized(claimantPrivateKey: PrivateKey, claim: Bounty, coins: CoinClaim[]) {
+    const hash = ClaimRequest.hashOf(claim.hash(), coins);
+    const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
-  public static fromPOD(data: any): ClaimRequest | Error {
+    return new ClaimBountyRequest(claim, coins, authorization);
+  }
+
+  public static fromPOD(data: any): ClaimBountyRequest | Error {
     if (typeof data !== 'object') {
-      return new Error('ClaimRequest.fromPOD expected an object');
+      return new Error('ClaimBountyRequest.fromPOD expected an object');
     }
 
-    const claim = Hash.fromBech(data.claim);
+    const claim = Bounty.fromPOD(data.claim);
     if (claim instanceof Error) {
       return claim;
     }
 
     if (!Array.isArray(data.coins)) {
-      return new Error('ClaimRequest expected an array of coins');
+      return new Error('ClaimBountyRequest expected an array of coins');
     }
 
     const coins = [];
@@ -44,7 +46,7 @@ export default class ClaimRequest {
 
       const magnitude = coin.magnitude;
       if (!POD.isMagnitude(magnitude)) {
-        return new Error('all coins must have a magnitude in ClaimRequest');
+        return new Error('all coins must have a magnitude in ClaimBountyRequest');
       }
 
       coins.push({ blindingNonce, blindedOwner, magnitude });
@@ -55,39 +57,29 @@ export default class ClaimRequest {
       return authorization;
     }
 
-    return new ClaimRequest(claim, coins, authorization);
+    return new ClaimBountyRequest(claim, coins, authorization);
   }
 
-  public claim: Hash;
+  public claim: Bounty;
   public coins: CoinClaim[];
   public authorization: Signature;
 
-  constructor(claim: Hash, coins: CoinClaim[], authorization: Signature) {
+  constructor(claim: Bounty, coins: CoinClaim[], authorization: Signature) {
     this.claim = claim;
     this.coins = coins;
     this.authorization = authorization;
   }
 
-  public static hashOf(claim: Hash, coins: CoinClaim[]) {
-    const h = Hash.newBuilder('ClaimRequest');
-    h.update(claim.buffer);
-    for (const coin of coins) {
-      h.update(coin.blindedOwner.buffer);
-      h.update(coin.blindingNonce.buffer);
-      h.update(Buffutils.fromUint8(coin.magnitude));
-    }
 
-    return h.digest();
-  }
 
   public hash(): Hash {
-    return ClaimRequest.hashOf(this.claim, this.coins);
+    return ClaimRequest.hashOf(this.claim.hash(), this.coins);
   }
 
-  public toPOD(): POD.ClaimRequest {
+  public toPOD(): POD.ClaimBountyRequest {
     return {
       authorization: this.authorization.toBech(),
-      claim: this.claim.toBech(),
+      claim: this.claim.toPOD(),
       coins: this.coins.map(coin => ({
         blindingNonce: coin.blindingNonce.toBech(),
         blindedOwner: coin.blindedOwner.toBech(),

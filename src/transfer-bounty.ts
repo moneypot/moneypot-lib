@@ -1,5 +1,5 @@
 import Bounty from './bounty';
-import ClaimedCoinSet from './claimed-coin-set';
+import CoinSet from './coin-set';
 import * as POD from './pod';
 import Signature from './signature';
 import Transfer from './transfer';
@@ -9,7 +9,7 @@ export default class TransferBounty {
     if (typeof data !== 'object') {
       return new Error('TransferBounty was expecting an object');
     }
-    const source = ClaimedCoinSet.fromPOD(data.input);
+    const source = CoinSet.fromPOD(data.input);
     if (source instanceof Error) {
       return source;
     }
@@ -26,12 +26,12 @@ export default class TransferBounty {
     return new TransferBounty(source, output, authorization);
   }
 
-  public input: ClaimedCoinSet;
+  public input: CoinSet;
   public output: Bounty;
 
   public authorization: Signature;
 
-  constructor(input: ClaimedCoinSet, output: Bounty, authorization: Signature) {
+  constructor(input: CoinSet, output: Bounty, authorization: Signature) {
     this.input = input;
     this.output = output;
     this.authorization = authorization;

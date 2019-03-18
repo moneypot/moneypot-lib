@@ -4,8 +4,8 @@ import PublicKey from './public-key';
 import Signature from './signature';
 import * as Buffutils from './util/buffutils';
 
-export default class ClaimedCoin {
-  public static fromPOD(data: any): ClaimedCoin | Error {
+export default class Coin {
+  public static fromPOD(data: any): Coin | Error {
     const owner = PublicKey.fromBech(data.owner);
     if (owner instanceof Error) {
       return owner;
@@ -20,7 +20,7 @@ export default class ClaimedCoin {
       return existenceProof;
     }
 
-    return new ClaimedCoin(owner, magnitude, existenceProof);
+    return new Coin(owner, magnitude, existenceProof);
   }
 
   public owner: PublicKey;
@@ -35,14 +35,14 @@ export default class ClaimedCoin {
 
   public hash() {
     return Hash.fromMessage(
-      'ClaimedCoin',
+      'Coin',
       this.owner.buffer,
       Buffutils.fromUint8(this.magnitude),
       this.existenceProof.buffer
     );
   }
 
-  public toPOD(): POD.ClaimedCoin {
+  public toPOD(): POD.Coin {
     return {
       existenceProof: this.existenceProof.toBech(),
       magnitude: this.magnitude,

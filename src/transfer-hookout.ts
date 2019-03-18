@@ -1,7 +1,7 @@
 import Signature from './signature';
 import Transfer from './transfer';
 import * as POD from './pod';
-import ClaimedCoinSet from './claimed-coin-set';
+import CoinSet from './coin-set';
 import Hookout from './hookout';
 
 // c2h
@@ -11,7 +11,7 @@ export default class TransferHookout {
       return new Error('expected an obj to parse a TransferHookin');
     }
 
-    const input = ClaimedCoinSet.fromPOD(data.input);
+    const input = CoinSet.fromPOD(data.input);
     if (input instanceof Error) {
       return input;
     }
@@ -29,11 +29,11 @@ export default class TransferHookout {
     return new TransferHookout(input, output, authorization);
   }
 
-  public input: ClaimedCoinSet;
+  public input: CoinSet;
   public output: Hookout;
   public authorization: Signature;
 
-  constructor(input: ClaimedCoinSet, output: Hookout, authorization: Signature) {
+  constructor(input: CoinSet, output: Hookout, authorization: Signature) {
     this.input = input;
     this.output = output;
     this.authorization = authorization;

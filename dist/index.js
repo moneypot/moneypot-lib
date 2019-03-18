@@ -28,10 +28,10 @@ exports.Signature = signature_1.default;
 var hdchain_1 = require("./hdchain");
 exports.HDChain = hdchain_1.default;
 // models
-var claimed_coin_1 = require("./claimed-coin");
-exports.ClaimedCoin = claimed_coin_1.default;
-var claimed_coin_set_1 = require("./claimed-coin-set");
-exports.ClaimedCoinSet = claimed_coin_set_1.default;
+var coin_1 = require("./coin");
+exports.Coin = coin_1.default;
+var coin_set_1 = require("./coin-set");
+exports.CoinSet = coin_set_1.default;
 var hookin_1 = require("./hookin");
 exports.Hookin = hookin_1.default;
 var hookout_1 = require("./hookout");
@@ -42,8 +42,6 @@ const transfer_bounty_1 = require("./transfer-bounty");
 exports.TransferBounty = transfer_bounty_1.default;
 const transfer_hookout_1 = require("./transfer-hookout");
 exports.TransferHookout = transfer_hookout_1.default;
-const transfer_hookin_1 = require("./transfer-hookin");
-exports.TransferHookin = transfer_hookin_1.default;
 var bounty_1 = require("./bounty");
 exports.Bounty = bounty_1.default;
 // blind functions
@@ -53,6 +51,10 @@ __export(require("./util/coins"));
 // responses
 var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
+var claim_bounty_request_1 = require("./claim-bounty-request");
+exports.ClaimBountyRequest = claim_bounty_request_1.default;
+var claim_hookin_request_1 = require("./claim-hookin-request");
+exports.ClaimHookinRequest = claim_hookin_request_1.default;
 const claim_response_1 = require("./claim-response");
 exports.ClaimResponse = claim_response_1.default;
 const acknowledged_1 = require("./acknowledged");

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const signature_1 = require("./signature");
 const transfer_1 = require("./transfer");
-const claimed_coin_set_1 = require("./claimed-coin-set");
+const coin_set_1 = require("./coin-set");
 const hookout_1 = require("./hookout");
 // c2h
 class TransferHookout {
@@ -10,7 +10,7 @@ class TransferHookout {
         if (!data || typeof data !== 'object') {
             return new Error('expected an obj to parse a TransferHookin');
         }
-        const input = claimed_coin_set_1.default.fromPOD(data.input);
+        const input = coin_set_1.default.fromPOD(data.input);
         if (input instanceof Error) {
             return input;
         }

@@ -1,23 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const claimed_coin_1 = require("./claimed-coin");
+const coin_1 = require("./coin");
 const assert = require("./util/assert");
 const hash_1 = require("./hash");
 const buffutils = require("./util/buffutils");
-class ClaimedCoinSet {
+class CoinSet {
     static fromPOD(data) {
         if (!Array.isArray(data)) {
-            return new Error('ClaimedCoinSet was expecting an array');
+            return new Error('CoinSet was expecting an array');
         }
         const inputs = [];
         for (const input of data) {
-            const cc = claimed_coin_1.default.fromPOD(input);
+            const cc = coin_1.default.fromPOD(input);
             if (cc instanceof Error) {
                 return cc;
             }
             inputs.push(cc);
         }
-        return new ClaimedCoinSet(inputs);
+        return new CoinSet(inputs);
     }
     constructor(inputs) {
         this.coins = inputs;
@@ -50,7 +50,7 @@ class ClaimedCoinSet {
     }
     hash() {
         this.canonicalize();
-        const h = hash_1.default.newBuilder('ClaimedCoinSet');
+        const h = hash_1.default.newBuilder('CoinSet');
         for (const input of this.coins) {
             h.update(input.hash().buffer);
         }
@@ -65,7 +65,7 @@ class ClaimedCoinSet {
         return true;
     }
 }
-exports.default = ClaimedCoinSet;
+exports.default = CoinSet;
 function compare(a, b) {
     const r = a.magnitude - b.magnitude;
     if (r !== 0) {
@@ -73,4 +73,4 @@ function compare(a, b) {
     }
     return buffutils.compare(a.owner.buffer, b.owner.buffer);
 }
-//# sourceMappingURL=claimed-coin-set.js.map
+//# sourceMappingURL=coin-set.js.map

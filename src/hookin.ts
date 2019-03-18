@@ -30,22 +30,22 @@ export default class Hookin {
       return new Error('invalid amount for hookin');
     }
 
-    const creditTo = PublicKey.fromBech(data.creditTo);
-    if (creditTo instanceof Error) {
-      return creditTo;
+    const claimant = PublicKey.fromBech(data.claimant);
+    if (claimant instanceof Error) {
+      return claimant;
     }
 
     const deriveIndex = data.deriveIndex;
 
-    return new Hookin(txid, vout, amount, creditTo, deriveIndex);
+    return new Hookin(txid, vout, amount, claimant, deriveIndex);
   }
 
-  public static hashOf(txid: Uint8Array, vout: number, amount: number, creditTo: PublicKey, deriveIndex: number) {
+  public static hashOf(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, deriveIndex: number) {
     const b = Hash.newBuilder('Hookin');
     b.update(txid);
     b.update(buffutils.fromUint32(vout));
     b.update(buffutils.fromUint64(amount));
-    b.update(creditTo.buffer);
+    b.update(claimant.buffer);
     b.update(buffutils.fromUint32(deriveIndex));
     return b.digest();
   }
@@ -53,25 +53,25 @@ export default class Hookin {
   public txid: Uint8Array;
   public vout: number;
   public amount: number;
-  public creditTo: PublicKey;
+  public claimant: PublicKey;
   public deriveIndex: number;
 
-  constructor(txid: Uint8Array, vout: number, amount: number, creditTo: PublicKey, deriveIndex: number) {
+  constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, deriveIndex: number) {
     this.txid = txid;
     this.vout = vout;
     this.amount = amount;
-    this.creditTo = creditTo;
+    this.claimant = claimant;
     this.deriveIndex = deriveIndex;
   }
 
   public hash(): Hash {
-    return Hookin.hashOf(this.txid, this.vout, this.amount, this.creditTo, this.deriveIndex);
+    return Hookin.hashOf(this.txid, this.vout, this.amount, this.claimant, this.deriveIndex);
   }
 
   getTweak(): PrivateKey {
     const message = buffutils.concat(Params.fundingPublicKey.buffer, buffutils.fromUint32(this.deriveIndex));
 
-    const I = SHA512.mac(this.creditTo.hash().buffer, message);
+    const I = SHA512.mac(this.claimant.hash().buffer, message);
     const IL = I.slice(0, 32);
     const pk = PrivateKey.fromBytes(IL);
     if (pk instanceof Error) {
@@ -84,7 +84,7 @@ export default class Hookin {
   public toPOD(): POD.Hookin {
     return {
       amount: this.amount,
-      creditTo: this.creditTo.toBech(),
+      claimant: this.claimant.toBech(),
       deriveIndex: this.deriveIndex,
       txid: buffutils.toHex(this.txid),
       vout: this.vout,

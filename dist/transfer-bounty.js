@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const bounty_1 = require("./bounty");
-const claimed_coin_set_1 = require("./claimed-coin-set");
+const coin_set_1 = require("./coin-set");
 const signature_1 = require("./signature");
 const transfer_1 = require("./transfer");
 class TransferBounty {
@@ -9,7 +9,7 @@ class TransferBounty {
         if (typeof data !== 'object') {
             return new Error('TransferBounty was expecting an object');
         }
-        const source = claimed_coin_set_1.default.fromPOD(data.input);
+        const source = coin_set_1.default.fromPOD(data.input);
         if (source instanceof Error) {
             return source;
         }
