@@ -1,19 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hash_1 = require("./hash");
-const POD = require("./pod");
 const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
-const Buffutils = require("./util/buffutils");
+const magnitude_1 = require("./magnitude");
 class Coin {
     static fromPOD(data) {
         const owner = public_key_1.default.fromBech(data.owner);
         if (owner instanceof Error) {
             return owner;
         }
-        const magnitude = data.magnitude;
-        if (!POD.isMagnitude(magnitude)) {
-            return new Error('invalid magnitude for coin');
+        const magnitude = magnitude_1.default.fromPOD(data.magnitude);
+        if (magnitude instanceof Error) {
+            return magnitude;
         }
         const existenceProof = signature_1.default.fromBech(data.existenceProof);
         if (existenceProof instanceof Error) {
@@ -27,12 +26,12 @@ class Coin {
         this.existenceProof = existenceProof;
     }
     hash() {
-        return hash_1.default.fromMessage('Coin', this.owner.buffer, Buffutils.fromUint8(this.magnitude), this.existenceProof.buffer);
+        return hash_1.default.fromMessage('Coin', this.owner.buffer, this.magnitude.buffer, this.existenceProof.buffer);
     }
     toPOD() {
         return {
             existenceProof: this.existenceProof.toBech(),
-            magnitude: this.magnitude,
+            magnitude: this.magnitude.toPOD(),
             owner: this.owner.toBech(),
         };
     }

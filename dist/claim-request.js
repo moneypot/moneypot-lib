@@ -4,8 +4,7 @@ const blinded_message_1 = require("./blinded-message");
 const hash_1 = require("./hash");
 const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
-const POD = require("./pod");
-const Buffutils = require("./util/buffutils");
+const magnitude_1 = require("./magnitude");
 class ClaimRequest {
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -28,9 +27,9 @@ class ClaimRequest {
             if (blindedOwner instanceof Error) {
                 return blindedOwner;
             }
-            const magnitude = coin.magnitude;
-            if (!POD.isMagnitude(magnitude)) {
-                return new Error('all coins must have a magnitude in ClaimRequest');
+            const magnitude = magnitude_1.default.fromPOD(coin.magnitude);
+            if (magnitude instanceof Error) {
+                return magnitude;
             }
             coins.push({ blindingNonce, blindedOwner, magnitude });
         }
@@ -51,7 +50,7 @@ class ClaimRequest {
         for (const coin of coins) {
             h.update(coin.blindedOwner.buffer);
             h.update(coin.blindingNonce.buffer);
-            h.update(Buffutils.fromUint8(coin.magnitude));
+            h.update(coin.magnitude.buffer);
         }
         return h.digest();
     }
@@ -65,7 +64,7 @@ class ClaimRequest {
             coins: this.coins.map(coin => ({
                 blindingNonce: coin.blindingNonce.toBech(),
                 blindedOwner: coin.blindedOwner.toBech(),
-                magnitude: coin.magnitude,
+                magnitude: coin.magnitude.toPOD(),
             })),
         };
     }

@@ -1,9 +1,9 @@
 import BlindedMessage from './blinded-message';
 import Hash from './hash';
-import { Magnitude } from './pod';
 import PublicKey from './public-key';
 import Signature from './signature';
 import * as POD from './pod';
+import Magnitude from './magnitude';
 export interface CoinClaim {
     blindingNonce: PublicKey;
     blindedOwner: BlindedMessage;

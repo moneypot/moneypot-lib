@@ -1,11 +1,11 @@
 import BlindedMessage from './blinded-message';
 import Bounty from './bounty';
 import Hash from './hash';
-import { Magnitude } from './pod';
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 import Signature from './signature';
 import * as POD from './pod';
+import Magnitude from './magnitude';
 
 import ClaimRequest, { CoinClaim } from './claim-request'
 
@@ -44,9 +44,9 @@ export default class ClaimBountyRequest {
         return blindedOwner;
       }
 
-      const magnitude = coin.magnitude;
-      if (!POD.isMagnitude(magnitude)) {
-        return new Error('all coins must have a magnitude in ClaimBountyRequest');
+      const magnitude = Magnitude.fromPOD(coin.magnitude);
+      if (magnitude instanceof Error) {
+        return magnitude;
       }
 
       coins.push({ blindingNonce, blindedOwner, magnitude });
@@ -83,7 +83,7 @@ export default class ClaimBountyRequest {
       coins: this.coins.map(coin => ({
         blindingNonce: coin.blindingNonce.toBech(),
         blindedOwner: coin.blindedOwner.toBech(),
-        magnitude: coin.magnitude,
+        magnitude: coin.magnitude.toPOD(),
       })),
     };
   }

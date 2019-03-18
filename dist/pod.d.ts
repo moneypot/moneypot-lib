@@ -2,7 +2,6 @@ export declare type Amount = number;
 export declare function isAmount(x: any): x is Amount;
 export declare type Magnitude = number;
 export declare const MaxMagnitude = 30;
-export declare function isMagnitude(x: any): x is Magnitude;
 export interface Acknowledged {
     acknowledgement: string;
 }

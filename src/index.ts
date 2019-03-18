@@ -28,6 +28,8 @@ export { default as Hookin } from './hookin';
 
 export { default as Hookout } from './hookout';
 
+export { default as Magnitude } from './magnitude';
+
 import Transfer from './transfer';
 export { Transfer };
 

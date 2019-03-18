@@ -8,10 +8,6 @@ export type Magnitude = number;
 
 export const MaxMagnitude = 30;
 
-export function isMagnitude(x: any): x is Magnitude {
-  return typeof x === 'number' && Number.isSafeInteger(x) && x >= 0 && x <= MaxMagnitude;
-}
-
 export interface Acknowledged {
   acknowledgement: string;
 }

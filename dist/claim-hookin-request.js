@@ -4,7 +4,7 @@ const blinded_message_1 = require("./blinded-message");
 const hookin_1 = require("./hookin");
 const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
-const POD = require("./pod");
+const magnitude_1 = require("./magnitude");
 const claim_request_1 = require("./claim-request");
 class ClaimHookinRequest {
     static newAuthorized(claimantPrivateKey, claim, coins) {
@@ -33,9 +33,9 @@ class ClaimHookinRequest {
             if (blindedOwner instanceof Error) {
                 return blindedOwner;
             }
-            const magnitude = coin.magnitude;
-            if (!POD.isMagnitude(magnitude)) {
-                return new Error('all coins must have a magnitude in ClaimHookinRequest');
+            const magnitude = magnitude_1.default.fromPOD(coin.magnitude);
+            if (magnitude instanceof Error) {
+                return magnitude;
             }
             coins.push({ blindingNonce, blindedOwner, magnitude });
         }
@@ -60,7 +60,7 @@ class ClaimHookinRequest {
             coins: this.coins.map(coin => ({
                 blindingNonce: coin.blindingNonce.toBech(),
                 blindedOwner: coin.blindedOwner.toBech(),
-                magnitude: coin.magnitude,
+                magnitude: coin.magnitude.toPOD(),
             })),
         };
     }

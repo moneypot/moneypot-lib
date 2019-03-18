@@ -28,7 +28,7 @@ class CoinSet {
     get amount() {
         let sum = 0;
         for (const coin of this.coins) {
-            sum += 2 ** coin.magnitude;
+            sum += coin.magnitude.toAmount();
         }
         return sum;
     }
@@ -67,7 +67,7 @@ class CoinSet {
 }
 exports.default = CoinSet;
 function compare(a, b) {
-    const r = a.magnitude - b.magnitude;
+    const r = a.magnitude.n - b.magnitude.n;
     if (r !== 0) {
         return r;
     }

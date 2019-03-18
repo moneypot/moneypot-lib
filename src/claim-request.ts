@@ -1,10 +1,10 @@
 import BlindedMessage from './blinded-message';
 import Hash from './hash';
-import { Magnitude } from './pod';
 import PublicKey from './public-key';
 import Signature from './signature';
 import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
+import Magnitude from './magnitude';
 
 // represents a pruned request
 
@@ -42,9 +42,9 @@ export default class ClaimRequest {
         return blindedOwner;
       }
 
-      const magnitude = coin.magnitude;
-      if (!POD.isMagnitude(magnitude)) {
-        return new Error('all coins must have a magnitude in ClaimRequest');
+      const magnitude = Magnitude.fromPOD(coin.magnitude);
+      if (magnitude instanceof Error) {
+        return magnitude;
       }
 
       coins.push({ blindingNonce, blindedOwner, magnitude });
@@ -74,7 +74,7 @@ export default class ClaimRequest {
     for (const coin of coins) {
       h.update(coin.blindedOwner.buffer);
       h.update(coin.blindingNonce.buffer);
-      h.update(Buffutils.fromUint8(coin.magnitude));
+      h.update(coin.magnitude.buffer);
     }
 
     return h.digest();
@@ -91,7 +91,7 @@ export default class ClaimRequest {
       coins: this.coins.map(coin => ({
         blindingNonce: coin.blindingNonce.toBech(),
         blindedOwner: coin.blindedOwner.toBech(),
-        magnitude: coin.magnitude,
+        magnitude: coin.magnitude.toPOD(),
       })),
     };
   }

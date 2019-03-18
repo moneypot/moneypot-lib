@@ -2,6 +2,8 @@ import Hash from './hash';
 import * as POD from './pod';
 import PublicKey from './public-key';
 import Signature from './signature';
+import Magnitude from './magnitude';
+
 import * as Buffutils from './util/buffutils';
 
 export default class Coin {
@@ -11,10 +13,11 @@ export default class Coin {
       return owner;
     }
 
-    const magnitude = data.magnitude;
-    if (!POD.isMagnitude(magnitude)) {
-      return new Error('invalid magnitude for coin');
+    const magnitude = Magnitude.fromPOD(data.magnitude);
+    if (magnitude instanceof Error) {
+      return magnitude;
     }
+
     const existenceProof = Signature.fromBech(data.existenceProof);
     if (existenceProof instanceof Error) {
       return existenceProof;
@@ -24,10 +27,10 @@ export default class Coin {
   }
 
   public owner: PublicKey;
-  public magnitude: POD.Magnitude;
+  public magnitude: Magnitude;
   public existenceProof: Signature;
 
-  constructor(owner: PublicKey, magnitude: POD.Magnitude, existenceProof: Signature) {
+  constructor(owner: PublicKey, magnitude: Magnitude, existenceProof: Signature) {
     this.owner = owner;
     this.magnitude = magnitude;
     this.existenceProof = existenceProof;
@@ -37,7 +40,7 @@ export default class Coin {
     return Hash.fromMessage(
       'Coin',
       this.owner.buffer,
-      Buffutils.fromUint8(this.magnitude),
+      this.magnitude.buffer,
       this.existenceProof.buffer
     );
   }
@@ -45,7 +48,7 @@ export default class Coin {
   public toPOD(): POD.Coin {
     return {
       existenceProof: this.existenceProof.toBech(),
-      magnitude: this.magnitude,
+      magnitude: this.magnitude.toPOD(),
       owner: this.owner.toBech(),
     };
   }
