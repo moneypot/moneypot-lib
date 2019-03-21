@@ -15,7 +15,6 @@ export interface CoinClaim {
 }
 
 export default class ClaimRequest {
-
   public static fromPOD(data: any): ClaimRequest | Error {
     if (typeof data !== 'object') {
       return new Error('ClaimRequest.fromPOD expected an object');

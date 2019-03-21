@@ -7,8 +7,7 @@ import Signature from './signature';
 import * as POD from './pod';
 import Magnitude from './magnitude';
 
-import ClaimRequest, { CoinClaim } from './claim-request'
-
+import ClaimRequest, { CoinClaim } from './claim-request';
 
 export default class ClaimHookinRequest {
   public static newAuthorized(claimantPrivateKey: PrivateKey, claim: Hookin, coins: CoinClaim[]) {

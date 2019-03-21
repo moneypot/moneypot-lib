@@ -7,9 +7,8 @@ import Signature from './signature';
 import * as POD from './pod';
 import Magnitude from './magnitude';
 
-import ClaimRequest, { CoinClaim } from './claim-request'
+import ClaimRequest, { CoinClaim } from './claim-request';
 import Transfer from './transfer';
-
 
 export default class ClaimBountyRequest {
   public static newAuthorized(claimantPrivateKey: PrivateKey, claim: Bounty, coins: CoinClaim[]) {

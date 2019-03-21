@@ -1,2 +1,2 @@
-import * as POD from '../pod';
-export declare function amountToMagnitudes(amount: number): POD.Magnitude[];
+import Magnitude from '../magnitude';
+export declare function amountToMagnitudes(amount: number): Magnitude[];

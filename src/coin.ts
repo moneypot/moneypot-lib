@@ -37,12 +37,7 @@ export default class Coin {
   }
 
   public hash() {
-    return Hash.fromMessage(
-      'Coin',
-      this.owner.buffer,
-      this.magnitude.buffer,
-      this.existenceProof.buffer
-    );
+    return Hash.fromMessage('Coin', this.owner.buffer, this.magnitude.buffer, this.existenceProof.buffer);
   }
 
   public toPOD(): POD.Coin {

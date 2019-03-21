@@ -13,7 +13,7 @@ export default class Magnitude {
   readonly n: number;
   constructor(n: number) {
     if (n < 0 || n > 30 || !Number.isInteger(n)) {
-      throw new Error('assertion: magnitude must be between 0 and 30')
+      throw new Error('assertion: magnitude must be between 0 and 30');
     }
     this.n = n;
   }

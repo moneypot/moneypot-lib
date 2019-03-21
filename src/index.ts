@@ -39,7 +39,6 @@ export { TransferBounty };
 import TransferHookout from './transfer-hookout';
 export { TransferHookout };
 
-
 export { default as Bounty } from './bounty';
 
 // blind functions
@@ -52,8 +51,6 @@ export * from './util/coins';
 export { default as ClaimRequest } from './claim-request';
 export { default as ClaimBountyRequest } from './claim-bounty-request';
 export { default as ClaimHookinRequest } from './claim-hookin-request';
-
-
 
 import ClaimResponse from './claim-response';
 export { ClaimResponse };

@@ -12,7 +12,6 @@ export interface Acknowledged {
   acknowledgement: string;
 }
 
-
 export interface ClaimRequest {
   authorization: string;
   claim: string; // hash
@@ -35,7 +34,6 @@ export interface ClaimResponse {
   claimRequest: ClaimRequest;
   blindedExistenceProofs: string[];
 }
-
 
 export interface Coin {
   existenceProof: string;
@@ -76,7 +74,6 @@ export interface TransferBounty {
   output: Bounty;
   authorization: string;
 }
-
 
 export interface TransferHookout {
   input: CoinSet;
