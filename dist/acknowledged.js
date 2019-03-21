@@ -31,6 +31,9 @@ class Acknowledged {
         }
         return new Acknowledged(contents, acknowledgement);
     }
+    hash() {
+        return this.contents.hash();
+    }
     toPOD() {
         return {
             acknowledgement: this.acknowledgement.toBech(),

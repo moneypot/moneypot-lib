@@ -50,6 +50,9 @@ class ClaimHookinRequest {
         this.coins = coins;
         this.authorization = authorization;
     }
+    prune() {
+        return new claim_request_1.default(this.claim.hash(), this.coins, this.authorization);
+    }
     hash() {
         return claim_request_1.default.hashOf(this.claim.hash(), this.coins);
     }

@@ -63,8 +63,6 @@ export { Acknowledged };
 
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
 export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
-export type AcknowledgedTransferBounty = Acknowledged<TransferBounty, POD.TransferBounty>;
-export type AcknowledgedTransferHookout = Acknowledged<TransferHookout, POD.TransferHookout>;
 
 // util, should be refactored into its own library
 export { Buffutils };

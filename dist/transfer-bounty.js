@@ -28,6 +28,9 @@ class TransferBounty {
         this.output = output;
         this.authorization = authorization;
     }
+    prune() {
+        return new transfer_1.default(this.input, this.output.hash(), this.authorization);
+    }
     hash() {
         return transfer_1.default.hashOf(this.input.hash(), this.output.hash());
     }

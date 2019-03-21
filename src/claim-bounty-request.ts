@@ -8,6 +8,7 @@ import * as POD from './pod';
 import Magnitude from './magnitude';
 
 import ClaimRequest, { CoinClaim } from './claim-request'
+import Transfer from './transfer';
 
 
 export default class ClaimBountyRequest {
@@ -70,7 +71,9 @@ export default class ClaimBountyRequest {
     this.authorization = authorization;
   }
 
-
+  public prune(): ClaimRequest {
+    return new ClaimRequest(this.claim.hash(), this.coins, this.authorization);
+  }
 
   public hash(): Hash {
     return ClaimRequest.hashOf(this.claim.hash(), this.coins);

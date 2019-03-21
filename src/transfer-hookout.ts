@@ -39,6 +39,10 @@ export default class TransferHookout {
     this.authorization = authorization;
   }
 
+  public prune(): Transfer {
+    return new Transfer(this.input, this.output.hash(), this.authorization);
+  }
+
   public hash() {
     return Transfer.hashOf(this.input.hash(), this.output.hash());
   }

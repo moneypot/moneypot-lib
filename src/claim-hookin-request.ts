@@ -70,6 +70,10 @@ export default class ClaimHookinRequest {
     this.authorization = authorization;
   }
 
+  public prune(): ClaimRequest {
+    return new ClaimRequest(this.claim.hash(), this.coins, this.authorization);
+  }
+
   public hash(): Hash {
     return ClaimRequest.hashOf(this.claim.hash(), this.coins);
   }

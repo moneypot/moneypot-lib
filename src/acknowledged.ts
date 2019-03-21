@@ -46,6 +46,10 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
     return new Acknowledged<T, P>(contents, acknowledgement);
   }
 
+  public hash() {
+    return this.contents.hash();
+  }
+
   // Warning: The constructor does not validate the signature
   public constructor(contents: T, acknowledgement: Signature) {
     this.acknowledgement = acknowledgement;
