@@ -77,7 +77,7 @@ export function signNoninteractively(privkeys: Scalar[], message: Uint8Array): S
   }
 
   const e = getE(R.x, X, message);
-  let s = 0n;
+  let s = BigInt(0);
   for (let i = 0; i < rs.length; i++) {
     const ri = getK(R, rs[i]);
     s = (s + (ri + ((e * coefficients[i] * privkeys[i]) % curve.n))) % curve.n;

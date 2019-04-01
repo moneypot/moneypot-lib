@@ -72,7 +72,7 @@ function signNoninteractively(privkeys, message) {
         }
     }
     const e = util_1.getE(R.x, X, message);
-    let s = 0n;
+    let s = BigInt(0);
     for (let i = 0; i < rs.length; i++) {
         const ri = util_1.getK(R, rs[i]);
         s = (s + (ri + ((e * coefficients[i] * privkeys[i]) % util_1.curve.n))) % util_1.curve.n;

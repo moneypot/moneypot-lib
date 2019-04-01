@@ -25,6 +25,11 @@ const t = {
   transactionConsolidationFee: 5000,
 };
 
+// tx sizes..
+// i = 271
+// c = 48
+// o = 121
+
 for (let i = 0; i < 31; i++) {
   t.blindingCoinPrivateKeys[i] = blindPriv.derive(buffutils.fromUint8(i));
   t.blindingCoinPublicKeys[i] = t.blindingCoinPrivateKeys[i].toPublicKey();

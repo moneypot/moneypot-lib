@@ -60,7 +60,7 @@ function verify(pubkey, message, sig) {
     if (R === elliptic_1.INFINITE_POINT) {
         return false;
     }
-    else if (util_1.jacobi(R.y) !== 1n) {
+    else if (util_1.jacobi(R.y) !== BigInt(1)) {
         return false;
     }
     else if (R.x !== sig.r) {

@@ -5,15 +5,15 @@ import { isValidPubkey } from './check';
 
 // secp256k1 parameters
 export const curve = {
-  a: 0x0000000000000000000000000000000000000000000000000000000000000000n,
-  b: 0x0000000000000000000000000000000000000000000000000000000000000007n,
+  a: BigInt(0),
+  b: BigInt(7),
+  p: BigInt('115792089237316195423570985008687907853269984665640564039457584007908834671663'), // 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2fn
   g: {
-    x: 0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798n,
-    y: 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8n,
+    x: BigInt('55066263022277343669578718895168534326250603453777594175500187360389116729240'), // 0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798n,
+    y: BigInt('32670510020758816978083085130507043184471273380659243275938904335757337482424'), // 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8n
   },
   // order
-  n: 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n,
-  p: 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2fn,
+  n: BigInt('115792089237316195423570985008687907852837564279074904382605163141518161494337'), // 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141n,
 };
 
 // Handles negative quotients.
@@ -26,13 +26,13 @@ export function mod(a: bigint, b: bigint): bigint {
 
 // pows then mods, but uses intermediate mods to keep intermediate number within bigint range
 export function powmod(base: bigint, exp: bigint, m: bigint): bigint {
-  if (exp === 0n) {
-    return 1n;
+  if (exp === BigInt(0)) {
+    return BigInt(1);
   }
-  if (exp % 2n === 0n) {
-    return mod(powmod(base, exp / 2n, m) ** 2n, m);
+  if (exp % BigInt(2) === BigInt(0)) {
+    return mod(powmod(base, exp / BigInt(2), m) ** BigInt(2), m);
   } else {
-    return mod(base * powmod(base, exp - 1n, m), m);
+    return mod(base * powmod(base, exp - BigInt(1), m), m);
   }
 }
 
@@ -44,16 +44,16 @@ export function modInverse(a: bigint, m: bigint): bigint {
 
   let [c, d] = [a, m];
   let q = d / c;
-  let [uc, vc, ud, vd] = [1n, 0n, 0n, 1n];
+  let [uc, vc, ud, vd] = [BigInt(1), BigInt(0), BigInt(0), BigInt(1)];
 
-  while (c !== 0n) {
+  while (c !== BigInt(0)) {
     [q, c, d] = [d / c, mod(d, c), c];
     [uc, vc, ud, vd] = [ud - q * uc, vd - q * vc, uc, vc];
   }
 
   // At this point, d is the GCD, and ud*a+vd*m = d.
   // If d == 1, this means that ud is a inverse.
-  assert.strictEqual(d, 1n);
+  assert.strictEqual(d, BigInt(1));
   if (ud > 0) {
     return ud;
   } else {
@@ -62,24 +62,24 @@ export function modInverse(a: bigint, m: bigint): bigint {
 }
 
 function bigIntSqrt(n: bigint): bigint {
-  if (n < 0n) {
+  if (n < BigInt(0)) {
     throw new Error('cannot sqrt negative number');
   }
 
-  if (n < 2n) {
+  if (n < BigInt(2)) {
     return n;
   }
 
   // tslint:disable-next-line: no-shadowed-variable
   function newtonIteration(n: bigint, x0: bigint): bigint {
-    const x1 = (n / x0 + x0) >> 1n;
-    if (x0 === x1 || x0 === x1 - 1n) {
+    const x1 = (n / x0 + x0) >> BigInt(1);
+    if (x0 === x1 || x0 === x1 - BigInt(1)) {
       return x0;
     }
     return newtonIteration(n, x1);
   }
 
-  return newtonIteration(n, 1n);
+  return newtonIteration(n, BigInt(1));
 }
 
 export function bufferToHex(buf: Uint8Array): string {
@@ -105,7 +105,7 @@ export function bufferFromHex(hex: string): Uint8Array | Error {
 // }
 
 export function bufferToBigInt(bytes: Uint8Array): bigint {
-  let result = 0n;
+  let result = BigInt(0);
   const n = bytes.length;
 
   // Read input in 8 byte slices
@@ -114,13 +114,13 @@ export function bufferToBigInt(bytes: Uint8Array): bigint {
 
     for (let i = 0, k = n & ~7; i < k; i += 8) {
       const x = view.getBigUint64(i, false);
-      result = (result << 64n) + x;
+      result = (result << BigInt(64)) + x;
     }
   }
 
   // Mop up any remaining bytes
   for (let i = n & ~7; i < n; i++) {
-    result = result * 256n + BigInt(bytes[i]);
+    result = result * BigInt(256) + BigInt(bytes[i]);
   }
 
   return result;
@@ -129,7 +129,7 @@ export function bufferToBigInt(bytes: Uint8Array): bigint {
 // Buffer is fixed-length 32bytes
 export function bufferFromBigInt(n: bigint): Uint8Array {
   const out = [];
-  const base = 256n;
+  const base = BigInt(256);
   while (n >= base) {
     out.push(Number(n % base));
     n = n / base;
@@ -172,18 +172,18 @@ export function pointFromBuffer(buf: Uint8Array): Point | Error {
     return new Error('not compressed');
   }
 
-  // odd is 1n or 0n
+  // odd is BigInt(1)  or BigInt(0)
   const odd = BigInt(buf[0] - 0x02);
 
   const x = bufferToBigInt(buf.slice(1, 33));
 
   const { p } = curve;
-  const ysq = (powmod(x, 3n, p) + 7n) % p;
-  const y0 = powmod(ysq, (p + 1n) / 4n, p);
-  if (powmod(y0, 2n, p) !== ysq) {
+  const ysq = (powmod(x, BigInt(3), p) + BigInt(7)) % p;
+  const y0 = powmod(ysq, (p + BigInt(1)) / BigInt(4), p);
+  if (powmod(y0, BigInt(2), p) !== ysq) {
     return new Error('point not on curve');
   }
-  const y = (y0 & 1n) !== odd ? p - y0 : y0;
+  const y = (y0 & BigInt(1)) !== odd ? p - y0 : y0;
   const point = { x, y };
 
   assert.equal(isValidPubkey(point), true);
@@ -194,7 +194,7 @@ export function pointFromBuffer(buf: Uint8Array): Point | Error {
 export function pointToBuffer(point: Point): Uint8Array {
   // 0x02: y is even
   // 0x03: y is odd
-  const b0 = point.y % 2n === 0n ? 0x02 : 0x03;
+  const b0 = point.y % BigInt(2) === BigInt(0) ? 0x02 : 0x03;
 
   const xbuf = bufferFromBigInt(point.x);
   assert.equal(xbuf.length, 32);
@@ -227,20 +227,20 @@ export function utf8ToBuffer(text: string): Uint8Array {
 
 export function isPointOnCurve({ x, y }: Point): boolean {
   const { p, a, b } = curve;
-  return (y * y - (x * x * x + a * x + b)) % p === 0n;
+  return (y * y - (x * x * x + a * x + b)) % p === BigInt(0);
 }
 
 export function jacobi(y: bigint): bigint {
-  return powmod(y, (curve.p - 1n) / 2n, curve.p);
+  return powmod(y, (curve.p - BigInt(1)) / BigInt(2), curve.p);
 }
 
 export function getK(R: Point, k0: bigint): bigint {
-  return jacobi(R.y) === 1n ? k0 : curve.n - k0;
+  return jacobi(R.y) === BigInt(1) ? k0 : curve.n - k0;
 }
 
 export function getK0(privkey: Scalar, message: Uint8Array): Scalar {
   const k0 = bufferToBigInt(sha256.digest(concatBuffers(bufferFromBigInt(privkey), message))) % curve.n;
-  if (k0 === 0n) {
+  if (k0 === BigInt(0)) {
     // We got incredibly unlucky
     throw new Error('k0 is zero');
   }

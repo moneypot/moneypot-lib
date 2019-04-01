@@ -85,7 +85,7 @@ export function verify(pubkey: Point, message: Uint8Array, sig: Signature): bool
 
   if (R === INFINITE_POINT) {
     return false;
-  } else if (jacobi(R.y) !== 1n) {
+  } else if (jacobi(R.y) !== BigInt(1)) {
     return false;
   } else if (R.x !== sig.r) {
     return false;

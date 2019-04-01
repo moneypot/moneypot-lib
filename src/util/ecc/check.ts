@@ -41,14 +41,14 @@ export function privkeysAreUnique(privkeys: Scalar[]) {
 }
 
 export function isValidPrivkey(privkey: any): privkey is Scalar {
-  return typeof privkey === 'bigint' && privkey >= 1n && privkey < util.curve.n;
+  return typeof privkey === 'bigint' && privkey >= BigInt(1) && privkey < util.curve.n;
 }
 
 // export function checkPrivkey(privkey: Scalar): Scalar {
 //     // validate runtime type
 //     check(typeof privkey === 'bigint', 'privkey must be bigint')
 //     // validate data
-//     check(privkey >= 1n, 'privkey must be in range 1 to n-1')
+//     check(privkey >= BigInt(1) , 'privkey must be in range 1 to n-1')
 //     check(privkey < util.curve.n, 'privkey must be in range 1 to n-1')
 //     return privkey
 // }
@@ -58,9 +58,9 @@ export function isValidSignature(sig: any): sig is Signature {
     typeof sig === 'object' &&
     typeof sig.r === 'bigint' &&
     typeof sig.s === 'bigint' &&
-    sig.r > 0n &&
+    sig.r > BigInt(0) &&
     sig.r < util.curve.p &&
-    sig.s > 0n &&
+    sig.s > BigInt(0) &&
     sig.s < util.curve.n
   );
 }
@@ -77,5 +77,5 @@ export function isValidPubkey(point: any): point is Point {
     return false;
   }
 
-  return (y * y - (x * x * x + util.curve.a * x + util.curve.b)) % util.curve.p == 0n;
+  return (y * y - (x * x * x + util.curve.a * x + util.curve.b)) % util.curve.p == BigInt(0);
 }

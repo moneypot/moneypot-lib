@@ -41,14 +41,14 @@ function privkeysAreUnique(privkeys) {
 }
 exports.privkeysAreUnique = privkeysAreUnique;
 function isValidPrivkey(privkey) {
-    return typeof privkey === 'bigint' && privkey >= 1n && privkey < _1.util.curve.n;
+    return typeof privkey === 'bigint' && privkey >= BigInt(1) && privkey < _1.util.curve.n;
 }
 exports.isValidPrivkey = isValidPrivkey;
 // export function checkPrivkey(privkey: Scalar): Scalar {
 //     // validate runtime type
 //     check(typeof privkey === 'bigint', 'privkey must be bigint')
 //     // validate data
-//     check(privkey >= 1n, 'privkey must be in range 1 to n-1')
+//     check(privkey >= BigInt(1) , 'privkey must be in range 1 to n-1')
 //     check(privkey < util.curve.n, 'privkey must be in range 1 to n-1')
 //     return privkey
 // }
@@ -56,9 +56,9 @@ function isValidSignature(sig) {
     return (typeof sig === 'object' &&
         typeof sig.r === 'bigint' &&
         typeof sig.s === 'bigint' &&
-        sig.r > 0n &&
+        sig.r > BigInt(0) &&
         sig.r < _1.util.curve.p &&
-        sig.s > 0n &&
+        sig.s > BigInt(0) &&
         sig.s < _1.util.curve.n);
 }
 exports.isValidSignature = isValidSignature;
@@ -73,7 +73,7 @@ function isValidPubkey(point) {
     if (typeof y !== 'bigint') {
         return false;
     }
-    return (y * y - (x * x * x + _1.util.curve.a * x + _1.util.curve.b)) % _1.util.curve.p == 0n;
+    return (y * y - (x * x * x + _1.util.curve.a * x + _1.util.curve.b)) % _1.util.curve.p == BigInt(0);
 }
 exports.isValidPubkey = isValidPubkey;
 //# sourceMappingURL=check.js.map

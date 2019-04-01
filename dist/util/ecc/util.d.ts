@@ -2,12 +2,12 @@ import { Point, Scalar } from './elliptic';
 export declare const curve: {
     a: bigint;
     b: bigint;
+    p: bigint;
     g: {
         x: bigint;
         y: bigint;
     };
     n: bigint;
-    p: bigint;
 };
 export declare function mod(a: bigint, b: bigint): bigint;
 export declare function powmod(base: bigint, exp: bigint, m: bigint): bigint;

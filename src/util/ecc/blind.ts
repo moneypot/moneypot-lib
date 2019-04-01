@@ -38,7 +38,7 @@ export function blindMessage(
 
     RPrime = add(R, mul(curve.g, alpha), mul(P, beta));
 
-    if (jacobi(RPrime.y) === 1n) {
+    if (jacobi(RPrime.y) === BigInt(1)) {
       break;
     } else {
       retry++;
