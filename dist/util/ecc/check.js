@@ -41,7 +41,7 @@ function privkeysAreUnique(privkeys) {
 }
 exports.privkeysAreUnique = privkeysAreUnique;
 function isValidPrivkey(privkey) {
-    return (typeof privkey === 'bigint') && (privkey >= 1n) && (privkey < _1.util.curve.n);
+    return typeof privkey === 'bigint' && privkey >= 1n && privkey < _1.util.curve.n;
 }
 exports.isValidPrivkey = isValidPrivkey;
 // export function checkPrivkey(privkey: Scalar): Scalar {
@@ -53,11 +53,13 @@ exports.isValidPrivkey = isValidPrivkey;
 //     return privkey
 // }
 function isValidSignature(sig) {
-    return (typeof sig === 'object') &&
-        (typeof sig.r === 'bigint') &&
-        (typeof sig.s === 'bigint') &&
-        sig.r > 0n && sig.r < _1.util.curve.p &&
-        sig.s > 0n && sig.s < _1.util.curve.n;
+    return (typeof sig === 'object' &&
+        typeof sig.r === 'bigint' &&
+        typeof sig.s === 'bigint' &&
+        sig.r > 0n &&
+        sig.r < _1.util.curve.p &&
+        sig.s > 0n &&
+        sig.s < _1.util.curve.n);
 }
 exports.isValidSignature = isValidSignature;
 function isValidPubkey(point) {

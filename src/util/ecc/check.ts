@@ -1,4 +1,4 @@
-import { Point, Scalar, Signature, util } from '.'
+import { Point, Scalar, Signature, util } from '.';
 
 // This module exposes functions that:
 //
@@ -10,39 +10,38 @@ import { Point, Scalar, Signature, util } from '.'
 // extraneous exceptions.
 
 export class CheckError extends Error {
-    constructor(...args: any[]) {
-        super(...args)
-        Error.captureStackTrace(this, CheckError)
-    }
+  constructor(...args: any[]) {
+    super(...args);
+    Error.captureStackTrace(this, CheckError);
+  }
 }
 
 // like assert() except it throws CheckError.
 //
 // Use this instead of manually throwing.
 export function check(assertion: boolean, message: string) {
-    if (!assertion) {
-        throw new CheckError(message)
-    }
+  if (!assertion) {
+    throw new CheckError(message);
+  }
 }
 
-
 export function privkeysAreUnique(privkeys: Scalar[]) {
-    // validate runtime type
-    check(Array.isArray(privkeys), 'privkeys must be array')
-    // validate data
-    check(privkeys.length > 0, 'privkeys array was empty')
-    const seen = new Set()
-    for (const privkey of privkeys) {
-        check(isValidPrivkey(privkey), 'privkey must be valid');
-        const serialized = Scalar.toHex(privkey)
-        check(!seen.has(serialized), 'privkeys must be unique')
-        seen.add(serialized)
-    }
-    return privkeys
+  // validate runtime type
+  check(Array.isArray(privkeys), 'privkeys must be array');
+  // validate data
+  check(privkeys.length > 0, 'privkeys array was empty');
+  const seen = new Set();
+  for (const privkey of privkeys) {
+    check(isValidPrivkey(privkey), 'privkey must be valid');
+    const serialized = Scalar.toHex(privkey);
+    check(!seen.has(serialized), 'privkeys must be unique');
+    seen.add(serialized);
+  }
+  return privkeys;
 }
 
 export function isValidPrivkey(privkey: any): privkey is Scalar {
-    return (typeof privkey === 'bigint') && (privkey >= 1n) && (privkey < util.curve.n);
+  return typeof privkey === 'bigint' && privkey >= 1n && privkey < util.curve.n;
 }
 
 // export function checkPrivkey(privkey: Scalar): Scalar {
@@ -55,26 +54,28 @@ export function isValidPrivkey(privkey: any): privkey is Scalar {
 // }
 
 export function isValidSignature(sig: any): sig is Signature {
-    return (typeof sig === 'object') &&
-        (typeof sig.r === 'bigint') &&
-        (typeof sig.s === 'bigint') &&
-        sig.r > 0n && sig.r < util.curve.p &&
-        sig.s > 0n && sig.s < util.curve.n;
+  return (
+    typeof sig === 'object' &&
+    typeof sig.r === 'bigint' &&
+    typeof sig.s === 'bigint' &&
+    sig.r > 0n &&
+    sig.r < util.curve.p &&
+    sig.s > 0n &&
+    sig.s < util.curve.n
+  );
 }
-
 
 export function isValidPubkey(point: any): point is Point {
-    if (typeof point !== 'object') {
-        return false;
-    }
-    const { x, y } = point;
-    if (typeof x !== 'bigint') {
-        return false;
-    }
-    if (typeof y !== 'bigint') {
-        return false;
-    }
+  if (typeof point !== 'object') {
+    return false;
+  }
+  const { x, y } = point;
+  if (typeof x !== 'bigint') {
+    return false;
+  }
+  if (typeof y !== 'bigint') {
+    return false;
+  }
 
-   return (y * y - (x * x * x + util.curve.a * x + util.curve.b)) % util.curve.p == 0n
+  return (y * y - (x * x * x + util.curve.a * x + util.curve.b)) % util.curve.p == 0n;
 }
-

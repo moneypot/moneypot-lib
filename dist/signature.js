@@ -11,6 +11,10 @@ class Signature {
         const sig = ecc.sign(message, privkey.scalar);
         return new Signature(sig.r, sig.s);
     }
+    static computeMu(message, privkeys) {
+        const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message);
+        return new Signature(sig.r, sig.s);
+    }
     static fromBech(serialized) {
         const { prefix, words } = bech32.decode(serialized);
         if (prefix !== serializedPrefix) {

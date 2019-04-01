@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("assert");
+const assert = require("../assert");
 const _1 = require(".");
 const check = require("./check");
 const sha256_1 = require("../bcrypto/sha256");
@@ -10,7 +10,7 @@ function calculateL(pubkeys) {
     return sha256_1.default.digest(util_1.concatBuffers(...pubkeys.map(util_1.pointToBuffer)));
 }
 function pubkeyCombine(pubkeys) {
-    assert(pubkeys.length > 0, 'must combine at least one pubkey');
+    assert.equal(pubkeys.length > 0, true);
     const L = calculateL(pubkeys);
     let X = _1.INFINITE_POINT;
     for (let i = 0; i < pubkeys.length; i++) {
@@ -38,7 +38,7 @@ function calculateCoefficient(L, idx) {
 }
 // Non-interactive: We must know all signer private keys.
 function signNoninteractively(privkeys, message) {
-    assert(privkeys.length > 0, 'must sign with at least one privkey');
+    assert.equal(privkeys.length > 0, true);
     check.privkeysAreUnique(privkeys);
     const rs = [];
     const Xs = [];

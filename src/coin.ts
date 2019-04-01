@@ -5,7 +5,6 @@ import Signature from './signature';
 import Magnitude from './magnitude';
 import { Params } from '.';
 
-
 export default class Coin {
   public static fromPOD(data: any): Coin | Error {
     const owner = PublicKey.fromBech(data.owner);

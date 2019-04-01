@@ -45,7 +45,6 @@ function modInverse(a, m) {
     let q = d / c;
     let [uc, vc, ud, vd] = [1n, 0n, 0n, 1n];
     while (c !== 0n) {
-        ;
         [q, c, d] = [d / c, mod(d, c), c];
         [uc, vc, ud, vd] = [ud - q * uc, vd - q * vc, uc, vc];
     }
@@ -90,7 +89,7 @@ function bufferFromHex(hex) {
     if (hex.length % 2 === 1 || !/^[0-9a-fA-F]+$/.test(hex)) {
         return new Error('invalid hex string');
     }
-    return new Uint8Array(hex.match(/.{1,2}/g).map((byte) => Number.parseInt(byte, 16)));
+    return new Uint8Array(hex.match(/.{1,2}/g).map(byte => Number.parseInt(byte, 16)));
 }
 exports.bufferFromHex = bufferFromHex;
 // export function bufferToBigInt(buf: Uint8Array): bigint {
