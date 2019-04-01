@@ -2,6 +2,8 @@ import Hash from './hash';
 import Signature from './signature';
 import CoinSet from './coin-set';
 import * as POD from './pod';
+import PublicKey from './public-key';
+import { muSig } from './util/ecc';
 
 export default class Transfer {
   static fromPOD(data: any): Transfer | Error {
@@ -55,5 +57,13 @@ export default class Transfer {
       input: this.input.toPOD(),
       output: this.output.toBech(),
     };
+  }
+
+  isValid(): boolean {
+    if (!this.input.isValid()) {
+      return false;
+    }
+    const pubkey = this.input.getCombinedPubkey();
+    return this.authorization.verify(this.hash().buffer, pubkey);
   }
 }

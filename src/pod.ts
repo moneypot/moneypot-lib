@@ -32,11 +32,11 @@ export interface ClaimHookinRequest {
 
 export interface ClaimResponse {
   claimRequest: ClaimRequest;
-  blindedExistenceProofs: string[];
+  blindedReceipts: string[];
 }
 
 export interface Coin {
-  existenceProof: string;
+  receipt: string;
   magnitude: Magnitude;
   owner: string;
 }

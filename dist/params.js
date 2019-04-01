@@ -18,7 +18,7 @@ const t = {
     blindingCoinPublicKeys: new Array(31),
     fundingPrivateKey: fundingPriv,
     fundingPublicKey: fundingPriv.toPublicKey(),
-    templateTransactionWeight: 1000,
+    templateTransactionWeight: 561,
     transactionConsolidationFee: 5000,
 };
 for (let i = 0; i < 31; i++) {

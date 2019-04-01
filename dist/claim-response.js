@@ -13,34 +13,34 @@ class ClaimResponse {
         if (claimRequest instanceof Error) {
             return claimRequest;
         }
-        if (!Array.isArray(data.blindedExistenceProofs)) {
-            return new Error('expected blindedExistenceProofs in ClaimResponse to be an array');
+        if (!Array.isArray(data.blindedReceipts)) {
+            return new Error('expected blindedReceipts in ClaimResponse to be an array');
         }
-        const blindedExistenceProofs = [];
-        for (const bep of data.blindedExistenceProofs) {
-            const blindedExistenceProof = blinded_signature_1.default.fromBech(bep);
-            if (blindedExistenceProof instanceof Error) {
-                return blindedExistenceProof;
+        const blindedReceipts = [];
+        for (const bep of data.blindedReceipts) {
+            const blindedReceipt = blinded_signature_1.default.fromBech(bep);
+            if (blindedReceipt instanceof Error) {
+                return blindedReceipt;
             }
-            blindedExistenceProofs.push(blindedExistenceProof);
+            blindedReceipts.push(blindedReceipt);
         }
-        return new ClaimResponse(claimRequest, blindedExistenceProofs);
+        return new ClaimResponse(claimRequest, blindedReceipts);
     }
-    constructor(claimRequest, blindedExistenceProofs) {
+    constructor(claimRequest, blindedReceipts) {
         this.claimRequest = claimRequest;
-        this.blindedExistenceProofs = blindedExistenceProofs;
+        this.blindedReceipts = blindedReceipts;
     }
     hash() {
         const h = hash_1.default.newBuilder('ClaimResponse');
         h.update(this.claimRequest.hash().buffer);
-        for (const blindedExistenceProof of this.blindedExistenceProofs) {
-            h.update(blindedExistenceProof.buffer);
+        for (const blindedReceipt of this.blindedReceipts) {
+            h.update(blindedReceipt.buffer);
         }
         return h.digest();
     }
     toPOD() {
         return {
-            blindedExistenceProofs: this.blindedExistenceProofs.map(x => x.toBech()),
+            blindedReceipts: this.blindedReceipts.map(x => x.toBech()),
             claimRequest: this.claimRequest.toPOD(),
         };
     }

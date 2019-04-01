@@ -4,7 +4,6 @@ const signature_1 = require("./signature");
 const transfer_1 = require("./transfer");
 const coin_set_1 = require("./coin-set");
 const hookout_1 = require("./hookout");
-// c2h
 class TransferHookout {
     static fromPOD(data) {
         if (!data || typeof data !== 'object') {
@@ -41,6 +40,13 @@ class TransferHookout {
             input: this.input.toPOD(),
             output: this.output.toPOD(),
         };
+    }
+    isValid() {
+        if (!this.input.isValid()) {
+            return false;
+        }
+        const pubkey = this.input.getCombinedPubkey();
+        return this.authorization.verify(this.hash().buffer, pubkey);
     }
 }
 exports.default = TransferHookout;

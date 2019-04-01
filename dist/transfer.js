@@ -43,6 +43,13 @@ class Transfer {
             output: this.output.toBech(),
         };
     }
+    isValid() {
+        if (!this.input.isValid()) {
+            return false;
+        }
+        const pubkey = this.input.getCombinedPubkey();
+        return this.authorization.verify(this.hash().buffer, pubkey);
+    }
 }
 exports.default = Transfer;
 //# sourceMappingURL=transfer.js.map

@@ -1,21 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const elliptic_1 = require("./elliptic");
-const util_1 = require("./util");
-const buffutils = require("../buffutils");
 const sha256_1 = require("../bcrypto/sha256");
+const util_1 = require("./util");
 function blindMessage(secret, nonce, signer, message) {
     const R = nonce;
     const P = signer;
-    const alpha = buffutils.toBigInt(sha256_1.default.mac(buffutils.fromString('alpha'), buffutils.concat(secret, util_1.pointToBuffer(nonce), util_1.pointToBuffer(signer), message)));
+    const alpha = util_1.bufferToBigInt(sha256_1.default.mac(util_1.utf8ToBuffer('alpha'), util_1.concatBuffers(secret, util_1.pointToBuffer(nonce), util_1.pointToBuffer(signer), message)));
     // spin beta until we find quadratic residue
     let retry = 0;
     let beta;
     let RPrime;
     while (true) {
-        beta = buffutils.toBigInt(sha256_1.default.mac(buffutils.fromString('beta'), buffutils.concat(secret, util_1.pointToBuffer(nonce), util_1.pointToBuffer(signer), message, Uint8Array.of(retry))));
-        RPrime = elliptic_1.pointAdd(R, elliptic_1.pointMultiply(util_1.secp256k1.g, alpha), elliptic_1.pointMultiply(P, beta));
-        if (util_1.jacobi(RPrime.y) === BigInt(1)) {
+        beta = util_1.bufferToBigInt(sha256_1.default.mac(util_1.utf8ToBuffer('beta'), util_1.concatBuffers(secret, util_1.pointToBuffer(nonce), util_1.pointToBuffer(signer), message, Uint8Array.of(retry))));
+        RPrime = elliptic_1.pointAdd(R, elliptic_1.pointMultiply(util_1.curve.g, alpha), elliptic_1.pointMultiply(P, beta));
+        if (util_1.jacobi(RPrime.y) === 1n) {
             break;
         }
         else {
@@ -23,14 +22,16 @@ function blindMessage(secret, nonce, signer, message) {
         }
     }
     // the challenge
-    const cPrime = buffutils.toBigInt(sha256_1.default.digest(util_1.bufferFromBigInt(RPrime.x), util_1.pointToBuffer(P), message)) % util_1.secp256k1.n;
+    const cPrime = util_1.getE(RPrime.x, P, message);
     // the blinded challenge
     const c = elliptic_1.scalarAdd(cPrime, beta);
     return [{ alpha, r: RPrime.x }, { c }];
 }
 exports.blindMessage = blindMessage;
 function blindSign(signer, nonce, { c }) {
-    const s = elliptic_1.scalarAdd(nonce, elliptic_1.scalarMultiply(c, signer));
+    const x = signer;
+    const k = nonce;
+    const s = elliptic_1.scalarAdd(k, elliptic_1.scalarMultiply(c, x));
     return { s };
 }
 exports.blindSign = blindSign;

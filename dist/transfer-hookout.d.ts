@@ -12,4 +12,5 @@ export default class TransferHookout {
     prune(): Transfer;
     hash(): import("./hash").default;
     toPOD(): POD.TransferHookout;
+    isValid(): boolean;
 }

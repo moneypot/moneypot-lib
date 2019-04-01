@@ -52,4 +52,12 @@ export default class TransferBounty {
       output: this.output.toPOD(),
     };
   }
+
+  isValid(): boolean {
+    if (!this.input.isValid()) {
+      return false;
+    }
+    const pubkey = this.input.getCombinedPubkey();
+    return this.authorization.verify(this.hash().buffer, pubkey);
+  }
 }

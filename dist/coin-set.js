@@ -4,6 +4,8 @@ const coin_1 = require("./coin");
 const assert = require("./util/assert");
 const hash_1 = require("./hash");
 const buffutils = require("./util/buffutils");
+const ecc_1 = require("./util/ecc");
+const public_key_1 = require("./public-key");
 class CoinSet {
     static fromPOD(data) {
         if (!Array.isArray(data)) {
@@ -63,6 +65,18 @@ class CoinSet {
             }
         }
         return true;
+    }
+    isValid() {
+        for (const coin of this.coins) {
+            if (!coin.isValid()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    getCombinedPubkey() {
+        const p = ecc_1.muSig.pubkeyCombine(this.coins.map(coin => coin.owner));
+        return new public_key_1.default(p.x, p.y);
     }
 }
 exports.default = CoinSet;

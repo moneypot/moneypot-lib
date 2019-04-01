@@ -12,4 +12,5 @@ export default class TransferBounty {
     prune(): Transfer;
     hash(): import("./hash").default;
     toPOD(): POD.TransferBounty;
+    isValid(): boolean;
 }

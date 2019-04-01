@@ -5,8 +5,8 @@ import * as POD from './pod';
 export default class ClaimResponse {
     static fromPOD(data: any): ClaimResponse | Error;
     claimRequest: ClaimRequest;
-    blindedExistenceProofs: BlindedSignature[];
-    constructor(claimRequest: ClaimRequest, blindedExistenceProofs: BlindedSignature[]);
+    blindedReceipts: BlindedSignature[];
+    constructor(claimRequest: ClaimRequest, blindedReceipts: BlindedSignature[]);
     hash(): Hash;
     toPOD(): POD.ClaimResponse;
 }

@@ -5,6 +5,8 @@ import Hash from './hash';
 
 import * as POD from './pod';
 import * as buffutils from './util/buffutils';
+import { muSig } from './util/ecc';
+import PublicKey from './public-key';
 
 export default class CoinSet {
   public static fromPOD(data: any): CoinSet | Error {
@@ -85,6 +87,20 @@ export default class CoinSet {
     }
 
     return true;
+  }
+
+  public isValid() {
+    for (const coin of this.coins) {
+      if (!coin.isValid()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public getCombinedPubkey(): PublicKey {
+    const p = muSig.pubkeyCombine(this.coins.map(coin => coin.owner));
+    return new PublicKey(p.x, p.y);
   }
 }
 

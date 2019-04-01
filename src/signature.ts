@@ -15,6 +15,11 @@ export default class Signature {
     return new Signature(sig.r, sig.s);
   }
 
+  public static computeMu(message: Uint8Array, privkeys: PrivateKey[]) {
+    const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message);
+    return new Signature(sig.r, sig.s);
+  }
+
   public static fromBech(serialized: string) {
     const { prefix, words } = bech32.decode(serialized);
 

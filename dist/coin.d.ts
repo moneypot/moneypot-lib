@@ -7,8 +7,9 @@ export default class Coin {
     static fromPOD(data: any): Coin | Error;
     owner: PublicKey;
     magnitude: Magnitude;
-    existenceProof: Signature;
-    constructor(owner: PublicKey, magnitude: Magnitude, existenceProof: Signature);
+    receipt: Signature;
+    constructor(owner: PublicKey, magnitude: Magnitude, receipt: Signature);
     hash(): Hash;
     toPOD(): POD.Coin;
+    isValid(): boolean;
 }

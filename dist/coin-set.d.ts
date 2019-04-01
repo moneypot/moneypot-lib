@@ -1,6 +1,7 @@
 import Coin from './coin';
 import Hash from './hash';
 import * as POD from './pod';
+import PublicKey from './public-key';
 export default class CoinSet {
     static fromPOD(data: any): CoinSet | Error;
     readonly coins: Coin[];
@@ -13,4 +14,6 @@ export default class CoinSet {
     toPOD(): POD.CoinSet;
     hash(): Hash;
     private isCanonicalized;
+    isValid(): boolean;
+    getCombinedPubkey(): PublicKey;
 }

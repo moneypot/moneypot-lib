@@ -3,8 +3,8 @@ import * as POD from './pod';
 import PublicKey from './public-key';
 import Signature from './signature';
 import Magnitude from './magnitude';
+import { Params } from '.';
 
-import * as Buffutils from './util/buffutils';
 
 export default class Coin {
   public static fromPOD(data: any): Coin | Error {
@@ -18,33 +18,37 @@ export default class Coin {
       return magnitude;
     }
 
-    const existenceProof = Signature.fromBech(data.existenceProof);
-    if (existenceProof instanceof Error) {
-      return existenceProof;
+    const receipt = Signature.fromBech(data.receipt);
+    if (receipt instanceof Error) {
+      return receipt;
     }
 
-    return new Coin(owner, magnitude, existenceProof);
+    return new Coin(owner, magnitude, receipt);
   }
 
   public owner: PublicKey;
   public magnitude: Magnitude;
-  public existenceProof: Signature;
+  public receipt: Signature;
 
-  constructor(owner: PublicKey, magnitude: Magnitude, existenceProof: Signature) {
+  constructor(owner: PublicKey, magnitude: Magnitude, receipt: Signature) {
     this.owner = owner;
     this.magnitude = magnitude;
-    this.existenceProof = existenceProof;
+    this.receipt = receipt;
   }
 
   public hash() {
-    return Hash.fromMessage('Coin', this.owner.buffer, this.magnitude.buffer, this.existenceProof.buffer);
+    return Hash.fromMessage('Coin', this.owner.buffer, this.magnitude.buffer, this.receipt.buffer);
   }
 
   public toPOD(): POD.Coin {
     return {
-      existenceProof: this.existenceProof.toBech(),
+      receipt: this.receipt.toBech(),
       magnitude: this.magnitude.toPOD(),
       owner: this.owner.toBech(),
     };
+  }
+
+  public isValid(): boolean {
+    return this.receipt.verify(this.owner.buffer, Params.blindingCoinPublicKeys[this.magnitude.n]);
   }
 }

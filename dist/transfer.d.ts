@@ -11,4 +11,5 @@ export default class Transfer {
     static hashOf(input: Hash, output: Hash): Hash;
     hash(): Hash;
     toPOD(): POD.Transfer;
+    isValid(): boolean;
 }

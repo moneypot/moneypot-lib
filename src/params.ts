@@ -21,7 +21,7 @@ const t = {
   blindingCoinPublicKeys: new Array<PublicKey>(31),
   fundingPrivateKey: fundingPriv, //  wont be exposed for prodnet ... ;D
   fundingPublicKey: fundingPriv.toPublicKey(),
-  templateTransactionWeight: 1000, // the fake-size of a transfer when making a withdrawal
+  templateTransactionWeight: 561, // the fake-size of a transfer when making a withdrawal
   transactionConsolidationFee: 5000,
 };
 

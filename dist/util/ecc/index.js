@@ -19,4 +19,10 @@ var blind_1 = require("./blind");
 exports.blindMessage = blind_1.blindMessage;
 exports.blindSign = blind_1.blindSign;
 exports.unblind = blind_1.unblind;
+// MULTI SIGNATURES
+const muSig = require("./mu-sig");
+exports.muSig = muSig;
+// CONVENIENCE
+const util = require("./util");
+exports.util = util;
 //# sourceMappingURL=index.js.map

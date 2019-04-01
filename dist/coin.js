@@ -4,6 +4,7 @@ const hash_1 = require("./hash");
 const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
 const magnitude_1 = require("./magnitude");
+const _1 = require(".");
 class Coin {
     static fromPOD(data) {
         const owner = public_key_1.default.fromBech(data.owner);
@@ -14,26 +15,29 @@ class Coin {
         if (magnitude instanceof Error) {
             return magnitude;
         }
-        const existenceProof = signature_1.default.fromBech(data.existenceProof);
-        if (existenceProof instanceof Error) {
-            return existenceProof;
+        const receipt = signature_1.default.fromBech(data.receipt);
+        if (receipt instanceof Error) {
+            return receipt;
         }
-        return new Coin(owner, magnitude, existenceProof);
+        return new Coin(owner, magnitude, receipt);
     }
-    constructor(owner, magnitude, existenceProof) {
+    constructor(owner, magnitude, receipt) {
         this.owner = owner;
         this.magnitude = magnitude;
-        this.existenceProof = existenceProof;
+        this.receipt = receipt;
     }
     hash() {
-        return hash_1.default.fromMessage('Coin', this.owner.buffer, this.magnitude.buffer, this.existenceProof.buffer);
+        return hash_1.default.fromMessage('Coin', this.owner.buffer, this.magnitude.buffer, this.receipt.buffer);
     }
     toPOD() {
         return {
-            existenceProof: this.existenceProof.toBech(),
+            receipt: this.receipt.toBech(),
             magnitude: this.magnitude.toPOD(),
             owner: this.owner.toBech(),
         };
+    }
+    isValid() {
+        return this.receipt.verify(this.owner.buffer, _1.Params.blindingCoinPublicKeys[this.magnitude.n]);
     }
 }
 exports.default = Coin;

@@ -41,6 +41,13 @@ class TransferBounty {
             output: this.output.toPOD(),
         };
     }
+    isValid() {
+        if (!this.input.isValid()) {
+            return false;
+        }
+        const pubkey = this.input.getCombinedPubkey();
+        return this.authorization.verify(this.hash().buffer, pubkey);
+    }
 }
 exports.default = TransferBounty;
 //# sourceMappingURL=transfer-bounty.js.map

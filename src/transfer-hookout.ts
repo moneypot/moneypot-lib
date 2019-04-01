@@ -4,7 +4,6 @@ import * as POD from './pod';
 import CoinSet from './coin-set';
 import Hookout from './hookout';
 
-// c2h
 export default class TransferHookout {
   public static fromPOD(data: any): TransferHookout | Error {
     if (!data || typeof data !== 'object') {
@@ -53,5 +52,13 @@ export default class TransferHookout {
       input: this.input.toPOD(),
       output: this.output.toPOD(),
     };
+  }
+
+  isValid(): boolean {
+    if (!this.input.isValid()) {
+      return false;
+    }
+    const pubkey = this.input.getCombinedPubkey();
+    return this.authorization.verify(this.hash().buffer, pubkey);
   }
 }
