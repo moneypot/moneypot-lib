@@ -11,5 +11,6 @@ export default class Coin {
     constructor(owner: PublicKey, magnitude: Magnitude, receipt: Signature);
     hash(): Hash;
     toPOD(): POD.Coin;
+    readonly amount: number;
     isValid(): boolean;
 }

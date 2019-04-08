@@ -47,6 +47,10 @@ export default class Coin {
     };
   }
 
+  public get amount(): number {
+    return this.magnitude.toAmount()
+  }
+
   public isValid(): boolean {
     return this.receipt.verify(this.owner.buffer, Params.blindingCoinPublicKeys[this.magnitude.n]);
   }

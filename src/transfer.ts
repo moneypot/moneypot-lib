@@ -1,23 +1,31 @@
 import Hash from './hash';
 import Signature from './signature';
-import CoinSet from './coin-set';
 import * as POD from './pod';
-import PublicKey from './public-key';
+import HSet from './hset';
+import Coin  from './coin';
 import { muSig } from './util/ecc';
+import PublicKey from './public-key'
 
 export default class Transfer {
+
   static fromPOD(data: any): Transfer | Error {
     if (typeof data !== 'object') {
       return new Error('expected an object to deserialize a Transfer');
     }
-    const input = CoinSet.fromPOD(data.input);
-    if (input instanceof Error) {
-      return input;
+
+    const inputs = HSet.fromPOD<Coin, POD.Coin>(data.inputs, Coin.fromPOD);
+    if (inputs instanceof Error) {
+      return inputs;
     }
 
-    const output = Hash.fromBech(data.output);
-    if (output instanceof Error) {
-      return output;
+    const bountiesHash = Hash.fromBech(data.bountiesHash);
+    if (bountiesHash instanceof Error) {
+      return bountiesHash;
+    }
+
+    const hookoutHash = data.hookout ?  Hash.fromBech(data.hookoutHash) : undefined;
+    if (hookoutHash instanceof Error) {
+      return hookoutHash;
     }
 
     const authorization = Signature.fromBech(data.authorization);
@@ -25,45 +33,53 @@ export default class Transfer {
       return authorization;
     }
 
-    return new Transfer(input, output, authorization);
+    return new Transfer(inputs, bountiesHash, hookoutHash, authorization);
   }
 
-  input: CoinSet;
-  output: Hash;
+  inputs: HSet<Coin, POD.Coin>
+  bountiesHash: Hash;
+  hookoutHash: Hash | undefined;
+
   authorization: Signature;
 
-  constructor(input: CoinSet, output: Hash, authorization: Signature) {
-    this.input = input;
-    this.output = output;
+  constructor(inputs: HSet<Coin, POD.Coin>,
+      bountiesHash: Hash,
+      hookoutHash: Hash | undefined,
+      authorization: Signature) {
+
+    this.inputs = inputs;
+    this.bountiesHash = bountiesHash;
+    this.hookoutHash = hookoutHash;
     this.authorization = authorization;
   }
 
-  static hashOf(input: Hash, output: Hash) {
+  static hashOf(inputs: Hash, bounties: Hash, hookout: Hash | undefined) {
     const h = Hash.newBuilder('Transfer');
 
-    h.update(input.buffer);
-    h.update(output.buffer);
+    h.update(inputs.buffer);
+    h.update(bounties.buffer);
+    h.update(hookout ? hookout.buffer : new Uint8Array(32));
 
     return h.digest();
   }
 
   hash(): Hash {
-    return Transfer.hashOf(this.input.hash(), this.output);
+    return Transfer.hashOf(this.inputs.hash(), this.bountiesHash, this.hookoutHash ? this.hookoutHash : undefined);
   }
 
   toPOD(): POD.Transfer {
     return {
       authorization: this.authorization.toBech(),
-      input: this.input.toPOD(),
-      output: this.output.toBech(),
+      bountiesHash: this.bountiesHash.toBech(),
+      hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
+      inputs: this.inputs.toPOD(),      
     };
   }
 
   isValid(): boolean {
-    if (!this.input.isValid()) {
-      return false;
-    }
-    const pubkey = this.input.getCombinedPubkey();
+    const p = muSig.pubkeyCombine(this.inputs.entries.map(coin => coin.owner));
+    const pubkey = new PublicKey(p.x, p.y);
+
     return this.authorization.verify(this.hash().buffer, pubkey);
   }
 }

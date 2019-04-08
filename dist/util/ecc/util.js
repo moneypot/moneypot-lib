@@ -153,7 +153,7 @@ function pointFromBuffer(buf) {
     if (![0x02, 0x03].includes(buf[0])) {
         return new Error('not compressed');
     }
-    // odd is BigInt(1)  or BigInt(0) 
+    // odd is BigInt(1)  or BigInt(0)
     const odd = BigInt(buf[0] - 0x02);
     const x = bufferToBigInt(buf.slice(1, 33));
     const { p } = exports.curve;

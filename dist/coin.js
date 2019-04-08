@@ -36,6 +36,9 @@ class Coin {
             owner: this.owner.toBech(),
         };
     }
+    get amount() {
+        return this.magnitude.toAmount();
+    }
     isValid() {
         return this.receipt.verify(this.owner.buffer, _1.Params.blindingCoinPublicKeys[this.magnitude.n]);
     }

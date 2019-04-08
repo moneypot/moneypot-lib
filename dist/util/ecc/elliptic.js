@@ -211,7 +211,7 @@ function jacobianMultiply(a, n) {
         return jacobianDouble(jacobianMultiply(a, n / BigInt(2)));
     }
     else {
-        // n % BigInt(2)  === BigInt(1) 
+        // n % BigInt(2)  === BigInt(1)
         return jacobianAdd(jacobianDouble(jacobianMultiply(a, n / BigInt(2))), a);
     }
 }

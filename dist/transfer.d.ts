@@ -1,14 +1,16 @@
 import Hash from './hash';
 import Signature from './signature';
-import CoinSet from './coin-set';
 import * as POD from './pod';
+import HSet from './hset';
+import Coin from './coin';
 export default class Transfer {
     static fromPOD(data: any): Transfer | Error;
-    input: CoinSet;
-    output: Hash;
+    inputs: HSet<Coin, POD.Coin>;
+    bountiesHash: Hash;
+    hookoutHash: Hash | undefined;
     authorization: Signature;
-    constructor(input: CoinSet, output: Hash, authorization: Signature);
-    static hashOf(input: Hash, output: Hash): Hash;
+    constructor(inputs: HSet<Coin, POD.Coin>, bountiesHash: Hash, hookoutHash: Hash | undefined, authorization: Signature);
+    static hashOf(inputs: Hash, bounties: Hash, hookout: Hash | undefined): Hash;
     hash(): Hash;
     toPOD(): POD.Transfer;
     isValid(): boolean;

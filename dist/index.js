@@ -30,20 +30,18 @@ exports.HDChain = hdchain_1.default;
 // models
 var coin_1 = require("./coin");
 exports.Coin = coin_1.default;
-var coin_set_1 = require("./coin-set");
-exports.CoinSet = coin_set_1.default;
+var hset_1 = require("./hset");
+exports.HSet = hset_1.default;
 var hookin_1 = require("./hookin");
 exports.Hookin = hookin_1.default;
 var hookout_1 = require("./hookout");
 exports.Hookout = hookout_1.default;
 var magnitude_1 = require("./magnitude");
 exports.Magnitude = magnitude_1.default;
+const full_transfer_1 = require("./full-transfer");
+exports.FullTransfer = full_transfer_1.default;
 const transfer_1 = require("./transfer");
 exports.Transfer = transfer_1.default;
-const transfer_bounty_1 = require("./transfer-bounty");
-exports.TransferBounty = transfer_bounty_1.default;
-const transfer_hookout_1 = require("./transfer-hookout");
-exports.TransferHookout = transfer_hookout_1.default;
 var bounty_1 = require("./bounty");
 exports.Bounty = bounty_1.default;
 // blind functions

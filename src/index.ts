@@ -22,7 +22,8 @@ export { default as HDChain } from './hdchain';
 
 // models
 export { default as Coin } from './coin';
-export { default as CoinSet } from './coin-set';
+
+export { default as HSet } from './hset';
 
 export { default as Hookin } from './hookin';
 
@@ -30,14 +31,12 @@ export { default as Hookout } from './hookout';
 
 export { default as Magnitude } from './magnitude';
 
+import FullTransfer from './full-transfer';
+export { FullTransfer };
+
 import Transfer from './transfer';
 export { Transfer };
 
-import TransferBounty from './transfer-bounty';
-export { TransferBounty };
-
-import TransferHookout from './transfer-hookout';
-export { TransferHookout };
 
 export { default as Bounty } from './bounty';
 

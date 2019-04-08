@@ -1,7 +1,7 @@
 export type Amount = number;
 
 export function isAmount(x: any): x is Amount {
-  return typeof x === 'number' && Number.isSafeInteger(x) && x >= 0;
+  return typeof x === 'number' && Number.isSafeInteger(x) && x > 0;
 }
 
 export type Magnitude = number;
@@ -63,22 +63,18 @@ export interface Hookin {
   deriveIndex: number;
 }
 
+export interface FullTransfer {
+  inputs: Coin[];
+  bounties: Bounty[];
+  hookout: Hookout | undefined;
+  authorization: string; // bech32 pubkey
+}
+
 export interface Transfer {
-  input: CoinSet;
-  output: string; // hash
-  authorization: string;
-}
-
-export interface TransferBounty {
-  input: CoinSet;
-  output: Bounty;
-  authorization: string;
-}
-
-export interface TransferHookout {
-  input: CoinSet;
-  output: Hookout;
-  authorization: string;
+  inputs: Coin[];
+  bountiesHash: string;
+  hookoutHash: string | undefined;
+  authorization: string; // bech32 pubkey
 }
 
 export interface TransferHash {

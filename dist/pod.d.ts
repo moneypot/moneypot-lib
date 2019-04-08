@@ -60,19 +60,16 @@ export interface Hookin {
     claimant: string;
     deriveIndex: number;
 }
+export interface FullTransfer {
+    inputs: Coin[];
+    bounties: Bounty[];
+    hookout: Hookout | undefined;
+    authorization: string;
+}
 export interface Transfer {
-    input: CoinSet;
-    output: string;
-    authorization: string;
-}
-export interface TransferBounty {
-    input: CoinSet;
-    output: Bounty;
-    authorization: string;
-}
-export interface TransferHookout {
-    input: CoinSet;
-    output: Hookout;
+    inputs: Coin[];
+    bountiesHash: string;
+    hookoutHash: string | undefined;
     authorization: string;
 }
 export interface TransferHash {
