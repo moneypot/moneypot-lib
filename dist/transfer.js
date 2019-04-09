@@ -2,22 +2,30 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const hash_1 = require("./hash");
 const signature_1 = require("./signature");
-const hset_1 = require("./hset");
 const coin_1 = require("./coin");
 const ecc_1 = require("./util/ecc");
 const public_key_1 = require("./public-key");
+const buffutils = require("./util/buffutils");
 class Transfer {
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('expected an object to deserialize a Transfer');
         }
-        const inputs = hset_1.default.fromPOD(data.inputs, coin_1.default.fromPOD);
-        if (inputs instanceof Error) {
-            return inputs;
+        const inputs = [];
+        for (const i of data.inputs) {
+            const input = coin_1.default.fromPOD(i);
+            if (input instanceof Error) {
+                return input;
+            }
+            inputs.push(input);
         }
-        const bountiesHash = hash_1.default.fromBech(data.bountiesHash);
-        if (bountiesHash instanceof Error) {
-            return bountiesHash;
+        const bountyHashes = [];
+        for (const b of data.bountyHashes) {
+            const bounty = hash_1.default.fromBech(b);
+            if (bounty instanceof Error) {
+                return bounty;
+            }
+            bountyHashes.push(bounty);
         }
         const hookoutHash = data.hookout ? hash_1.default.fromBech(data.hookoutHash) : undefined;
         if (hookoutHash instanceof Error) {
@@ -27,37 +35,49 @@ class Transfer {
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new Transfer(inputs, bountiesHash, hookoutHash, authorization);
+        return new Transfer(inputs, bountyHashes, hookoutHash, authorization);
     }
-    constructor(inputs, bountiesHash, hookoutHash, authorization) {
-        this.inputs = inputs;
-        this.bountiesHash = bountiesHash;
+    constructor(inputs, bountyHashes, hookoutHash, authorization) {
+        this.inputs = hashSort(inputs);
+        this.bountyHashes = sort(bountyHashes);
         this.hookoutHash = hookoutHash;
         this.authorization = authorization;
     }
     static hashOf(inputs, bounties, hookout) {
         const h = hash_1.default.newBuilder('Transfer');
-        h.update(inputs.buffer);
-        h.update(bounties.buffer);
-        h.update(hookout ? hookout.buffer : new Uint8Array(32));
+        for (const input of inputs) {
+            h.update(input.buffer);
+        }
+        for (const bounty of bounties) {
+            h.update(bounty.buffer);
+        }
+        if (hookout) {
+            h.update(hookout.buffer);
+        }
         return h.digest();
     }
     hash() {
-        return Transfer.hashOf(this.inputs.hash(), this.bountiesHash, this.hookoutHash ? this.hookoutHash : undefined);
+        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.bountyHashes, this.hookoutHash ? this.hookoutHash : undefined);
     }
     toPOD() {
         return {
             authorization: this.authorization.toBech(),
-            bountiesHash: this.bountiesHash.toBech(),
+            bountyHashes: this.bountyHashes.map(b => b.toBech()),
             hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
-            inputs: this.inputs.toPOD(),
+            inputs: this.inputs.map(i => i.toPOD()),
         };
     }
     isValid() {
-        const p = ecc_1.muSig.pubkeyCombine(this.inputs.entries.map(coin => coin.owner));
+        const p = ecc_1.muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
         const pubkey = new public_key_1.default(p.x, p.y);
         return this.authorization.verify(this.hash().buffer, pubkey);
     }
 }
 exports.default = Transfer;
+function hashSort(ts) {
+    return [...ts].sort((a, b) => buffutils.compare(a.hash().buffer, b.hash().buffer));
+}
+function sort(ts) {
+    return [...ts].sort((a, b) => buffutils.compare(a.buffer, b.buffer));
+}
 //# sourceMappingURL=transfer.js.map

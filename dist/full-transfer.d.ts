@@ -1,22 +1,21 @@
 import Hash from './hash';
 import Signature from './signature';
 import * as POD from './pod';
-import HSet from './hset';
 import Coin from './coin';
 import Bounty from './bounty';
 import { Hookout } from '.';
 import Transfer from './transfer';
 export default class FullTransfer {
     static fromPOD(data: any): FullTransfer | Error;
-    inputs: HSet<Coin, POD.Coin>;
-    bounties: HSet<Bounty, POD.Bounty>;
-    hookout: Hookout | undefined;
+    readonly inputs: ReadonlyArray<Coin>;
+    readonly bounties: ReadonlyArray<Bounty>;
+    readonly hookout: Hookout | undefined;
     authorization: Signature;
-    constructor(inputs: HSet<Coin, POD.Coin>, bounties: HSet<Bounty, POD.Bounty>, hookout: Hookout | undefined, authorization: Signature);
-    static hashOf(inputs: Hash, bounties: Hash, hookout: Hash | undefined): Hash;
+    constructor(inputs: ReadonlyArray<Coin>, bounties: ReadonlyArray<Bounty>, hookout: Hookout | undefined, authorization: Signature);
     hash(): Hash;
     toPOD(): POD.FullTransfer;
     fee(): number;
+    inputAmount(): number;
     outputAmount(): number;
     isValid(): boolean;
     prune(): Transfer;

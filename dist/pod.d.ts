@@ -68,7 +68,7 @@ export interface FullTransfer {
 }
 export interface Transfer {
     inputs: Coin[];
-    bountiesHash: string;
+    bountyHashes: string[];
     hookoutHash: string | undefined;
     authorization: string;
 }

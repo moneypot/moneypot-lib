@@ -23,7 +23,6 @@ export { default as HDChain } from './hdchain';
 // models
 export { default as Coin } from './coin';
 
-export { default as HSet } from './hset';
 
 export { default as Hookin } from './hookin';
 

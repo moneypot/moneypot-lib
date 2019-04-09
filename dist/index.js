@@ -30,8 +30,6 @@ exports.HDChain = hdchain_1.default;
 // models
 var coin_1 = require("./coin");
 exports.Coin = coin_1.default;
-var hset_1 = require("./hset");
-exports.HSet = hset_1.default;
 var hookin_1 = require("./hookin");
 exports.Hookin = hookin_1.default;
 var hookout_1 = require("./hookout");

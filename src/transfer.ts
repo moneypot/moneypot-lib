@@ -1,10 +1,11 @@
 import Hash from './hash';
 import Signature from './signature';
 import * as POD from './pod';
-import HSet from './hset';
 import Coin  from './coin';
 import { muSig } from './util/ecc';
 import PublicKey from './public-key'
+import * as buffutils from './util/buffutils';
+
 
 export default class Transfer {
 
@@ -13,15 +14,24 @@ export default class Transfer {
       return new Error('expected an object to deserialize a Transfer');
     }
 
-    const inputs = HSet.fromPOD<Coin, POD.Coin>(data.inputs, Coin.fromPOD);
-    if (inputs instanceof Error) {
-      return inputs;
+    const inputs: Coin[] = [];
+    for (const i of data.inputs) {
+      const input = Coin.fromPOD(i);
+      if (input instanceof Error) {
+        return input;
+      }
+      inputs.push(input);
     }
 
-    const bountiesHash = Hash.fromBech(data.bountiesHash);
-    if (bountiesHash instanceof Error) {
-      return bountiesHash;
+    const bountyHashes: Hash[] = [];
+    for (const b of data.bountyHashes) {
+      const bounty = Hash.fromBech(b);
+      if (bounty instanceof Error) {
+        return bounty;
+      }
+      bountyHashes.push(bounty);
     }
+
 
     const hookoutHash = data.hookout ?  Hash.fromBech(data.hookoutHash) : undefined;
     if (hookoutHash instanceof Error) {
@@ -33,53 +43,71 @@ export default class Transfer {
       return authorization;
     }
 
-    return new Transfer(inputs, bountiesHash, hookoutHash, authorization);
+    return new Transfer(inputs, bountyHashes, hookoutHash, authorization);
   }
 
-  inputs: HSet<Coin, POD.Coin>
-  bountiesHash: Hash;
-  hookoutHash: Hash | undefined;
+  readonly inputs: ReadonlyArray<Coin>
+  readonly bountyHashes: ReadonlyArray<Hash>;
+  readonly hookoutHash: Hash | undefined;
 
   authorization: Signature;
 
-  constructor(inputs: HSet<Coin, POD.Coin>,
-      bountiesHash: Hash,
+  constructor(inputs: ReadonlyArray<Coin>,
+      bountyHashes: ReadonlyArray<Hash>,
       hookoutHash: Hash | undefined,
       authorization: Signature) {
 
-    this.inputs = inputs;
-    this.bountiesHash = bountiesHash;
+    this.inputs = hashSort(inputs);
+    this.bountyHashes = sort(bountyHashes);
     this.hookoutHash = hookoutHash;
     this.authorization = authorization;
   }
 
-  static hashOf(inputs: Hash, bounties: Hash, hookout: Hash | undefined) {
+  static hashOf(inputs: ReadonlyArray<Hash>, bounties: ReadonlyArray<Hash>, hookout: Hash | undefined) {
     const h = Hash.newBuilder('Transfer');
 
-    h.update(inputs.buffer);
-    h.update(bounties.buffer);
-    h.update(hookout ? hookout.buffer : new Uint8Array(32));
+    for (const input of inputs) {
+      h.update(input.buffer);
+    }
+    for (const bounty of bounties) {
+      h.update(bounty.buffer);
+    }
+    if (hookout) {
+      h.update(hookout.buffer);
+    }
 
     return h.digest();
   }
 
   hash(): Hash {
-    return Transfer.hashOf(this.inputs.hash(), this.bountiesHash, this.hookoutHash ? this.hookoutHash : undefined);
+    return Transfer.hashOf(
+      this.inputs.map(i => i.hash()),
+      this.bountyHashes, this.hookoutHash ? this.hookoutHash : undefined);
   }
 
   toPOD(): POD.Transfer {
     return {
       authorization: this.authorization.toBech(),
-      bountiesHash: this.bountiesHash.toBech(),
+      bountyHashes: this.bountyHashes.map(b => b.toBech()),
       hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
-      inputs: this.inputs.toPOD(),      
+      inputs: this.inputs.map(i => i.toPOD()),      
     };
   }
 
   isValid(): boolean {
-    const p = muSig.pubkeyCombine(this.inputs.entries.map(coin => coin.owner));
+    const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
     const pubkey = new PublicKey(p.x, p.y);
 
     return this.authorization.verify(this.hash().buffer, pubkey);
   }
 }
+
+
+function hashSort<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
+  return [...ts].sort((a: T, b: T) => buffutils.compare(a.hash().buffer, b.hash().buffer));
+}
+
+function sort<T extends { buffer: Uint8Array }>(ts: ReadonlyArray<T>) {
+  return [...ts].sort((a: T, b: T) => buffutils.compare(a.buffer, b.buffer));
+}
+

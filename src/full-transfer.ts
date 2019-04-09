@@ -1,13 +1,13 @@
 import Hash from './hash';
 import Signature from './signature';
 import * as POD from './pod';
-import HSet from './hset';
 import Coin  from './coin';
 import Bounty from './bounty';
 import { Hookout } from '.';
 import { muSig } from './util/ecc';
 import PublicKey from './public-key'
 import Transfer from './transfer';
+import * as buffutils from './util/buffutils';
 
 export default class FullTransfer {
 
@@ -16,14 +16,27 @@ export default class FullTransfer {
       return new Error('expected an object to deserialize a FullTransfer');
     }
 
-    const inputs = HSet.fromPOD<Coin, POD.Coin>(data.inputs, Coin.fromPOD);
-    if (inputs instanceof Error) {
-      return inputs;
+    if (!Array.isArray(data.inputs)) {
+      return new Error('expected an array for input in FullTransfer');
     }
 
-    const bounties = HSet.fromPOD<Bounty, POD.Bounty>(data.bounties, Bounty.fromPOD);
-    if (bounties instanceof Error) {
-      return bounties;
+    const inputs: Coin[] = [];
+    for (const i of data.inputs) {
+      const input = Coin.fromPOD(i);
+      if (input instanceof Error) {
+        return input;
+      }
+      inputs.push(input);
+    }
+    
+
+    const bounties: Bounty[] = [];
+    for (const b of data.bounties) {
+      const bounty = Bounty.fromPOD(b);
+      if (bounty instanceof Error) {
+        return bounty;
+      }
+      bounties.push(bounty);
     }
 
     const hookout = data.hookout ? Hookout.fromPOD(data.hookout) : undefined;
@@ -39,52 +52,59 @@ export default class FullTransfer {
     return new FullTransfer(inputs, bounties, hookout, authorization);
   }
 
-  inputs: HSet<Coin, POD.Coin>
-  bounties: HSet<Bounty, POD.Bounty>;
-  hookout: Hookout | undefined;
+  readonly inputs: ReadonlyArray<Coin>
+  readonly bounties: ReadonlyArray<Bounty>
+  readonly hookout: Hookout | undefined;
 
   authorization: Signature;
 
-  constructor(inputs: HSet<Coin, POD.Coin>,
-      bounties: HSet<Bounty, POD.Bounty>,
+  constructor(inputs:  ReadonlyArray<Coin>,
+      bounties: ReadonlyArray<Bounty>,
       hookout: Hookout | undefined,
       authorization: Signature) {
 
-    this.inputs = inputs;
-    this.bounties = bounties;
+    this.inputs = hashSort(inputs);
+    this.bounties = hashSort(bounties);
     this.hookout = hookout;
     this.authorization = authorization;
   }
 
-  static hashOf(inputs: Hash, bounties: Hash, hookout: Hash | undefined) {
-    const h = Hash.newBuilder('Transfer');
-
-    h.update(inputs.buffer);
-    h.update(bounties.buffer);
-    h.update(hookout ? hookout.buffer : new Uint8Array(32));
-
-    return h.digest();
-  }
 
   hash(): Hash {
-    return Transfer.hashOf(this.inputs.hash(), this.bounties.hash(), this.hookout ? this.hookout.hash() : undefined);
+    return Transfer.hashOf(
+        this.inputs.map(i =>i.hash()),
+        this.bounties.map(b => b.hash()),
+        this.hookout ? this.hookout.hash() : undefined
+    );
   }
 
   toPOD(): POD.FullTransfer {
     return {
       authorization: this.authorization.toBech(),
-      bounties: this.bounties.toPOD(),
+      bounties: this.bounties.map(b => b.toPOD()),
       hookout: this.hookout ? this.hookout.toPOD() : undefined,
-      inputs: this.inputs.toPOD(),      
+      inputs: this.inputs.map(b => b.toPOD()),      
     };
   }
 
   fee(): number {
-    return this.inputs.amount - this.outputAmount();
+    return this.inputAmount() - this.outputAmount();
+  }
+
+  inputAmount(): number {
+    let amount = 0;
+    for (const coin of this.inputs) {
+      amount += coin.amount;
+    }
+    return amount;
   }
 
   outputAmount(): number {
-    return this.bounties.amount + (this.hookout ? this.hookout.amount : 0);
+    let amount = this.hookout ? this.hookout.amount : 0;
+    for (const bounty of this.bounties) {
+      amount += bounty.amount;
+    }
+    return amount;
   }
 
   isValid(): boolean {
@@ -92,7 +112,7 @@ export default class FullTransfer {
       return false;
     }
 
-    const p = muSig.pubkeyCombine(this.inputs.entries.map(coin => coin.owner));
+    const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
     const pubkey = new PublicKey(p.x, p.y);
 
 
@@ -100,6 +120,12 @@ export default class FullTransfer {
   }
 
   prune(): Transfer {
-    return new Transfer(this.inputs, this.bounties.hash(), this.hookout ? this.hookout.hash() : undefined, this.authorization);
+    return new Transfer(
+      this.inputs,
+      this.bounties.map(b => b.hash()), this.hookout ? this.hookout.hash() : undefined, this.authorization);
   }
+}
+
+function hashSort<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
+  return [...ts].sort((a: T, b: T) => buffutils.compare(a.hash().buffer, b.hash().buffer));
 }
