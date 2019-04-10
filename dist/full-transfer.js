@@ -43,8 +43,8 @@ class FullTransfer {
         return new FullTransfer(inputs, bounties, hookout, authorization);
     }
     constructor(inputs, bounties, hookout, authorization) {
-        this.inputs = hashSort(inputs);
-        this.bounties = hashSort(bounties);
+        this.inputs = inputs;
+        this.bounties = bounties;
         this.hookout = hookout;
         this.authorization = authorization;
     }

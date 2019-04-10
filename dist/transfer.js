@@ -38,17 +38,17 @@ class Transfer {
         return new Transfer(inputs, bountyHashes, hookoutHash, authorization);
     }
     constructor(inputs, bountyHashes, hookoutHash, authorization) {
-        this.inputs = hashSort(inputs);
-        this.bountyHashes = sort(bountyHashes);
+        this.inputs = inputs;
+        this.bountyHashes = bountyHashes;
         this.hookoutHash = hookoutHash;
         this.authorization = authorization;
     }
     static hashOf(inputs, bounties, hookout) {
         const h = hash_1.default.newBuilder('Transfer');
-        for (const input of inputs) {
+        for (const input of sort(inputs)) {
             h.update(input.buffer);
         }
-        for (const bounty of bounties) {
+        for (const bounty of sort(bounties)) {
             h.update(bounty.buffer);
         }
         if (hookout) {
@@ -62,9 +62,9 @@ class Transfer {
     toPOD() {
         return {
             authorization: this.authorization.toBech(),
-            bountyHashes: this.bountyHashes.map(b => b.toBech()),
+            bountyHashes: sort(this.bountyHashes).map(b => b.toBech()),
             hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
-            inputs: this.inputs.map(i => i.toPOD()),
+            inputs: hashSort(this.inputs).map(i => i.toPOD()),
         };
     }
     isValid() {
@@ -74,6 +74,7 @@ class Transfer {
     }
 }
 exports.default = Transfer;
+// TODO: these sort can be optimized to check if it's already sorted, if so, just return original
 function hashSort(ts) {
     return [...ts].sort((a, b) => buffutils.compare(a.hash().buffer, b.hash().buffer));
 }

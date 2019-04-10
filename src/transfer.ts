@@ -57,8 +57,8 @@ export default class Transfer {
       hookoutHash: Hash | undefined,
       authorization: Signature) {
 
-    this.inputs = hashSort(inputs);
-    this.bountyHashes = sort(bountyHashes);
+    this.inputs = inputs;
+    this.bountyHashes = bountyHashes;
     this.hookoutHash = hookoutHash;
     this.authorization = authorization;
   }
@@ -66,10 +66,10 @@ export default class Transfer {
   static hashOf(inputs: ReadonlyArray<Hash>, bounties: ReadonlyArray<Hash>, hookout: Hash | undefined) {
     const h = Hash.newBuilder('Transfer');
 
-    for (const input of inputs) {
+    for (const input of sort(inputs)) {
       h.update(input.buffer);
     }
-    for (const bounty of bounties) {
+    for (const bounty of sort(bounties)) {
       h.update(bounty.buffer);
     }
     if (hookout) {
@@ -88,9 +88,9 @@ export default class Transfer {
   toPOD(): POD.Transfer {
     return {
       authorization: this.authorization.toBech(),
-      bountyHashes: this.bountyHashes.map(b => b.toBech()),
+      bountyHashes: sort(this.bountyHashes).map(b => b.toBech()),
       hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
-      inputs: this.inputs.map(i => i.toPOD()),      
+      inputs: hashSort(this.inputs).map(i => i.toPOD()),      
     };
   }
 
@@ -102,7 +102,7 @@ export default class Transfer {
   }
 }
 
-
+// TODO: these sort can be optimized to check if it's already sorted, if so, just return original
 function hashSort<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
   return [...ts].sort((a: T, b: T) => buffutils.compare(a.hash().buffer, b.hash().buffer));
 }
