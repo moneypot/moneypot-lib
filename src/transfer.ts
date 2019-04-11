@@ -57,8 +57,8 @@ export default class Transfer {
       hookoutHash: Hash | undefined,
       authorization: Signature) {
 
-    this.inputs = inputs;
-    this.bountyHashes = bountyHashes;
+    this.inputs = hashSort(inputs);
+    this.bountyHashes = sort(bountyHashes);
     this.hookoutHash = hookoutHash;
     this.authorization = authorization;
   }
@@ -88,9 +88,9 @@ export default class Transfer {
   toPOD(): POD.Transfer {
     return {
       authorization: this.authorization.toBech(),
-      bountyHashes: sort(this.bountyHashes).map(b => b.toBech()),
+      bountyHashes: this.bountyHashes.map(b => b.toBech()),
       hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
-      inputs: hashSort(this.inputs).map(i => i.toPOD()),      
+      inputs: this.inputs.map(i => i.toPOD()),      
     };
   }
 

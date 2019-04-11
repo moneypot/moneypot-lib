@@ -63,8 +63,8 @@ export default class FullTransfer {
       hookout: Hookout | undefined,
       authorization: Signature) {
 
-    this.inputs = inputs;
-    this.bounties = bounties;
+    this.inputs = hashSort(inputs);
+    this.bounties = hashSort(bounties);
     this.hookout = hookout;
     this.authorization = authorization;
   }

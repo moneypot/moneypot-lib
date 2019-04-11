@@ -38,8 +38,8 @@ class Transfer {
         return new Transfer(inputs, bountyHashes, hookoutHash, authorization);
     }
     constructor(inputs, bountyHashes, hookoutHash, authorization) {
-        this.inputs = inputs;
-        this.bountyHashes = bountyHashes;
+        this.inputs = hashSort(inputs);
+        this.bountyHashes = sort(bountyHashes);
         this.hookoutHash = hookoutHash;
         this.authorization = authorization;
     }
@@ -62,9 +62,9 @@ class Transfer {
     toPOD() {
         return {
             authorization: this.authorization.toBech(),
-            bountyHashes: sort(this.bountyHashes).map(b => b.toBech()),
+            bountyHashes: this.bountyHashes.map(b => b.toBech()),
             hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
-            inputs: hashSort(this.inputs).map(i => i.toPOD()),
+            inputs: this.inputs.map(i => i.toPOD()),
         };
     }
     isValid() {
