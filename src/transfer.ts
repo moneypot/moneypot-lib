@@ -1,3 +1,4 @@
+import assert from './util/assert'
 import Hash from './hash';
 import Signature from './signature';
 import * as POD from './pod';
@@ -22,6 +23,9 @@ export default class Transfer {
       }
       inputs.push(input);
     }
+    if (!isHashSorted(inputs)) {
+      return new Error('inputs are not in sorted order');
+    }
 
     const bountyHashes: Hash[] = [];
     for (const b of data.bountyHashes) {
@@ -31,6 +35,10 @@ export default class Transfer {
       }
       bountyHashes.push(bounty);
     }
+    if (!isSorted(bountyHashes)) {
+      return new Error('bountyHashes are not in sorted order');
+    }
+
 
 
     const hookoutHash = data.hookout ?  Hash.fromBech(data.hookoutHash) : undefined;
@@ -57,21 +65,37 @@ export default class Transfer {
       hookoutHash: Hash | undefined,
       authorization: Signature) {
 
-    this.inputs = hashSort(inputs);
-    this.bountyHashes = sort(bountyHashes);
+    assert(isHashSorted(inputs));    
+    this.inputs = inputs;
+
+    assert(isSorted(bountyHashes));
+    this.bountyHashes = bountyHashes;
+
     this.hookoutHash = hookoutHash;
     this.authorization = authorization;
+  }
+
+  public static sort(hashable: { hash(): Hash }[]) {
+    hashable.sort((a, b) => buffutils.compare(a.hash().buffer, b.hash().buffer));
+  }
+
+  public static sortHashes(hashes: Hash[]) {
+    hashes.sort((a: Hash, b: Hash) => buffutils.compare(a.buffer, b.buffer));
   }
 
   static hashOf(inputs: ReadonlyArray<Hash>, bounties: ReadonlyArray<Hash>, hookout: Hash | undefined) {
     const h = Hash.newBuilder('Transfer');
 
-    for (const input of sort(inputs)) {
+    assert(isSorted(inputs));
+    for (const input of inputs) {
       h.update(input.buffer);
     }
-    for (const bounty of sort(bounties)) {
+
+    assert(isSorted(bounties));
+    for (const bounty of bounties) {
       h.update(bounty.buffer);
     }
+
     if (hookout) {
       h.update(hookout.buffer);
     }
@@ -101,6 +125,29 @@ export default class Transfer {
     return this.authorization.verify(this.hash().buffer, pubkey);
   }
 }
+
+function isHashSorted<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
+  for (let i = 1; i < ts.length; i++) {
+    const c = buffutils.compare(ts[i-1].hash().buffer, ts[i].hash().buffer);
+    if (c > 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function isSorted<T extends { buffer: Uint8Array }>(ts: ReadonlyArray<T>) {
+  for (let i = 1; i < ts.length; i++) {
+    const c = buffutils.compare(ts[i-1].buffer, ts[i].buffer);
+    if (c > 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
 // TODO: these sort can be optimized to check if it's already sorted, if so, just return original
 function hashSort<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {

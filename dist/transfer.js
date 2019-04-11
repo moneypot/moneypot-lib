@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const assert_1 = require("./util/assert");
 const hash_1 = require("./hash");
 const signature_1 = require("./signature");
 const coin_1 = require("./coin");
@@ -19,6 +20,9 @@ class Transfer {
             }
             inputs.push(input);
         }
+        if (!isHashSorted(inputs)) {
+            return new Error('inputs are not in sorted order');
+        }
         const bountyHashes = [];
         for (const b of data.bountyHashes) {
             const bounty = hash_1.default.fromBech(b);
@@ -26,6 +30,9 @@ class Transfer {
                 return bounty;
             }
             bountyHashes.push(bounty);
+        }
+        if (!isSorted(bountyHashes)) {
+            return new Error('bountyHashes are not in sorted order');
         }
         const hookoutHash = data.hookout ? hash_1.default.fromBech(data.hookoutHash) : undefined;
         if (hookoutHash instanceof Error) {
@@ -38,17 +45,27 @@ class Transfer {
         return new Transfer(inputs, bountyHashes, hookoutHash, authorization);
     }
     constructor(inputs, bountyHashes, hookoutHash, authorization) {
-        this.inputs = hashSort(inputs);
-        this.bountyHashes = sort(bountyHashes);
+        assert_1.default(isHashSorted(inputs));
+        this.inputs = inputs;
+        assert_1.default(isSorted(bountyHashes));
+        this.bountyHashes = bountyHashes;
         this.hookoutHash = hookoutHash;
         this.authorization = authorization;
     }
+    static sort(hashable) {
+        hashable.sort((a, b) => buffutils.compare(a.hash().buffer, b.hash().buffer));
+    }
+    static sortHashes(hashes) {
+        hashes.sort((a, b) => buffutils.compare(a.buffer, b.buffer));
+    }
     static hashOf(inputs, bounties, hookout) {
         const h = hash_1.default.newBuilder('Transfer');
-        for (const input of sort(inputs)) {
+        assert_1.default(isSorted(inputs));
+        for (const input of inputs) {
             h.update(input.buffer);
         }
-        for (const bounty of sort(bounties)) {
+        assert_1.default(isSorted(bounties));
+        for (const bounty of bounties) {
             h.update(bounty.buffer);
         }
         if (hookout) {
@@ -74,6 +91,24 @@ class Transfer {
     }
 }
 exports.default = Transfer;
+function isHashSorted(ts) {
+    for (let i = 1; i < ts.length; i++) {
+        const c = buffutils.compare(ts[i - 1].hash().buffer, ts[i].hash().buffer);
+        if (c > 0) {
+            return false;
+        }
+    }
+    return true;
+}
+function isSorted(ts) {
+    for (let i = 1; i < ts.length; i++) {
+        const c = buffutils.compare(ts[i - 1].buffer, ts[i].buffer);
+        if (c > 0) {
+            return false;
+        }
+    }
+    return true;
+}
 // TODO: these sort can be optimized to check if it's already sorted, if so, just return original
 function hashSort(ts) {
     return [...ts].sort((a, b) => buffutils.compare(a.hash().buffer, b.hash().buffer));

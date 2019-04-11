@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const assert_1 = require("./util/assert");
 const signature_1 = require("./signature");
 const coin_1 = require("./coin");
 const bounty_1 = require("./bounty");
@@ -24,6 +25,9 @@ class FullTransfer {
             }
             inputs.push(input);
         }
+        if (!isHashSorted(inputs)) {
+            return new Error('inputs are not in sorted order');
+        }
         const bounties = [];
         for (const b of data.bounties) {
             const bounty = bounty_1.default.fromPOD(b);
@@ -31,6 +35,9 @@ class FullTransfer {
                 return bounty;
             }
             bounties.push(bounty);
+        }
+        if (!isHashSorted(bounties)) {
+            return new Error('bounties are not in sorted order');
         }
         const hookout = data.hookout ? _1.Hookout.fromPOD(data.hookout) : undefined;
         if (hookout instanceof Error) {
@@ -43,8 +50,10 @@ class FullTransfer {
         return new FullTransfer(inputs, bounties, hookout, authorization);
     }
     constructor(inputs, bounties, hookout, authorization) {
-        this.inputs = hashSort(inputs);
-        this.bounties = hashSort(bounties);
+        assert_1.default(isHashSorted(inputs));
+        this.inputs = inputs;
+        assert_1.default(isHashSorted(bounties));
+        this.bounties = bounties;
         this.hookout = hookout;
         this.authorization = authorization;
     }
@@ -89,7 +98,13 @@ class FullTransfer {
     }
 }
 exports.default = FullTransfer;
-function hashSort(ts) {
-    return [...ts].sort((a, b) => buffutils.compare(a.hash().buffer, b.hash().buffer));
+function isHashSorted(ts) {
+    for (let i = 1; i < ts.length; i++) {
+        const c = buffutils.compare(ts[i - 1].hash().buffer, ts[i].hash().buffer);
+        if (c > 0) {
+            return false;
+        }
+    }
+    return true;
 }
 //# sourceMappingURL=full-transfer.js.map

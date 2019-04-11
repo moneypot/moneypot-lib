@@ -9,6 +9,10 @@ export default class Transfer {
     readonly hookoutHash: Hash | undefined;
     authorization: Signature;
     constructor(inputs: ReadonlyArray<Coin>, bountyHashes: ReadonlyArray<Hash>, hookoutHash: Hash | undefined, authorization: Signature);
+    static sort(hashable: {
+        hash(): Hash;
+    }[]): void;
+    static sortHashes(hashes: Hash[]): void;
     static hashOf(inputs: ReadonlyArray<Hash>, bounties: ReadonlyArray<Hash>, hookout: Hash | undefined): Hash;
     hash(): Hash;
     toPOD(): POD.Transfer;

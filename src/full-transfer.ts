@@ -1,3 +1,4 @@
+import assert from './util/assert'
 import Hash from './hash';
 import Signature from './signature';
 import * as POD from './pod';
@@ -28,6 +29,9 @@ export default class FullTransfer {
       }
       inputs.push(input);
     }
+    if (!isHashSorted(inputs)) {
+      return new Error('inputs are not in sorted order');
+    }
     
 
     const bounties: Bounty[] = [];
@@ -37,6 +41,9 @@ export default class FullTransfer {
         return bounty;
       }
       bounties.push(bounty);
+    }
+    if (!isHashSorted(bounties)) {
+      return new Error('bounties are not in sorted order');
     }
 
     const hookout = data.hookout ? Hookout.fromPOD(data.hookout) : undefined;
@@ -63,8 +70,12 @@ export default class FullTransfer {
       hookout: Hookout | undefined,
       authorization: Signature) {
 
-    this.inputs = hashSort(inputs);
-    this.bounties = hashSort(bounties);
+    assert(isHashSorted(inputs));        
+    this.inputs = inputs;
+    
+    assert(isHashSorted(bounties));        
+    this.bounties = bounties;
+
     this.hookout = hookout;
     this.authorization = authorization;
   }
@@ -126,6 +137,13 @@ export default class FullTransfer {
   }
 }
 
-function hashSort<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
-  return [...ts].sort((a: T, b: T) => buffutils.compare(a.hash().buffer, b.hash().buffer));
+function isHashSorted<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
+  for (let i = 1; i < ts.length; i++) {
+    const c = buffutils.compare(ts[i-1].hash().buffer, ts[i].hash().buffer);
+    if (c > 0) {
+      return false;
+    }
+  }
+
+  return true;
 }
