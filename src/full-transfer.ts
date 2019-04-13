@@ -42,6 +42,7 @@ export default class FullTransfer {
       }
       bounties.push(bounty);
     }
+    
     if (!isHashSorted(bounties)) {
       return new Error('bounties are not in sorted order');
     }

@@ -4,13 +4,12 @@ import PublicKey from './public-key';
 import * as POD from './pod';
 export default class Hookin {
     static fromPOD(data: any): Hookin | Error;
-    static hashOf(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, deriveIndex: number): Hash;
+    static hashOf(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey): Hash;
     txid: Uint8Array;
     vout: number;
     amount: number;
     claimant: PublicKey;
-    deriveIndex: number;
-    constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, deriveIndex: number);
+    constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey);
     hash(): Hash;
     getTweak(): PrivateKey;
     toPOD(): POD.Hookin;

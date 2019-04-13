@@ -9,7 +9,6 @@ export { default as PrivateKey } from './private-key';
 export { default as PublicKey } from './public-key';
 export { default as Address } from './address';
 export { default as Signature } from './signature';
-export { default as HDChain } from './hdchain';
 export { default as Coin } from './coin';
 export { default as Hookin } from './hookin';
 export { default as Hookout } from './hookout';

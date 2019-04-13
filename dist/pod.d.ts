@@ -58,7 +58,6 @@ export interface Hookin {
     vout: number;
     amount: number;
     claimant: string;
-    deriveIndex: number;
 }
 export interface FullTransfer {
     inputs: Coin[];

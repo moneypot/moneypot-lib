@@ -25,8 +25,6 @@ var address_1 = require("./address");
 exports.Address = address_1.default;
 var signature_1 = require("./signature");
 exports.Signature = signature_1.default;
-var hdchain_1 = require("./hdchain");
-exports.HDChain = hdchain_1.default;
 // models
 var coin_1 = require("./coin");
 exports.Coin = coin_1.default;

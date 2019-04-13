@@ -3,10 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const hash_1 = require("./hash");
 const private_key_1 = require("./private-key");
 const public_key_1 = require("./public-key");
-const sha512_1 = require("./util/bcrypto/sha512");
 const POD = require("./pod");
 const buffutils = require("./util/buffutils");
-const params_1 = require("./params");
 class Hookin {
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -28,33 +26,28 @@ class Hookin {
         if (claimant instanceof Error) {
             return claimant;
         }
-        const deriveIndex = data.deriveIndex;
-        return new Hookin(txid, vout, amount, claimant, deriveIndex);
+        return new Hookin(txid, vout, amount, claimant);
     }
-    static hashOf(txid, vout, amount, claimant, deriveIndex) {
+    static hashOf(txid, vout, amount, claimant) {
         const b = hash_1.default.newBuilder('Hookin');
         b.update(txid);
         b.update(buffutils.fromUint32(vout));
         b.update(buffutils.fromUint64(amount));
         b.update(claimant.buffer);
-        b.update(buffutils.fromUint32(deriveIndex));
         return b.digest();
     }
-    constructor(txid, vout, amount, claimant, deriveIndex) {
+    constructor(txid, vout, amount, claimant) {
         this.txid = txid;
         this.vout = vout;
         this.amount = amount;
         this.claimant = claimant;
-        this.deriveIndex = deriveIndex;
     }
     hash() {
-        return Hookin.hashOf(this.txid, this.vout, this.amount, this.claimant, this.deriveIndex);
+        return Hookin.hashOf(this.txid, this.vout, this.amount, this.claimant);
     }
     getTweak() {
-        const message = buffutils.concat(params_1.default.fundingPublicKey.buffer, buffutils.fromUint32(this.deriveIndex));
-        const I = sha512_1.default.mac(this.claimant.hash().buffer, message);
-        const IL = I.slice(0, 32);
-        const pk = private_key_1.default.fromBytes(IL);
+        const bytes = hash_1.default.fromMessage('tweak', this.claimant.buffer).buffer;
+        const pk = private_key_1.default.fromBytes(bytes);
         if (pk instanceof Error) {
             throw pk;
         }
@@ -64,7 +57,6 @@ class Hookin {
         return {
             amount: this.amount,
             claimant: this.claimant.toBech(),
-            deriveIndex: this.deriveIndex,
             txid: buffutils.toHex(this.txid),
             vout: this.vout,
         };

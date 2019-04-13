@@ -18,8 +18,6 @@ export { default as Address } from './address';
 
 export { default as Signature } from './signature';
 
-export { default as HDChain } from './hdchain';
-
 // models
 export { default as Coin } from './coin';
 
