@@ -80,6 +80,23 @@ function fromUint8(x) {
     return buff;
 }
 exports.fromUint8 = fromUint8;
+function fromVarInt(n) {
+    return fromBigInt(BigInt(n));
+}
+exports.fromVarInt = fromVarInt;
+function fromBigInt(n) {
+    const out = [];
+    const base = BigInt(256);
+    while (n >= base) {
+        out.push(Number(n % base));
+        n = n / base;
+    }
+    out.push(Number(n));
+    const buf = new Uint8Array(out.length);
+    buf.set(out.reverse());
+    return buf;
+}
+exports.fromBigInt = fromBigInt;
 function toBigInt(bytes) {
     let result = BigInt(0);
     const n = bytes.length;

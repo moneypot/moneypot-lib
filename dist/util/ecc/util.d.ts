@@ -15,7 +15,7 @@ export declare function modInverse(a: bigint, m: bigint): bigint;
 export declare function bufferToHex(buf: Uint8Array): string;
 export declare function bufferFromHex(hex: string): Uint8Array | Error;
 export declare function bufferToBigInt(bytes: Uint8Array): bigint;
-export declare function bufferFromBigInt(n: bigint): Uint8Array;
+export declare function buffer32FromBigInt(n: bigint): Uint8Array;
 export declare function concatBuffers(...bufs: Uint8Array[]): Uint8Array;
 export declare function pointFromBuffer(buf: Uint8Array): Point | Error;
 export declare function pointToBuffer(point: Point): Uint8Array;

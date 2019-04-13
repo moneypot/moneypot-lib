@@ -22,10 +22,10 @@ exports.Scalar = {
         return priv;
     },
     toBytes(n) {
-        return util_1.bufferFromBigInt(n);
+        return util_1.buffer32FromBigInt(n);
     },
     toHex(n) {
-        return util_1.bufferToHex(util_1.bufferFromBigInt(n));
+        return util_1.bufferToHex(util_1.buffer32FromBigInt(n));
     },
 };
 exports.Point = {

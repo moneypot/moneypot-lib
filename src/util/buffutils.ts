@@ -102,6 +102,24 @@ export function fromUint8(x: number) {
   return buff;
 }
 
+export function fromVarInt(n: number) {
+  return fromBigInt(BigInt(n));
+}
+
+export function fromBigInt(n: bigint): Uint8Array {
+  const out = [];
+  const base = BigInt(256);
+  while (n >= base) {
+    out.push(Number(n % base));
+    n = n / base;
+  }
+  out.push(Number(n));
+
+  const buf = new Uint8Array(out.length);
+  buf.set(out.reverse());
+  return buf;
+}
+
 export function toBigInt(bytes: Uint8Array): bigint {
   let result = BigInt(0);
   const n = bytes.length;

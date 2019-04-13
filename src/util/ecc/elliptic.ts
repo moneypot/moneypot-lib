@@ -1,6 +1,6 @@
 import * as check from './check';
 import {
-  bufferFromBigInt,
+  buffer32FromBigInt,
   bufferFromHex,
   bufferToBigInt,
   bufferToHex,
@@ -34,10 +34,10 @@ export const Scalar = {
     return priv;
   },
   toBytes(n: Scalar): Uint8Array {
-    return bufferFromBigInt(n);
+    return buffer32FromBigInt(n);
   },
   toHex(n: Scalar): string {
-    return bufferToHex(bufferFromBigInt(n));
+    return bufferToHex(buffer32FromBigInt(n));
   },
 };
 

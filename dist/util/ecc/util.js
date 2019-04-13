@@ -114,7 +114,7 @@ function bufferToBigInt(bytes) {
 }
 exports.bufferToBigInt = bufferToBigInt;
 // Buffer is fixed-length 32bytes
-function bufferFromBigInt(n) {
+function buffer32FromBigInt(n) {
     const out = [];
     const base = BigInt(256);
     while (n >= base) {
@@ -129,7 +129,7 @@ function bufferFromBigInt(n) {
     buf.set(out.reverse(), 32 - out.length);
     return buf;
 }
-exports.bufferFromBigInt = bufferFromBigInt;
+exports.buffer32FromBigInt = buffer32FromBigInt;
 function concatBuffers(...bufs) {
     let totalSize = 0;
     for (const buf of bufs) {
@@ -172,7 +172,7 @@ function pointToBuffer(point) {
     // 0x02: y is even
     // 0x03: y is odd
     const b0 = point.y % BigInt(2) === BigInt(0) ? 0x02 : 0x03;
-    const xbuf = bufferFromBigInt(point.x);
+    const xbuf = buffer32FromBigInt(point.x);
     assert.equal(xbuf.length, 32);
     const result = new Uint8Array(33);
     result.set([b0], 0);
@@ -210,7 +210,7 @@ function getK(R, k0) {
 }
 exports.getK = getK;
 function getK0(privkey, message) {
-    const k0 = bufferToBigInt(sha256_1.default.digest(concatBuffers(bufferFromBigInt(privkey), message))) % exports.curve.n;
+    const k0 = bufferToBigInt(sha256_1.default.digest(concatBuffers(buffer32FromBigInt(privkey), message))) % exports.curve.n;
     if (k0 === BigInt(0)) {
         // We got incredibly unlucky
         throw new Error('k0 is zero');
@@ -219,7 +219,7 @@ function getK0(privkey, message) {
 }
 exports.getK0 = getK0;
 function getE(Rx, P, m) {
-    return bufferToBigInt(sha256_1.default.digest(concatBuffers(bufferFromBigInt(Rx), pointToBuffer(P), m))) % exports.curve.n;
+    return bufferToBigInt(sha256_1.default.digest(concatBuffers(buffer32FromBigInt(Rx), pointToBuffer(P), m))) % exports.curve.n;
 }
 exports.getE = getE;
 //# sourceMappingURL=util.js.map

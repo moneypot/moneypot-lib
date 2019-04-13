@@ -6,6 +6,8 @@ export declare function concat(...buffs: Uint8Array[]): Uint8Array;
 export declare function fromUint32(x: number): Uint8Array;
 export declare function fromUint64(x: number): Uint8Array;
 export declare function fromUint8(x: number): Uint8Array;
+export declare function fromVarInt(n: number): Uint8Array;
+export declare function fromBigInt(n: bigint): Uint8Array;
 export declare function toBigInt(bytes: Uint8Array): bigint;
 export declare function fromString(x: string): Uint8Array;
 export declare function isAllZero(buff: Uint8Array): boolean;

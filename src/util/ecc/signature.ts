@@ -3,7 +3,7 @@ import { Point, pointAdd } from '.';
 import * as check from './check';
 import { INFINITE_POINT, pointEq, pointMultiply, pointSubtract } from './elliptic';
 import {
-  bufferFromBigInt,
+  buffer32FromBigInt,
   bufferFromHex,
   bufferToBigInt as int,
   bufferToHex,
@@ -42,7 +42,7 @@ export const Signature = {
     return Signature.fromBytes(buff);
   },
   toBytes({ r, s }: Signature): Uint8Array {
-    return concat(bufferFromBigInt(r), bufferFromBigInt(s));
+    return concat(buffer32FromBigInt(r), buffer32FromBigInt(s));
   },
   toHex(sig: Signature): string {
     return bufferToHex(Signature.toBytes(sig));

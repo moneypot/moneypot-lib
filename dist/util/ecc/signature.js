@@ -22,7 +22,7 @@ exports.Signature = {
         return exports.Signature.fromBytes(buff);
     },
     toBytes({ r, s }) {
-        return util_1.concatBuffers(util_1.bufferFromBigInt(r), util_1.bufferFromBigInt(s));
+        return util_1.concatBuffers(util_1.buffer32FromBigInt(r), util_1.buffer32FromBigInt(s));
     },
     toHex(sig) {
         return util_1.bufferToHex(exports.Signature.toBytes(sig));

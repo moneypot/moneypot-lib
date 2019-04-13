@@ -127,7 +127,7 @@ export function bufferToBigInt(bytes: Uint8Array): bigint {
 }
 
 // Buffer is fixed-length 32bytes
-export function bufferFromBigInt(n: bigint): Uint8Array {
+export function buffer32FromBigInt(n: bigint): Uint8Array {
   const out = [];
   const base = BigInt(256);
   while (n >= base) {
@@ -196,7 +196,7 @@ export function pointToBuffer(point: Point): Uint8Array {
   // 0x03: y is odd
   const b0 = point.y % BigInt(2) === BigInt(0) ? 0x02 : 0x03;
 
-  const xbuf = bufferFromBigInt(point.x);
+  const xbuf = buffer32FromBigInt(point.x);
   assert.equal(xbuf.length, 32);
 
   const result = new Uint8Array(33);
@@ -239,7 +239,7 @@ export function getK(R: Point, k0: bigint): bigint {
 }
 
 export function getK0(privkey: Scalar, message: Uint8Array): Scalar {
-  const k0 = bufferToBigInt(sha256.digest(concatBuffers(bufferFromBigInt(privkey), message))) % curve.n;
+  const k0 = bufferToBigInt(sha256.digest(concatBuffers(buffer32FromBigInt(privkey), message))) % curve.n;
   if (k0 === BigInt(0)) {
     // We got incredibly unlucky
     throw new Error('k0 is zero');
@@ -248,5 +248,5 @@ export function getK0(privkey: Scalar, message: Uint8Array): Scalar {
 }
 
 export function getE(Rx: bigint, P: Point, m: Uint8Array): bigint {
-  return bufferToBigInt(sha256.digest(concatBuffers(bufferFromBigInt(Rx), pointToBuffer(P), m))) % curve.n;
+  return bufferToBigInt(sha256.digest(concatBuffers(buffer32FromBigInt(Rx), pointToBuffer(P), m))) % curve.n;
 }
