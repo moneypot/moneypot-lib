@@ -20,11 +20,15 @@ export default class Signature {
     return new Signature(sig.r, sig.s);
   }
 
-  public static fromBech(serialized: string) {
-    const { prefix, words } = bech32.decode(serialized);
+  public static fromPOD(data: any): Signature | Error {
+    if (typeof data !== 'string') {
+      return new Error('Signature.fromPOD expected string');
+    }
+
+    const { prefix, words } = bech32.decode(data);
 
     if (prefix !== serializedPrefix) {
-      throw new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
+      return new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
     }
 
     return Signature.fromBytes(bech32.fromWords(words));
@@ -62,7 +66,7 @@ export default class Signature {
     return ecc.verify(pubkey, message, this);
   }
 
-  public toBech() {
+  public toPOD() {
     return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
   }
 }

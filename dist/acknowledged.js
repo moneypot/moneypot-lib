@@ -21,13 +21,13 @@ class Acknowledged {
         if (contents instanceof Error) {
             throw contents;
         }
-        const acknowledgement = signature_1.default.fromBech(data.acknowledgement);
+        const acknowledgement = signature_1.default.fromPOD(data.acknowledgement);
         if (acknowledgement instanceof Error) {
-            throw acknowledgement;
+            return acknowledgement;
         }
         const hash = contents.hash();
         if (!acknowledgement.verify(hash.buffer, params_1.default.acknowledgementPublicKey)) {
-            throw new Error('acknowledgement does not verify');
+            return new Error('acknowledgement does not verify');
         }
         return new Acknowledged(contents, acknowledgement);
     }
@@ -36,7 +36,7 @@ class Acknowledged {
     }
     toPOD() {
         return {
-            acknowledgement: this.acknowledgement.toBech(),
+            acknowledgement: this.acknowledgement.toPOD(),
             ...this.contents.toPOD(),
         };
     }

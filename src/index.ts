@@ -14,13 +14,11 @@ export { default as Hash } from './hash';
 export { default as PrivateKey } from './private-key';
 
 export { default as PublicKey } from './public-key';
-export { default as Address } from './address';
 
 export { default as Signature } from './signature';
 
 // models
 export { default as Coin } from './coin';
-
 
 export { default as Hookin } from './hookin';
 
@@ -33,7 +31,6 @@ export { FullTransfer };
 
 import Transfer from './transfer';
 export { Transfer };
-
 
 export { default as Bounty } from './bounty';
 

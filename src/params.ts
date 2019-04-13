@@ -4,7 +4,7 @@ import PublicKey from './public-key';
 import * as buffutils from './util/buffutils';
 
 // obviously for dev only...
-const masterPriv = PrivateKey.fromBech('privhi1gqfkvnju6n9qqmz4hgvq3dd8rg5lgl72tmz63pjxay3wm4rz39eqy2jtly');
+const masterPriv = PrivateKey.fromPOD('privhi1gqfkvnju6n9qqmz4hgvq3dd8rg5lgl72tmz63pjxay3wm4rz39eqy2jtly');
 if (masterPriv instanceof Error) {
   throw masterPriv;
 }
@@ -67,10 +67,10 @@ export default t;
 //
 //   if (typeof x === 'object') {
 //       if (x instanceof PrivateKey) {
-//         return `notError( PrivateKey.fromBech("${ x.toBech() }") )`;
+//         return `notError( PrivateKey.fromPOD("${ x.toPOD() }") )`;
 //       }
 //       if (x instanceof PublicKey) {
-//         return `notError( PublicKey.fromBech("${ x.toBech() }") )`;
+//         return `notError( PublicKey.fromPOD("${ x.toPOD() }") )`;
 //       }
 //
 //

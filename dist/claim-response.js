@@ -18,7 +18,7 @@ class ClaimResponse {
         }
         const blindedReceipts = [];
         for (const bep of data.blindedReceipts) {
-            const blindedReceipt = blinded_signature_1.default.fromBech(bep);
+            const blindedReceipt = blinded_signature_1.default.fromPOD(bep);
             if (blindedReceipt instanceof Error) {
                 return blindedReceipt;
             }
@@ -40,7 +40,7 @@ class ClaimResponse {
     }
     toPOD() {
         return {
-            blindedReceipts: this.blindedReceipts.map(x => x.toBech()),
+            blindedReceipts: this.blindedReceipts.map(x => x.toPOD()),
             claimRequest: this.claimRequest.toPOD(),
         };
     }

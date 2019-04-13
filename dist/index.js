@@ -21,8 +21,6 @@ var private_key_1 = require("./private-key");
 exports.PrivateKey = private_key_1.default;
 var public_key_1 = require("./public-key");
 exports.PublicKey = public_key_1.default;
-var address_1 = require("./address");
-exports.Address = address_1.default;
 var signature_1 = require("./signature");
 exports.Signature = signature_1.default;
 // models

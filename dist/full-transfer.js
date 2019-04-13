@@ -43,7 +43,7 @@ class FullTransfer {
         if (hookout instanceof Error) {
             return hookout;
         }
-        const authorization = signature_1.default.fromBech(data.authorization);
+        const authorization = signature_1.default.fromPOD(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
@@ -62,7 +62,7 @@ class FullTransfer {
     }
     toPOD() {
         return {
-            authorization: this.authorization.toBech(),
+            authorization: this.authorization.toPOD(),
             bounties: this.bounties.map(b => b.toPOD()),
             hookout: this.hookout ? this.hookout.toPOD() : undefined,
             inputs: this.inputs.map(b => b.toPOD()),

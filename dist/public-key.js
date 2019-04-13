@@ -8,10 +8,13 @@ const sha256_1 = require("./util/bcrypto/sha256");
 const buffutils = require("./util/buffutils");
 const serializedPrefix = 'pubhi'; // public key hookedin
 class PublicKey {
-    static fromBech(serialized) {
-        const { prefix, words } = bech32.decode(serialized);
+    static fromPOD(data) {
+        if (typeof data !== 'string') {
+            return new Error('PublicKey.fromPOD expected a string');
+        }
+        const { prefix, words } = bech32.decode(data);
         if (prefix !== serializedPrefix) {
-            throw new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
+            return new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
         }
         return PublicKey.fromBytes(bech32.fromWords(words));
     }
@@ -30,7 +33,7 @@ class PublicKey {
         this.x = x;
         this.y = y;
     }
-    toBech() {
+    toPOD() {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
     }
     tweak(n) {

@@ -2,13 +2,9 @@ import Hash from './hash';
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 
-import SHA512 from './util/bcrypto/sha512';
-
 import * as POD from './pod';
 
 import * as buffutils from './util/buffutils';
-
-import Params from './params';
 
 export default class Hookin {
   public static fromPOD(data: any): Hookin | Error {
@@ -30,11 +26,10 @@ export default class Hookin {
       return new Error('invalid amount for hookin');
     }
 
-    const claimant = PublicKey.fromBech(data.claimant);
+    const claimant = PublicKey.fromPOD(data.claimant);
     if (claimant instanceof Error) {
       return claimant;
     }
-
 
     return new Hookin(txid, vout, amount, claimant);
   }
@@ -77,7 +72,7 @@ export default class Hookin {
   public toPOD(): POD.Hookin {
     return {
       amount: this.amount,
-      claimant: this.claimant.toBech(),
+      claimant: this.claimant.toPOD(),
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
     };

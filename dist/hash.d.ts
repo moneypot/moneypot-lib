@@ -4,8 +4,8 @@ export default class Hash {
         update(message: Uint8Array): void;
         digest(): Hash;
     };
-    static fromBech(serialized: string): Hash | Error;
+    static fromPOD(data: any): Hash | Error;
     buffer: Uint8Array;
     constructor(buff: Uint8Array);
-    toBech(): string;
+    toPOD(): string;
 }

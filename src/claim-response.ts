@@ -22,7 +22,7 @@ export default class ClaimResponse {
 
     const blindedReceipts: BlindedSignature[] = [];
     for (const bep of data.blindedReceipts) {
-      const blindedReceipt = BlindedSignature.fromBech(bep);
+      const blindedReceipt = BlindedSignature.fromPOD(bep);
       if (blindedReceipt instanceof Error) {
         return blindedReceipt;
       }
@@ -52,7 +52,7 @@ export default class ClaimResponse {
 
   public toPOD(): POD.ClaimResponse {
     return {
-      blindedReceipts: this.blindedReceipts.map(x => x.toBech()),
+      blindedReceipts: this.blindedReceipts.map(x => x.toPOD()),
       claimRequest: this.claimRequest.toPOD(),
     };
   }

@@ -26,21 +26,21 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
   public static fromPOD<T extends Acknowledgable<P>, P>(
     creator: (data: any) => T | Error,
     data: any
-  ): Acknowledged<T, P> {
+  ): Acknowledged<T, P> | Error {
     const contents = creator(data);
     if (contents instanceof Error) {
       throw contents;
     }
 
-    const acknowledgement = Signature.fromBech(data.acknowledgement);
+    const acknowledgement = Signature.fromPOD(data.acknowledgement);
     if (acknowledgement instanceof Error) {
-      throw acknowledgement;
+      return acknowledgement;
     }
 
     const hash = contents.hash();
 
     if (!acknowledgement.verify(hash.buffer, Params.acknowledgementPublicKey)) {
-      throw new Error('acknowledgement does not verify');
+      return new Error('acknowledgement does not verify');
     }
 
     return new Acknowledged<T, P>(contents, acknowledgement);
@@ -58,7 +58,7 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
 
   public toPOD(): POD.Acknowledged & P {
     return {
-      acknowledgement: this.acknowledgement.toBech(),
+      acknowledgement: this.acknowledgement.toPOD(),
       ...this.contents.toPOD(),
     };
   }

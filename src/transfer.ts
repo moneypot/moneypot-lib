@@ -1,15 +1,13 @@
-import assert from './util/assert'
+import assert from './util/assert';
 import Hash from './hash';
 import Signature from './signature';
 import * as POD from './pod';
-import Coin  from './coin';
+import Coin from './coin';
 import { muSig } from './util/ecc';
-import PublicKey from './public-key'
+import PublicKey from './public-key';
 import * as buffutils from './util/buffutils';
 
-
 export default class Transfer {
-
   static fromPOD(data: any): Transfer | Error {
     if (typeof data !== 'object') {
       return new Error('expected an object to deserialize a Transfer');
@@ -29,7 +27,7 @@ export default class Transfer {
 
     const bountyHashes: Hash[] = [];
     for (const b of data.bountyHashes) {
-      const bounty = Hash.fromBech(b);
+      const bounty = Hash.fromPOD(b);
       if (bounty instanceof Error) {
         return bounty;
       }
@@ -39,14 +37,12 @@ export default class Transfer {
       return new Error('bountyHashes are not in sorted order');
     }
 
-
-
-    const hookoutHash = data.hookout ?  Hash.fromBech(data.hookoutHash) : undefined;
+    const hookoutHash = data.hookout ? Hash.fromPOD(data.hookoutHash) : undefined;
     if (hookoutHash instanceof Error) {
       return hookoutHash;
     }
 
-    const authorization = Signature.fromBech(data.authorization);
+    const authorization = Signature.fromPOD(data.authorization);
     if (authorization instanceof Error) {
       return authorization;
     }
@@ -54,18 +50,19 @@ export default class Transfer {
     return new Transfer(inputs, bountyHashes, hookoutHash, authorization);
   }
 
-  readonly inputs: ReadonlyArray<Coin>
+  readonly inputs: ReadonlyArray<Coin>;
   readonly bountyHashes: ReadonlyArray<Hash>;
   readonly hookoutHash: Hash | undefined;
 
   authorization: Signature;
 
-  constructor(inputs: ReadonlyArray<Coin>,
-      bountyHashes: ReadonlyArray<Hash>,
-      hookoutHash: Hash | undefined,
-      authorization: Signature) {
-
-    assert(isHashSorted(inputs));    
+  constructor(
+    inputs: ReadonlyArray<Coin>,
+    bountyHashes: ReadonlyArray<Hash>,
+    hookoutHash: Hash | undefined,
+    authorization: Signature
+  ) {
+    assert(isHashSorted(inputs));
     this.inputs = inputs;
 
     assert(isSorted(bountyHashes));
@@ -106,15 +103,17 @@ export default class Transfer {
   hash(): Hash {
     return Transfer.hashOf(
       this.inputs.map(i => i.hash()),
-      this.bountyHashes, this.hookoutHash ? this.hookoutHash : undefined);
+      this.bountyHashes,
+      this.hookoutHash ? this.hookoutHash : undefined
+    );
   }
 
   toPOD(): POD.Transfer {
     return {
-      authorization: this.authorization.toBech(),
-      bountyHashes: this.bountyHashes.map(b => b.toBech()),
-      hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
-      inputs: this.inputs.map(i => i.toPOD()),      
+      authorization: this.authorization.toPOD(),
+      bountyHashes: this.bountyHashes.map(b => b.toPOD()),
+      hookoutHash: this.hookoutHash ? this.hookoutHash.toPOD() : undefined,
+      inputs: this.inputs.map(i => i.toPOD()),
     };
   }
 
@@ -128,7 +127,7 @@ export default class Transfer {
 
 function isHashSorted<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
   for (let i = 1; i < ts.length; i++) {
-    const c = buffutils.compare(ts[i-1].hash().buffer, ts[i].hash().buffer);
+    const c = buffutils.compare(ts[i - 1].hash().buffer, ts[i].hash().buffer);
     if (c > 0) {
       return false;
     }
@@ -139,7 +138,7 @@ function isHashSorted<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
 
 function isSorted<T extends { buffer: Uint8Array }>(ts: ReadonlyArray<T>) {
   for (let i = 1; i < ts.length; i++) {
-    const c = buffutils.compare(ts[i-1].buffer, ts[i].buffer);
+    const c = buffutils.compare(ts[i - 1].buffer, ts[i].buffer);
     if (c > 0) {
       return false;
     }
@@ -147,7 +146,6 @@ function isSorted<T extends { buffer: Uint8Array }>(ts: ReadonlyArray<T>) {
 
   return true;
 }
-
 
 // TODO: these sort can be optimized to check if it's already sorted, if so, just return original
 function hashSort<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
@@ -157,4 +155,3 @@ function hashSort<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
 function sort<T extends { buffer: Uint8Array }>(ts: ReadonlyArray<T>) {
   return [...ts].sort((a: T, b: T) => buffutils.compare(a.buffer, b.buffer));
 }
-

@@ -5,11 +5,15 @@ import * as bech32 from './util/bech32';
 const serializedPrefix = 'bshi'; // blinded signature hookedin
 
 export default class BlindedSignature {
-  public static fromBech(str: string) {
-    const { prefix, words } = bech32.decode(str);
+  public static fromPOD(data: any) {
+    if (typeof data !== 'string') {
+      return new Error('BlindedSignature.fromPOD expected a string');
+    }
+
+    const { prefix, words } = bech32.decode(data);
 
     if (prefix !== serializedPrefix) {
-      throw new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
+      return new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
     }
 
     return BlindedSignature.fromBytes(bech32.fromWords(words));
@@ -35,7 +39,7 @@ export default class BlindedSignature {
     return ecc.Scalar.toBytes(this.s);
   }
 
-  public toBech() {
+  public toPOD() {
     return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
   }
 }

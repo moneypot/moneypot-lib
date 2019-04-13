@@ -20,7 +20,7 @@ export default class ClaimRequest {
       return new Error('ClaimRequest.fromPOD expected an object');
     }
 
-    const claim = Hash.fromBech(data.claim);
+    const claim = Hash.fromPOD(data.claim);
     if (claim instanceof Error) {
       return claim;
     }
@@ -31,12 +31,12 @@ export default class ClaimRequest {
 
     const coins = [];
     for (const coin of data.coins) {
-      const blindingNonce = PublicKey.fromBech(coin.blindingNonce);
+      const blindingNonce = PublicKey.fromPOD(coin.blindingNonce);
       if (blindingNonce instanceof Error) {
         return blindingNonce;
       }
 
-      const blindedOwner = BlindedMessage.fromBech(coin.blindedOwner);
+      const blindedOwner = BlindedMessage.fromPOD(coin.blindedOwner);
       if (blindedOwner instanceof Error) {
         return blindedOwner;
       }
@@ -49,7 +49,7 @@ export default class ClaimRequest {
       coins.push({ blindingNonce, blindedOwner, magnitude });
     }
 
-    const authorization = Signature.fromBech(data.authorization);
+    const authorization = Signature.fromPOD(data.authorization);
     if (authorization instanceof Error) {
       return authorization;
     }
@@ -85,11 +85,11 @@ export default class ClaimRequest {
 
   public toPOD(): POD.ClaimRequest {
     return {
-      authorization: this.authorization.toBech(),
-      claim: this.claim.toBech(),
+      authorization: this.authorization.toPOD(),
+      claim: this.claim.toPOD(),
       coins: this.coins.map(coin => ({
-        blindingNonce: coin.blindingNonce.toBech(),
-        blindedOwner: coin.blindedOwner.toBech(),
+        blindingNonce: coin.blindingNonce.toPOD(),
+        blindedOwner: coin.blindedOwner.toPOD(),
         magnitude: coin.magnitude.toPOD(),
       })),
     };

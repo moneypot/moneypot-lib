@@ -33,12 +33,12 @@ export default class ClaimHookinRequest {
 
     const coins = [];
     for (const coin of data.coins) {
-      const blindingNonce = PublicKey.fromBech(coin.blindingNonce);
+      const blindingNonce = PublicKey.fromPOD(coin.blindingNonce);
       if (blindingNonce instanceof Error) {
         return blindingNonce;
       }
 
-      const blindedOwner = BlindedMessage.fromBech(coin.blindedOwner);
+      const blindedOwner = BlindedMessage.fromPOD(coin.blindedOwner);
       if (blindedOwner instanceof Error) {
         return blindedOwner;
       }
@@ -51,7 +51,7 @@ export default class ClaimHookinRequest {
       coins.push({ blindingNonce, blindedOwner, magnitude });
     }
 
-    const authorization = Signature.fromBech(data.authorization);
+    const authorization = Signature.fromPOD(data.authorization);
     if (authorization instanceof Error) {
       return authorization;
     }
@@ -79,11 +79,11 @@ export default class ClaimHookinRequest {
 
   public toPOD(): POD.ClaimHookinRequest {
     return {
-      authorization: this.authorization.toBech(),
+      authorization: this.authorization.toPOD(),
       claim: this.claim.toPOD(),
       coins: this.coins.map(coin => ({
-        blindingNonce: coin.blindingNonce.toBech(),
-        blindedOwner: coin.blindedOwner.toBech(),
+        blindingNonce: coin.blindingNonce.toPOD(),
+        blindedOwner: coin.blindedOwner.toPOD(),
         magnitude: coin.magnitude.toPOD(),
       })),
     };

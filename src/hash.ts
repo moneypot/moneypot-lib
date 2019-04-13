@@ -27,19 +27,18 @@ export default class Hash {
     }();
   }
 
-  public static fromBech(serialized: string): Hash | Error {
-    try {
-      const { prefix, words } = bech32.decode(serialized);
-
-      if (prefix !== serializedPrefix) {
-        return new Error('hash.fromBech expected prefix: ' + serializedPrefix + ' but got ' + prefix);
-      }
-
-      const bytes = bech32.fromWords(words);
-      return new Hash(bytes);
-    } catch (err) {
-      return err;
+  public static fromPOD(data: any): Hash | Error {
+    if (typeof data !== 'string') {
+      return new Error('Hash.fromPOD expected string');
     }
+    const { prefix, words } = bech32.decode(data);
+
+    if (prefix !== serializedPrefix) {
+      return new Error('hash.fromPOD expected prefix: ' + serializedPrefix + ' but got ' + prefix);
+    }
+
+    const bytes = bech32.fromWords(words);
+    return new Hash(bytes);
   }
   public buffer: Uint8Array;
 
@@ -48,7 +47,7 @@ export default class Hash {
     this.buffer = buff;
   }
 
-  public toBech() {
+  public toPOD() {
     const words = bech32.toWords(this.buffer);
     return bech32.encode(serializedPrefix, words);
   }

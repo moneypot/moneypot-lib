@@ -1,17 +1,16 @@
-import assert from './util/assert'
+import assert from './util/assert';
 import Hash from './hash';
 import Signature from './signature';
 import * as POD from './pod';
-import Coin  from './coin';
+import Coin from './coin';
 import Bounty from './bounty';
 import { Hookout } from '.';
 import { muSig } from './util/ecc';
-import PublicKey from './public-key'
+import PublicKey from './public-key';
 import Transfer from './transfer';
 import * as buffutils from './util/buffutils';
 
 export default class FullTransfer {
-
   static fromPOD(data: any): FullTransfer | Error {
     if (typeof data !== 'object') {
       return new Error('expected an object to deserialize a FullTransfer');
@@ -32,7 +31,6 @@ export default class FullTransfer {
     if (!isHashSorted(inputs)) {
       return new Error('inputs are not in sorted order');
     }
-    
 
     const bounties: Bounty[] = [];
     for (const b of data.bounties) {
@@ -42,7 +40,7 @@ export default class FullTransfer {
       }
       bounties.push(bounty);
     }
-    
+
     if (!isHashSorted(bounties)) {
       return new Error('bounties are not in sorted order');
     }
@@ -52,7 +50,7 @@ export default class FullTransfer {
       return hookout;
     }
 
-    const authorization = Signature.fromBech(data.authorization);
+    const authorization = Signature.fromPOD(data.authorization);
     if (authorization instanceof Error) {
       return authorization;
     }
@@ -60,42 +58,42 @@ export default class FullTransfer {
     return new FullTransfer(inputs, bounties, hookout, authorization);
   }
 
-  readonly inputs: ReadonlyArray<Coin>
-  readonly bounties: ReadonlyArray<Bounty>
+  readonly inputs: ReadonlyArray<Coin>;
+  readonly bounties: ReadonlyArray<Bounty>;
   readonly hookout: Hookout | undefined;
 
   authorization: Signature;
 
-  constructor(inputs:  ReadonlyArray<Coin>,
-      bounties: ReadonlyArray<Bounty>,
-      hookout: Hookout | undefined,
-      authorization: Signature) {
-
-    assert(isHashSorted(inputs));        
+  constructor(
+    inputs: ReadonlyArray<Coin>,
+    bounties: ReadonlyArray<Bounty>,
+    hookout: Hookout | undefined,
+    authorization: Signature
+  ) {
+    assert(isHashSorted(inputs));
     this.inputs = inputs;
-    
-    assert(isHashSorted(bounties));        
+
+    assert(isHashSorted(bounties));
     this.bounties = bounties;
 
     this.hookout = hookout;
     this.authorization = authorization;
   }
 
-
   hash(): Hash {
     return Transfer.hashOf(
-        this.inputs.map(i =>i.hash()),
-        this.bounties.map(b => b.hash()),
-        this.hookout ? this.hookout.hash() : undefined
+      this.inputs.map(i => i.hash()),
+      this.bounties.map(b => b.hash()),
+      this.hookout ? this.hookout.hash() : undefined
     );
   }
 
   toPOD(): POD.FullTransfer {
     return {
-      authorization: this.authorization.toBech(),
+      authorization: this.authorization.toPOD(),
       bounties: this.bounties.map(b => b.toPOD()),
       hookout: this.hookout ? this.hookout.toPOD() : undefined,
-      inputs: this.inputs.map(b => b.toPOD()),      
+      inputs: this.inputs.map(b => b.toPOD()),
     };
   }
 
@@ -127,20 +125,22 @@ export default class FullTransfer {
     const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
     const pubkey = new PublicKey(p.x, p.y);
 
-
     return this.authorization.verify(this.hash().buffer, pubkey);
   }
 
   prune(): Transfer {
     return new Transfer(
       this.inputs,
-      this.bounties.map(b => b.hash()), this.hookout ? this.hookout.hash() : undefined, this.authorization);
+      this.bounties.map(b => b.hash()),
+      this.hookout ? this.hookout.hash() : undefined,
+      this.authorization
+    );
   }
 }
 
 function isHashSorted<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
   for (let i = 1; i < ts.length; i++) {
-    const c = buffutils.compare(ts[i-1].hash().buffer, ts[i].hash().buffer);
+    const c = buffutils.compare(ts[i - 1].hash().buffer, ts[i].hash().buffer);
     if (c > 0) {
       return false;
     }

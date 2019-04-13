@@ -14,7 +14,7 @@ class Bounty {
         if (!POD.isAmount(amount)) {
             return new Error('Bounty should be a positive integer');
         }
-        const claimant = public_key_1.default.fromBech(data.claimant);
+        const claimant = public_key_1.default.fromPOD(data.claimant);
         if (claimant instanceof Error) {
             return claimant;
         }
@@ -33,7 +33,7 @@ class Bounty {
     toPOD() {
         return {
             amount: this.amount,
-            claimant: this.claimant.toBech(),
+            claimant: this.claimant.toPOD(),
             nonce: Buffutils.toHex(this.nonce),
         };
     }

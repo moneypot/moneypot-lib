@@ -25,7 +25,7 @@ class Transfer {
         }
         const bountyHashes = [];
         for (const b of data.bountyHashes) {
-            const bounty = hash_1.default.fromBech(b);
+            const bounty = hash_1.default.fromPOD(b);
             if (bounty instanceof Error) {
                 return bounty;
             }
@@ -34,11 +34,11 @@ class Transfer {
         if (!isSorted(bountyHashes)) {
             return new Error('bountyHashes are not in sorted order');
         }
-        const hookoutHash = data.hookout ? hash_1.default.fromBech(data.hookoutHash) : undefined;
+        const hookoutHash = data.hookout ? hash_1.default.fromPOD(data.hookoutHash) : undefined;
         if (hookoutHash instanceof Error) {
             return hookoutHash;
         }
-        const authorization = signature_1.default.fromBech(data.authorization);
+        const authorization = signature_1.default.fromPOD(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
@@ -78,9 +78,9 @@ class Transfer {
     }
     toPOD() {
         return {
-            authorization: this.authorization.toBech(),
-            bountyHashes: this.bountyHashes.map(b => b.toBech()),
-            hookoutHash: this.hookoutHash ? this.hookoutHash.toBech() : undefined,
+            authorization: this.authorization.toPOD(),
+            bountyHashes: this.bountyHashes.map(b => b.toPOD()),
+            hookoutHash: this.hookoutHash ? this.hookoutHash.toPOD() : undefined,
             inputs: this.inputs.map(i => i.toPOD()),
         };
     }

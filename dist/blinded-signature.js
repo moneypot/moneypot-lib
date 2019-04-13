@@ -5,10 +5,13 @@ const ecc = require("./util/ecc");
 const bech32 = require("./util/bech32");
 const serializedPrefix = 'bshi'; // blinded signature hookedin
 class BlindedSignature {
-    static fromBech(str) {
-        const { prefix, words } = bech32.decode(str);
+    static fromPOD(data) {
+        if (typeof data !== 'string') {
+            return new Error('BlindedSignature.fromPOD expected a string');
+        }
+        const { prefix, words } = bech32.decode(data);
         if (prefix !== serializedPrefix) {
-            throw new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
+            return new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
         }
         return BlindedSignature.fromBytes(bech32.fromWords(words));
     }
@@ -26,7 +29,7 @@ class BlindedSignature {
     get buffer() {
         return ecc.Scalar.toBytes(this.s);
     }
-    toBech() {
+    toPOD() {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
     }
 }

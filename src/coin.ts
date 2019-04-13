@@ -7,7 +7,7 @@ import { Params } from '.';
 
 export default class Coin {
   public static fromPOD(data: any): Coin | Error {
-    const owner = PublicKey.fromBech(data.owner);
+    const owner = PublicKey.fromPOD(data.owner);
     if (owner instanceof Error) {
       return owner;
     }
@@ -17,7 +17,7 @@ export default class Coin {
       return magnitude;
     }
 
-    const receipt = Signature.fromBech(data.receipt);
+    const receipt = Signature.fromPOD(data.receipt);
     if (receipt instanceof Error) {
       return receipt;
     }
@@ -41,14 +41,14 @@ export default class Coin {
 
   public toPOD(): POD.Coin {
     return {
-      receipt: this.receipt.toBech(),
+      receipt: this.receipt.toPOD(),
       magnitude: this.magnitude.toPOD(),
-      owner: this.owner.toBech(),
+      owner: this.owner.toPOD(),
     };
   }
 
   public get amount(): number {
-    return this.magnitude.toAmount()
+    return this.magnitude.toAmount();
   }
 
   public isValid(): boolean {

@@ -10,7 +10,7 @@ class ClaimRequest {
         if (typeof data !== 'object') {
             return new Error('ClaimRequest.fromPOD expected an object');
         }
-        const claim = hash_1.default.fromBech(data.claim);
+        const claim = hash_1.default.fromPOD(data.claim);
         if (claim instanceof Error) {
             return claim;
         }
@@ -19,11 +19,11 @@ class ClaimRequest {
         }
         const coins = [];
         for (const coin of data.coins) {
-            const blindingNonce = public_key_1.default.fromBech(coin.blindingNonce);
+            const blindingNonce = public_key_1.default.fromPOD(coin.blindingNonce);
             if (blindingNonce instanceof Error) {
                 return blindingNonce;
             }
-            const blindedOwner = blinded_message_1.default.fromBech(coin.blindedOwner);
+            const blindedOwner = blinded_message_1.default.fromPOD(coin.blindedOwner);
             if (blindedOwner instanceof Error) {
                 return blindedOwner;
             }
@@ -33,7 +33,7 @@ class ClaimRequest {
             }
             coins.push({ blindingNonce, blindedOwner, magnitude });
         }
-        const authorization = signature_1.default.fromBech(data.authorization);
+        const authorization = signature_1.default.fromPOD(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
@@ -59,11 +59,11 @@ class ClaimRequest {
     }
     toPOD() {
         return {
-            authorization: this.authorization.toBech(),
-            claim: this.claim.toBech(),
+            authorization: this.authorization.toPOD(),
+            claim: this.claim.toPOD(),
             coins: this.coins.map(coin => ({
-                blindingNonce: coin.blindingNonce.toBech(),
-                blindedOwner: coin.blindedOwner.toBech(),
+                blindingNonce: coin.blindingNonce.toPOD(),
+                blindedOwner: coin.blindedOwner.toPOD(),
                 magnitude: coin.magnitude.toPOD(),
             })),
         };

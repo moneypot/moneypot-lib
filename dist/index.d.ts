@@ -7,7 +7,6 @@ export { default as BlindedSignature } from './blinded-signature';
 export { default as Hash } from './hash';
 export { default as PrivateKey } from './private-key';
 export { default as PublicKey } from './public-key';
-export { default as Address } from './address';
 export { default as Signature } from './signature';
 export { default as Coin } from './coin';
 export { default as Hookin } from './hookin';

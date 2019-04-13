@@ -15,7 +15,7 @@ export default class Bounty {
       return new Error('Bounty should be a positive integer');
     }
 
-    const claimant = PublicKey.fromBech(data.claimant);
+    const claimant = PublicKey.fromPOD(data.claimant);
     if (claimant instanceof Error) {
       return claimant;
     }
@@ -42,7 +42,7 @@ export default class Bounty {
   public toPOD(): POD.Bounty {
     return {
       amount: this.amount,
-      claimant: this.claimant.toBech(),
+      claimant: this.claimant.toPOD(),
       nonce: Buffutils.toHex(this.nonce),
     };
   }

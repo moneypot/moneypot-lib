@@ -11,11 +11,15 @@ import * as buffutils from './util/buffutils';
 const serializedPrefix = 'pubhi'; // public key hookedin
 
 export default class PublicKey {
-  public static fromBech(serialized: string) {
-    const { prefix, words } = bech32.decode(serialized);
+  public static fromPOD(data: any): PublicKey | Error {
+    if (typeof data !== 'string') {
+      return new Error('PublicKey.fromPOD expected a string');
+    }
+
+    const { prefix, words } = bech32.decode(data);
 
     if (prefix !== serializedPrefix) {
-      throw new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
+      return new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
     }
 
     return PublicKey.fromBytes(bech32.fromWords(words));
@@ -42,7 +46,7 @@ export default class PublicKey {
     this.y = y;
   }
 
-  public toBech() {
+  public toPOD() {
     return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
   }
 

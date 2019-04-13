@@ -7,7 +7,7 @@ const magnitude_1 = require("./magnitude");
 const _1 = require(".");
 class Coin {
     static fromPOD(data) {
-        const owner = public_key_1.default.fromBech(data.owner);
+        const owner = public_key_1.default.fromPOD(data.owner);
         if (owner instanceof Error) {
             return owner;
         }
@@ -15,7 +15,7 @@ class Coin {
         if (magnitude instanceof Error) {
             return magnitude;
         }
-        const receipt = signature_1.default.fromBech(data.receipt);
+        const receipt = signature_1.default.fromPOD(data.receipt);
         if (receipt instanceof Error) {
             return receipt;
         }
@@ -31,9 +31,9 @@ class Coin {
     }
     toPOD() {
         return {
-            receipt: this.receipt.toBech(),
+            receipt: this.receipt.toPOD(),
             magnitude: this.magnitude.toPOD(),
-            owner: this.owner.toBech(),
+            owner: this.owner.toPOD(),
         };
     }
     get amount() {

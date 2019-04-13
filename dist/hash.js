@@ -23,24 +23,22 @@ class Hash {
             }
         }();
     }
-    static fromBech(serialized) {
-        try {
-            const { prefix, words } = bech32.decode(serialized);
-            if (prefix !== serializedPrefix) {
-                return new Error('hash.fromBech expected prefix: ' + serializedPrefix + ' but got ' + prefix);
-            }
-            const bytes = bech32.fromWords(words);
-            return new Hash(bytes);
+    static fromPOD(data) {
+        if (typeof data !== 'string') {
+            return new Error('Hash.fromPOD expected string');
         }
-        catch (err) {
-            return err;
+        const { prefix, words } = bech32.decode(data);
+        if (prefix !== serializedPrefix) {
+            return new Error('hash.fromPOD expected prefix: ' + serializedPrefix + ' but got ' + prefix);
         }
+        const bytes = bech32.fromWords(words);
+        return new Hash(bytes);
     }
     constructor(buff) {
         assert.equal(buff.length, 32);
         this.buffer = buff;
     }
-    toBech() {
+    toPOD() {
         const words = bech32.toWords(this.buffer);
         return bech32.encode(serializedPrefix, words);
     }

@@ -15,10 +15,13 @@ class Signature {
         const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message);
         return new Signature(sig.r, sig.s);
     }
-    static fromBech(serialized) {
-        const { prefix, words } = bech32.decode(serialized);
+    static fromPOD(data) {
+        if (typeof data !== 'string') {
+            return new Error('Signature.fromPOD expected string');
+        }
+        const { prefix, words } = bech32.decode(data);
         if (prefix !== serializedPrefix) {
-            throw new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
+            return new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
         }
         return Signature.fromBytes(bech32.fromWords(words));
     }
@@ -44,7 +47,7 @@ class Signature {
     verify(message, pubkey) {
         return ecc.verify(pubkey, message, this);
     }
-    toBech() {
+    toPOD() {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
     }
 }

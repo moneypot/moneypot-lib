@@ -10,7 +10,7 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
     acknowledgement: Signature;
     contents: T;
     static acknowledge<T extends Acknowledgable<P>, P>(contents: T, acknowledgeKey: PrivateKey): Acknowledged<T, P>;
-    static fromPOD<T extends Acknowledgable<P>, P>(creator: (data: any) => T | Error, data: any): Acknowledged<T, P>;
+    static fromPOD<T extends Acknowledgable<P>, P>(creator: (data: any) => T | Error, data: any): Acknowledged<T, P> | Error;
     hash(): Hash;
     constructor(contents: T, acknowledgement: Signature);
     toPOD(): POD.Acknowledged & P;

@@ -8,10 +8,13 @@ const wif = require("./util/wif");
 const random_1 = require("./util/random");
 const serializedPrefix = 'privhi'; // private key hookedin
 class PrivateKey {
-    static fromBech(str) {
-        const { prefix, words } = bech32.decode(str);
+    static fromPOD(data) {
+        if (typeof data !== 'string') {
+            return new Error('PrivateKey.fromPOD expected a string');
+        }
+        const { prefix, words } = bech32.decode(data);
         if (prefix !== serializedPrefix) {
-            throw new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
+            return new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
         }
         return PrivateKey.fromBytes(bech32.fromWords(words));
     }
@@ -36,7 +39,7 @@ class PrivateKey {
     get buffer() {
         return ecc.Scalar.toBytes(this.scalar);
     }
-    toBech() {
+    toPOD() {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
     }
     toPublicKey() {

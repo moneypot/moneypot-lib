@@ -5,13 +5,15 @@ import * as ecc from './util/ecc/index';
 const serializedPrefix = 'bmhi'; // blinded message hookedin
 
 export default class BlindedMessage {
-  public static fromBech(str: string) {
-    assert.equal(typeof str, 'string');
+  public static fromPOD(data: any): BlindedMessage | Error {
+    if (typeof data !== 'string') {
+      return new Error('BlindedMessage.fromPOD expected a string');
+    }
 
-    const { prefix, words } = bech32.decode(str);
+    const { prefix, words } = bech32.decode(data);
 
     if (prefix !== serializedPrefix) {
-      throw new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
+      return new Error('Got prefix: ' + prefix + ' but expected ' + serializedPrefix);
     }
 
     return BlindedMessage.fromBytes(bech32.fromWords(words));
@@ -35,7 +37,7 @@ export default class BlindedMessage {
     return ecc.Scalar.toBytes(this.c);
   }
 
-  public toBech(): string {
+  public toPOD(): string {
     return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
   }
 }

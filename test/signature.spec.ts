@@ -10,14 +10,14 @@ describe('signature', () => {
 
     const sig = Signature.compute(message, priv);
 
-    const serialized = sig.toBech();
+    const serialized = sig.toPOD();
 
-    const sig2 = Signature.fromBech(serialized);
+    const sig2 = Signature.fromPOD(serialized);
     if (sig2 instanceof Error) {
       throw sig2;
     }
 
-    strictEqual(sig2.toBech(), serialized);
+    strictEqual(sig2.toPOD(), serialized);
 
     strictEqual(sig2.verify(message, priv.toPublicKey()), true);
   });

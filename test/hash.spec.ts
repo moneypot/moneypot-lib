@@ -9,9 +9,9 @@ describe('hash', () => {
     const output = 'd1596e0d4280f2bd2d311ce0819f23bde0dc834d8254b92924088de94c38d922';
 
     const hash = Hash.fromMessage('test', input);
-    const serialized = hash.toBech();
+    const serialized = hash.toPOD();
 
-    const hash2 = Hash.fromBech(serialized);
+    const hash2 = Hash.fromPOD(serialized);
     if (hash2 instanceof Error) {
       throw hash2;
     }
