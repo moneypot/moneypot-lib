@@ -9,7 +9,7 @@ export default class PublicKey {
     constructor(x: ecc.Scalar, y: ecc.Scalar);
     toPOD(): string;
     tweak(n: PublicKey): PublicKey;
-    derive(n: Uint8Array): PublicKey;
+    derive(n: Uint8Array | number | bigint): PublicKey;
     hash(): Hash;
     toBitcoinAddress(testnet?: boolean): string;
 }

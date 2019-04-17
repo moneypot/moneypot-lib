@@ -5,6 +5,7 @@ import PublicKey from './public-key';
 import * as bech32 from './util/bech32';
 import * as wif from './util/wif';
 import random from './util/random';
+import * as Buffutils from './util/buffutils';
 
 const serializedPrefix = 'privhi'; // private key hookedin
 
@@ -72,8 +73,19 @@ export default class PrivateKey {
     return wif.encode(prefix, this.buffer, true);
   }
 
-  public derive(n: Uint8Array): PrivateKey {
-    const tweakBy = Hash.fromMessage('derive', this.toPublicKey().buffer, n).buffer;
+  public derive(n: Uint8Array | number | bigint): PrivateKey {
+    let nBuff;
+    if (n instanceof Uint8Array) {
+      nBuff = n;
+    } else if (typeof n === 'bigint') {
+      nBuff = Buffutils.fromBigInt(n);
+    } else if (typeof n === 'number') {
+      nBuff = Buffutils.fromVarInt(n);
+    } else {
+      throw new Error('unexpected type for deriving with. must be a Uint8Array | number | bigint');
+    }
+
+    const tweakBy = Hash.fromMessage('derive', this.toPublicKey().buffer, nBuff).buffer;
     const tweakByN = ecc.Scalar.fromBytes(tweakBy);
     if (tweakByN instanceof Error) {
       throw tweakByN;

@@ -6,6 +6,7 @@ const bech32 = require("./util/bech32");
 const ripemd160_1 = require("./util/bcrypto/ripemd160");
 const sha256_1 = require("./util/bcrypto/sha256");
 const buffutils = require("./util/buffutils");
+const _1 = require(".");
 const serializedPrefix = 'pubhi'; // public key hookedin
 class PublicKey {
     static fromPOD(data) {
@@ -41,7 +42,20 @@ class PublicKey {
         return new PublicKey(newQ.x, newQ.y);
     }
     derive(n) {
-        const tweakBy = hash_1.default.fromMessage('derive', this.buffer, n).buffer;
+        let nBuff;
+        if (n instanceof Uint8Array) {
+            nBuff = n;
+        }
+        else if (typeof n === 'bigint') {
+            nBuff = _1.Buffutils.fromBigInt(n);
+        }
+        else if (typeof n === 'number') {
+            nBuff = _1.Buffutils.fromVarInt(n);
+        }
+        else {
+            throw new Error('unexpected type for deriving with. must be a Uint8Array | number | bigint');
+        }
+        const tweakBy = hash_1.default.fromMessage('derive', this.buffer, nBuff).buffer;
         const tweakByN = ecc.Scalar.fromBytes(tweakBy);
         if (tweakByN instanceof Error) {
             throw tweakByN;

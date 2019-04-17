@@ -7,6 +7,7 @@ import RIPEMD160 from './util/bcrypto/ripemd160';
 import SHA256 from './util/bcrypto/sha256';
 
 import * as buffutils from './util/buffutils';
+import { Buffutils } from '.';
 
 const serializedPrefix = 'pubhi'; // public key hookedin
 
@@ -56,8 +57,19 @@ export default class PublicKey {
     return new PublicKey(newQ.x, newQ.y);
   }
 
-  public derive(n: Uint8Array): PublicKey {
-    const tweakBy = Hash.fromMessage('derive', this.buffer, n).buffer;
+  public derive(n: Uint8Array | number | bigint): PublicKey {
+    let nBuff;
+    if (n instanceof Uint8Array) {
+      nBuff = n;
+    } else if (typeof n === 'bigint') {
+      nBuff = Buffutils.fromBigInt(n);
+    } else if (typeof n === 'number') {
+      nBuff = Buffutils.fromVarInt(n);
+    } else {
+      throw new Error('unexpected type for deriving with. must be a Uint8Array | number | bigint');
+    }
+
+    const tweakBy = Hash.fromMessage('derive', this.buffer, nBuff).buffer;
     const tweakByN = ecc.Scalar.fromBytes(tweakBy);
     if (tweakByN instanceof Error) {
       throw tweakByN;
