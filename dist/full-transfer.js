@@ -28,60 +28,71 @@ class FullTransfer {
         if (!isHashSorted(inputs)) {
             return new Error('inputs are not in sorted order');
         }
-        const bounties = [];
-        for (const b of data.bounties) {
-            const bounty = bounty_1.default.fromPOD(b);
-            if (bounty instanceof Error) {
-                return bounty;
+        let output;
+        if (typeof data.output !== 'object') {
+            return new Error('expected object for data in FullTransfer');
+        }
+        if (data.output.kind === 'Bounty') {
+            output = bounty_1.default.fromPOD(data.output);
+            if (output instanceof Error) {
+                return output;
             }
-            bounties.push(bounty);
         }
-        if (!isHashSorted(bounties)) {
-            return new Error('bounties are not in sorted order');
+        else if (data.output.kind === 'Hookout') {
+            output = _1.Hookout.fromPOD(data.output);
+            if (output instanceof Error) {
+                return output;
+            }
         }
-        const hookout = data.hookout ? _1.Hookout.fromPOD(data.hookout) : undefined;
-        if (hookout instanceof Error) {
-            return hookout;
+        else {
+            return new Error('unexpected output kind');
+        }
+        const change = bounty_1.default.fromPOD(data.output);
+        if (change instanceof Error) {
+            return change;
         }
         const authorization = signature_1.default.fromPOD(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new FullTransfer(inputs, bounties, hookout, authorization);
+        return new FullTransfer(inputs, output, change, authorization);
     }
-    constructor(inputs, bounties, hookout, authorization) {
+    constructor(inputs, output, change, authorization) {
         assert_1.default(isHashSorted(inputs));
         this.inputs = inputs;
-        assert_1.default(isHashSorted(bounties));
-        this.bounties = bounties;
-        this.hookout = hookout;
+        this.change = change;
+        this.output = output;
         this.authorization = authorization;
     }
     hash() {
-        return transfer_1.default.hashOf(this.inputs.map(i => i.hash()), this.bounties.map(b => b.hash()), this.hookout ? this.hookout.hash() : undefined);
+        return transfer_1.default.hashOf(this.inputs.map(i => i.hash()), this.output.hash(), this.change.hash());
     }
     toPOD() {
+        let output;
+        if (this.output instanceof bounty_1.default) {
+            output = { kind: 'Bounty', ...this.output.toPOD() };
+        }
+        else if (this.output instanceof _1.Hookout) {
+            output = { kind: 'Hookout', ...this.output.toPOD() };
+        }
+        else {
+            const _impossible = this.output;
+            throw new Error('unreachable!');
+        }
         return {
-            authorization: this.authorization.toPOD(),
-            bounties: this.bounties.map(b => b.toPOD()),
-            hookout: this.hookout ? this.hookout.toPOD() : undefined,
             inputs: this.inputs.map(b => b.toPOD()),
+            output,
+            change: this.change.toPOD(),
+            authorization: this.authorization.toPOD(),
         };
     }
     fee() {
-        return this.inputAmount() - this.outputAmount();
+        return this.inputAmount() - (this.output.amount + this.change.amount);
     }
     inputAmount() {
         let amount = 0;
         for (const coin of this.inputs) {
             amount += coin.amount;
-        }
-        return amount;
-    }
-    outputAmount() {
-        let amount = this.hookout ? this.hookout.amount : 0;
-        for (const bounty of this.bounties) {
-            amount += bounty.amount;
         }
         return amount;
     }
@@ -94,7 +105,7 @@ class FullTransfer {
         return this.authorization.verify(this.hash().buffer, pubkey);
     }
     prune() {
-        return new transfer_1.default(this.inputs, this.bounties.map(b => b.hash()), this.hookout ? this.hookout.hash() : undefined, this.authorization);
+        return new transfer_1.default(this.inputs, this.output.hash(), this.change.hash(), this.authorization);
     }
 }
 exports.default = FullTransfer;

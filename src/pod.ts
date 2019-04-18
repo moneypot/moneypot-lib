@@ -62,17 +62,25 @@ export interface Hookin {
   claimant: string;
 }
 
+export interface KindedHookout extends Hookout {
+  kind: 'Hookout';
+}
+
+export interface KindedBounty extends Bounty {
+  kind: 'Bounty';
+}
+
 export interface FullTransfer {
   inputs: Coin[];
-  bounties: Bounty[];
-  hookout: Hookout | undefined;
+  output: KindedHookout | KindedBounty;
+  change: Bounty;
   authorization: string; // bech32 pubkey
 }
 
 export interface Transfer {
   inputs: Coin[];
-  bountyHashes: string[];
-  hookoutHash: string | undefined;
+  outputHash: string;
+  changeHash: string;
   authorization: string; // bech32 pubkey
 }
 

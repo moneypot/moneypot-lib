@@ -25,21 +25,14 @@ export default class Transfer {
       return new Error('inputs are not in sorted order');
     }
 
-    const bountyHashes: Hash[] = [];
-    for (const b of data.bountyHashes) {
-      const bounty = Hash.fromPOD(b);
-      if (bounty instanceof Error) {
-        return bounty;
-      }
-      bountyHashes.push(bounty);
-    }
-    if (!isSorted(bountyHashes)) {
-      return new Error('bountyHashes are not in sorted order');
+    const outputHash = Hash.fromPOD(data.outputHash);
+    if (outputHash instanceof Error) {
+      return outputHash;
     }
 
-    const hookoutHash = data.hookout ? Hash.fromPOD(data.hookoutHash) : undefined;
-    if (hookoutHash instanceof Error) {
-      return hookoutHash;
+    const changeHash = Hash.fromPOD(data.changeHash);
+    if (changeHash instanceof Error) {
+      return changeHash;
     }
 
     const authorization = Signature.fromPOD(data.authorization);
@@ -47,28 +40,22 @@ export default class Transfer {
       return authorization;
     }
 
-    return new Transfer(inputs, bountyHashes, hookoutHash, authorization);
+    return new Transfer(inputs, outputHash, changeHash, authorization);
   }
 
   readonly inputs: ReadonlyArray<Coin>;
-  readonly bountyHashes: ReadonlyArray<Hash>;
-  readonly hookoutHash: Hash | undefined;
+  readonly outputHash: Hash;
+  readonly changeHash: Hash;
 
   authorization: Signature;
 
-  constructor(
-    inputs: ReadonlyArray<Coin>,
-    bountyHashes: ReadonlyArray<Hash>,
-    hookoutHash: Hash | undefined,
-    authorization: Signature
-  ) {
+  constructor(inputs: ReadonlyArray<Coin>, outputHash: Hash, changeHash: Hash, authorization: Signature) {
     assert(isHashSorted(inputs));
     this.inputs = inputs;
 
-    assert(isSorted(bountyHashes));
-    this.bountyHashes = bountyHashes;
+    this.outputHash = outputHash;
+    this.changeHash = changeHash;
 
-    this.hookoutHash = hookoutHash;
     this.authorization = authorization;
   }
 
@@ -80,7 +67,7 @@ export default class Transfer {
     hashes.sort((a: Hash, b: Hash) => buffutils.compare(a.buffer, b.buffer));
   }
 
-  static hashOf(inputs: ReadonlyArray<Hash>, bounties: ReadonlyArray<Hash>, hookout: Hash | undefined) {
+  static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, change: Hash) {
     const h = Hash.newBuilder('Transfer');
 
     assert(isSorted(inputs));
@@ -88,31 +75,21 @@ export default class Transfer {
       h.update(input.buffer);
     }
 
-    assert(isSorted(bounties));
-    for (const bounty of bounties) {
-      h.update(bounty.buffer);
-    }
-
-    if (hookout) {
-      h.update(hookout.buffer);
-    }
+    h.update(output.buffer);
+    h.update(change.buffer);
 
     return h.digest();
   }
 
   hash(): Hash {
-    return Transfer.hashOf(
-      this.inputs.map(i => i.hash()),
-      this.bountyHashes,
-      this.hookoutHash ? this.hookoutHash : undefined
-    );
+    return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.changeHash);
   }
 
   toPOD(): POD.Transfer {
     return {
       authorization: this.authorization.toPOD(),
-      bountyHashes: this.bountyHashes.map(b => b.toPOD()),
-      hookoutHash: this.hookoutHash ? this.hookoutHash.toPOD() : undefined,
+      outputHash: this.outputHash.toPOD(),
+      changeHash: this.changeHash.toPOD(),
       inputs: this.inputs.map(i => i.toPOD()),
     };
   }

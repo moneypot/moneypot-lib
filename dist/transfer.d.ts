@@ -5,15 +5,15 @@ import Coin from './coin';
 export default class Transfer {
     static fromPOD(data: any): Transfer | Error;
     readonly inputs: ReadonlyArray<Coin>;
-    readonly bountyHashes: ReadonlyArray<Hash>;
-    readonly hookoutHash: Hash | undefined;
+    readonly outputHash: Hash;
+    readonly changeHash: Hash;
     authorization: Signature;
-    constructor(inputs: ReadonlyArray<Coin>, bountyHashes: ReadonlyArray<Hash>, hookoutHash: Hash | undefined, authorization: Signature);
+    constructor(inputs: ReadonlyArray<Coin>, outputHash: Hash, changeHash: Hash, authorization: Signature);
     static sort(hashable: {
         hash(): Hash;
     }[]): void;
     static sortHashes(hashes: Hash[]): void;
-    static hashOf(inputs: ReadonlyArray<Hash>, bounties: ReadonlyArray<Hash>, hookout: Hash | undefined): Hash;
+    static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, change: Hash): Hash;
     hash(): Hash;
     toPOD(): POD.Transfer;
     isValid(): boolean;

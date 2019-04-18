@@ -23,33 +23,25 @@ class Transfer {
         if (!isHashSorted(inputs)) {
             return new Error('inputs are not in sorted order');
         }
-        const bountyHashes = [];
-        for (const b of data.bountyHashes) {
-            const bounty = hash_1.default.fromPOD(b);
-            if (bounty instanceof Error) {
-                return bounty;
-            }
-            bountyHashes.push(bounty);
+        const outputHash = hash_1.default.fromPOD(data.outputHash);
+        if (outputHash instanceof Error) {
+            return outputHash;
         }
-        if (!isSorted(bountyHashes)) {
-            return new Error('bountyHashes are not in sorted order');
-        }
-        const hookoutHash = data.hookout ? hash_1.default.fromPOD(data.hookoutHash) : undefined;
-        if (hookoutHash instanceof Error) {
-            return hookoutHash;
+        const changeHash = hash_1.default.fromPOD(data.changeHash);
+        if (changeHash instanceof Error) {
+            return changeHash;
         }
         const authorization = signature_1.default.fromPOD(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new Transfer(inputs, bountyHashes, hookoutHash, authorization);
+        return new Transfer(inputs, outputHash, changeHash, authorization);
     }
-    constructor(inputs, bountyHashes, hookoutHash, authorization) {
+    constructor(inputs, outputHash, changeHash, authorization) {
         assert_1.default(isHashSorted(inputs));
         this.inputs = inputs;
-        assert_1.default(isSorted(bountyHashes));
-        this.bountyHashes = bountyHashes;
-        this.hookoutHash = hookoutHash;
+        this.outputHash = outputHash;
+        this.changeHash = changeHash;
         this.authorization = authorization;
     }
     static sort(hashable) {
@@ -58,29 +50,24 @@ class Transfer {
     static sortHashes(hashes) {
         hashes.sort((a, b) => buffutils.compare(a.buffer, b.buffer));
     }
-    static hashOf(inputs, bounties, hookout) {
+    static hashOf(inputs, output, change) {
         const h = hash_1.default.newBuilder('Transfer');
         assert_1.default(isSorted(inputs));
         for (const input of inputs) {
             h.update(input.buffer);
         }
-        assert_1.default(isSorted(bounties));
-        for (const bounty of bounties) {
-            h.update(bounty.buffer);
-        }
-        if (hookout) {
-            h.update(hookout.buffer);
-        }
+        h.update(output.buffer);
+        h.update(change.buffer);
         return h.digest();
     }
     hash() {
-        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.bountyHashes, this.hookoutHash ? this.hookoutHash : undefined);
+        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.changeHash);
     }
     toPOD() {
         return {
             authorization: this.authorization.toPOD(),
-            bountyHashes: this.bountyHashes.map(b => b.toPOD()),
-            hookoutHash: this.hookoutHash ? this.hookoutHash.toPOD() : undefined,
+            outputHash: this.outputHash.toPOD(),
+            changeHash: this.changeHash.toPOD(),
             inputs: this.inputs.map(i => i.toPOD()),
         };
     }

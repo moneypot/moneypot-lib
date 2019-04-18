@@ -32,22 +32,28 @@ export default class FullTransfer {
       return new Error('inputs are not in sorted order');
     }
 
-    const bounties: Bounty[] = [];
-    for (const b of data.bounties) {
-      const bounty = Bounty.fromPOD(b);
-      if (bounty instanceof Error) {
-        return bounty;
+    let output;
+
+    if (typeof data.output !== 'object') {
+      return new Error('expected object for data in FullTransfer');
+    }
+    if (data.output.kind === 'Bounty') {
+      output = Bounty.fromPOD(data.output);
+      if (output instanceof Error) {
+        return output;
       }
-      bounties.push(bounty);
+    } else if (data.output.kind === 'Hookout') {
+      output = Hookout.fromPOD(data.output);
+      if (output instanceof Error) {
+        return output;
+      }
+    } else {
+      return new Error('unexpected output kind');
     }
 
-    if (!isHashSorted(bounties)) {
-      return new Error('bounties are not in sorted order');
-    }
-
-    const hookout = data.hookout ? Hookout.fromPOD(data.hookout) : undefined;
-    if (hookout instanceof Error) {
-      return hookout;
+    const change = Bounty.fromPOD(data.output);
+    if (change instanceof Error) {
+      return change;
     }
 
     const authorization = Signature.fromPOD(data.authorization);
@@ -55,64 +61,56 @@ export default class FullTransfer {
       return authorization;
     }
 
-    return new FullTransfer(inputs, bounties, hookout, authorization);
+    return new FullTransfer(inputs, output, change, authorization);
   }
 
   readonly inputs: ReadonlyArray<Coin>;
-  readonly bounties: ReadonlyArray<Bounty>;
-  readonly hookout: Hookout | undefined;
+  readonly output: Hookout | Bounty;
+  readonly change: Bounty;
 
   authorization: Signature;
 
-  constructor(
-    inputs: ReadonlyArray<Coin>,
-    bounties: ReadonlyArray<Bounty>,
-    hookout: Hookout | undefined,
-    authorization: Signature
-  ) {
+  constructor(inputs: ReadonlyArray<Coin>, output: Hookout | Bounty, change: Bounty, authorization: Signature) {
     assert(isHashSorted(inputs));
     this.inputs = inputs;
 
-    assert(isHashSorted(bounties));
-    this.bounties = bounties;
+    this.change = change;
 
-    this.hookout = hookout;
+    this.output = output;
     this.authorization = authorization;
   }
 
   hash(): Hash {
-    return Transfer.hashOf(
-      this.inputs.map(i => i.hash()),
-      this.bounties.map(b => b.hash()),
-      this.hookout ? this.hookout.hash() : undefined
-    );
+    return Transfer.hashOf(this.inputs.map(i => i.hash()), this.output.hash(), this.change.hash());
   }
 
   toPOD(): POD.FullTransfer {
+    let output: POD.KindedBounty | POD.KindedHookout;
+    if (this.output instanceof Bounty) {
+      output = { kind: 'Bounty', ...this.output.toPOD() };
+    } else if (this.output instanceof Hookout) {
+      output = { kind: 'Hookout', ...this.output.toPOD() };
+    } else {
+      const _impossible: never = this.output;
+      throw new Error('unreachable!');
+    }
+
     return {
-      authorization: this.authorization.toPOD(),
-      bounties: this.bounties.map(b => b.toPOD()),
-      hookout: this.hookout ? this.hookout.toPOD() : undefined,
       inputs: this.inputs.map(b => b.toPOD()),
+      output,
+      change: this.change.toPOD(),
+      authorization: this.authorization.toPOD(),
     };
   }
 
   fee(): number {
-    return this.inputAmount() - this.outputAmount();
+    return this.inputAmount() - (this.output.amount + this.change.amount);
   }
 
   inputAmount(): number {
     let amount = 0;
     for (const coin of this.inputs) {
       amount += coin.amount;
-    }
-    return amount;
-  }
-
-  outputAmount(): number {
-    let amount = this.hookout ? this.hookout.amount : 0;
-    for (const bounty of this.bounties) {
-      amount += bounty.amount;
     }
     return amount;
   }
@@ -129,12 +127,7 @@ export default class FullTransfer {
   }
 
   prune(): Transfer {
-    return new Transfer(
-      this.inputs,
-      this.bounties.map(b => b.hash()),
-      this.hookout ? this.hookout.hash() : undefined,
-      this.authorization
-    );
+    return new Transfer(this.inputs, this.output.hash(), this.change.hash(), this.authorization);
   }
 }
 
