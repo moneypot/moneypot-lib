@@ -1,6 +1,6 @@
 {
   "name": "hookedin-lib",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a library for hookedin",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,13 +14,13 @@
   "dependencies": {},
   "devDependencies": {
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.27",
+    "@types/node": "^10.14.4",
     "mocha": "^5.2.0",
-    "prettier": "^1.16.4",
+    "prettier": "^1.17.0",
     "tape": "^4.9.1",
     "ts-node": "^7.0.1",
-    "tslint": "^5.13.0",
-    "typescript": "^3.3.3333"
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.3"
   },
   "browser": {
     "./dist/util/random.js": "./dist/util/random-browser.js"

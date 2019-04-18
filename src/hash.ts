@@ -16,7 +16,7 @@ export default class Hash {
     // this can be optimized later:
     const parts: Uint8Array[] = [];
 
-    return new class {
+    return new (class {
       public update(message: Uint8Array) {
         parts.push(message);
       }
@@ -24,7 +24,7 @@ export default class Hash {
       public digest() {
         return Hash.fromMessage(prefix, ...parts);
       }
-    }();
+    })();
   }
 
   public static fromPOD(data: any): Hash | Error {

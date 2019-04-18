@@ -52,14 +52,14 @@ exports.Point = {
         return util_1.pointToBuffer(point);
     },
 };
-exports.INFINITE_POINT = new class {
+exports.INFINITE_POINT = new (class {
     get x() {
         throw new Error("infinite point doesn't have an x");
     }
     get y() {
         throw new Error("infinite point doesn't have a y");
     }
-}();
+})();
 // SCALAR MATH
 function scalarAdd(a, b) {
     return (a + b) % util_1.curve.n;

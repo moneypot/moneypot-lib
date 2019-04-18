@@ -71,7 +71,7 @@ export const Point = {
   },
 };
 
-export const INFINITE_POINT: Point = new class {
+export const INFINITE_POINT: Point = new (class {
   get x(): bigint {
     throw new Error("infinite point doesn't have an x");
   }
@@ -79,7 +79,7 @@ export const INFINITE_POINT: Point = new class {
   get y(): bigint {
     throw new Error("infinite point doesn't have a y");
   }
-}();
+})();
 
 // SCALAR MATH
 

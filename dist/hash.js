@@ -14,14 +14,14 @@ class Hash {
     static newBuilder(prefix) {
         // this can be optimized later:
         const parts = [];
-        return new class {
+        return new (class {
             update(message) {
                 parts.push(message);
             }
             digest() {
                 return Hash.fromMessage(prefix, ...parts);
             }
-        }();
+        })();
     }
     static fromPOD(data) {
         if (typeof data !== 'string') {

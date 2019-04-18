@@ -51,7 +51,7 @@ export default class FullTransfer {
       return new Error('unexpected output kind');
     }
 
-    const change = Bounty.fromPOD(data.output);
+    const change = Bounty.fromPOD(data.change);
     if (change instanceof Error) {
       return change;
     }
