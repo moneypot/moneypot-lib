@@ -17,8 +17,12 @@ export { default as PublicKey } from './public-key';
 
 export { default as Signature } from './signature';
 
+
 // models
 export { default as Coin } from './coin';
+
+export { default as Custodian } from './custodian';
+
 
 export { default as Hookin } from './hookin';
 

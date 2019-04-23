@@ -2,11 +2,11 @@
 // taken from npm package bech32
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("./assert");
-const ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+exports.ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 // pre-compute lookup table
 const ALPHABET_MAP = new Map();
-for (let z = 0; z < ALPHABET.length; z++) {
-    const x = ALPHABET.charAt(z);
+for (let z = 0; z < exports.ALPHABET.length; z++) {
+    const x = exports.ALPHABET.charAt(z);
     if (ALPHABET_MAP.get(x) !== undefined) {
         throw new TypeError(x + ' is ambiguous');
     }
@@ -40,7 +40,6 @@ function prefixChk(prefix) {
 }
 exports.prefixChk = prefixChk;
 function encode(prefix, words) {
-    // TODO: ..
     prefix = prefix.toLowerCase();
     // determine chk mod
     let chk = prefixChk(prefix);
@@ -51,7 +50,7 @@ function encode(prefix, words) {
             throw new Error('Non 5-bit word');
         }
         chk = polymodStep(chk) ^ x;
-        result += ALPHABET.charAt(x);
+        result += exports.ALPHABET.charAt(x);
     }
     for (let i = 0; i < 6; ++i) {
         chk = polymodStep(chk);
@@ -59,7 +58,7 @@ function encode(prefix, words) {
     chk ^= 1;
     for (let i = 0; i < 6; ++i) {
         const v = (chk >> ((5 - i) * 5)) & 0x1f;
-        result += ALPHABET.charAt(v);
+        result += exports.ALPHABET.charAt(v);
     }
     return result;
 }

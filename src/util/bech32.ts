@@ -2,7 +2,7 @@
 
 import * as assert from './assert';
 
-const ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+export const ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 
 // pre-compute lookup table
 const ALPHABET_MAP = new Map<string, number>();
@@ -46,8 +46,7 @@ export function prefixChk(prefix: string) {
   return chk;
 }
 
-export function encode(prefix: string, words: any) {
-  // TODO: ..
+export function encode(prefix: string, words: Uint8Array) {
   prefix = prefix.toLowerCase();
 
   // determine chk mod

@@ -12,6 +12,12 @@ export interface Acknowledged {
   acknowledgement: string;
 }
 
+export interface Custodian {
+  acknowledgementKey: string; // pubkey
+  fundingKey: string; // pubkey
+  blindCoinKeys: string[]; // pubkeys
+}
+
 export interface ClaimRequest {
   authorization: string;
   claim: string; // hash

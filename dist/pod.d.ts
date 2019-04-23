@@ -5,6 +5,11 @@ export declare const MaxMagnitude = 30;
 export interface Acknowledged {
     acknowledgement: string;
 }
+export interface Custodian {
+    acknowledgementKey: string;
+    fundingKey: string;
+    blindCoinKeys: string[];
+}
 export interface ClaimRequest {
     authorization: string;
     claim: string;

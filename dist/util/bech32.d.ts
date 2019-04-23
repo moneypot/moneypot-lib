@@ -1,6 +1,7 @@
+export declare const ALPHABET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 export declare function polymodStep(pre: number): number;
 export declare function prefixChk(prefix: string): number;
-export declare function encode(prefix: string, words: any): string;
+export declare function encode(prefix: string, words: Uint8Array): string;
 export declare function decode(str: string): {
     prefix: string;
     words: number[];
