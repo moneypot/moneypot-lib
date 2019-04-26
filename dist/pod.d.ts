@@ -7,6 +7,7 @@ export interface Acknowledged {
 }
 export interface Custodian {
     acknowledgementKey: string;
+    currency: string;
     fundingKey: string;
     blindCoinKeys: string[];
 }

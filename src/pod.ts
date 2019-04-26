@@ -14,6 +14,7 @@ export interface Acknowledged {
 
 export interface Custodian {
   acknowledgementKey: string; // pubkey
+  currency: string;
   fundingKey: string; // pubkey
   blindCoinKeys: string[]; // pubkeys
 }

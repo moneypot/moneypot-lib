@@ -2,18 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const public_key_1 = require("./public-key");
 const hash_1 = require("./hash");
+const Buffutils = require("./util/buffutils");
 class Custodian {
-    constructor(acknowledgementKey, fundingKey, blindCoinKeys) {
+    constructor(acknowledgementKey, currency, fundingKey, blindCoinKeys) {
         this.acknowledgementKey = acknowledgementKey;
+        this.currency = currency;
         this.fundingKey = fundingKey;
         this.blindCoinKeys = blindCoinKeys;
     }
     hash() {
-        return hash_1.default.fromMessage('Custodian', this.acknowledgementKey.buffer, this.fundingKey.buffer, ...this.blindCoinKeys.map(bk => bk.buffer));
+        return hash_1.default.fromMessage('Custodian', this.acknowledgementKey.buffer, Buffutils.fromUint32(this.currency.length), Buffutils.fromString(this.currency), this.fundingKey.buffer, ...this.blindCoinKeys.map(bk => bk.buffer));
     }
     toPOD() {
         return {
             acknowledgementKey: this.acknowledgementKey.toPOD(),
+            currency: this.currency,
             fundingKey: this.fundingKey.toPOD(),
             blindCoinKeys: this.blindCoinKeys.map(bk => bk.toPOD()),
         };
@@ -25,6 +28,10 @@ class Custodian {
         const acknowledgementKey = public_key_1.default.fromPOD(d.acknowledgementKey);
         if (acknowledgementKey instanceof Error) {
             return acknowledgementKey;
+        }
+        const currency = d.currency;
+        if (typeof currency !== 'string') {
+            return new Error('custodian expected a stringified currency');
         }
         const fundingKey = public_key_1.default.fromPOD(d.fundingKey);
         if (fundingKey instanceof Error) {
@@ -41,7 +48,7 @@ class Custodian {
             }
             blindCoinKeys.push(bk);
         }
-        return new Custodian(acknowledgementKey, fundingKey, blindCoinKeys);
+        return new Custodian(acknowledgementKey, currency, fundingKey, blindCoinKeys);
     }
 }
 exports.default = Custodian;
