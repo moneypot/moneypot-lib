@@ -9,7 +9,7 @@ export { default as PrivateKey } from './private-key';
 export { default as PublicKey } from './public-key';
 export { default as Signature } from './signature';
 export { default as Coin } from './coin';
-export { default as Custodian } from './custodian';
+export { default as CustodianInfo } from './custodian-info';
 export { default as Hookin } from './hookin';
 export { default as Hookout } from './hookout';
 export { default as Magnitude } from './magnitude';

@@ -12,10 +12,6 @@ import { Buffutils } from '.';
 const serializedPrefix = 'pubhi'; // public key hookedin
 
 export default class PublicKey {
-
-
-
-
   public static fromPOD(data: any): PublicKey | Error {
     if (typeof data !== 'string') {
       return new Error('PublicKey.fromPOD expected a string');
@@ -97,11 +93,11 @@ export default class PublicKey {
 
   // If you don't provide the custodian hash, it don't check the prefix is correct!
   static fromAddress(address: string, custodianHash: Hash | undefined): PublicKey | Error {
-  
     const { prefix, words } = bech32.decode(address);
 
     if (custodianHash !== undefined) {
-      const expectedPrefix = 'hia' + bech32.ALPHABET[custodianHash.buffer[0] % 32] + bech32.ALPHABET[custodianHash.buffer[1] % 32];
+      const expectedPrefix =
+        'hia' + bech32.ALPHABET[custodianHash.buffer[0] % 32] + bech32.ALPHABET[custodianHash.buffer[1] % 32];
       if (prefix !== expectedPrefix) {
         return new Error('prefix does not match expected of such custodian');
       }

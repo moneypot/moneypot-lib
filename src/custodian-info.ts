@@ -1,15 +1,15 @@
 import PublicKey from './public-key';
 import Hash from './hash';
-import * as POD from './pod'
+import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
 
-export default class Custodian {
-  acknowledgementKey: PublicKey
-  currency: string
-  fundingKey: PublicKey
-  blindCoinKeys: PublicKey[] // of 31...
+export default class CustodianInfo {
+  acknowledgementKey: PublicKey;
+  currency: string;
+  fundingKey: PublicKey;
+  blindCoinKeys: PublicKey[]; // of 31...
 
-  constructor(acknowledgementKey: PublicKey, currency: string, fundingKey: PublicKey, blindCoinKeys: PublicKey[], ) {
+  constructor(acknowledgementKey: PublicKey, currency: string, fundingKey: PublicKey, blindCoinKeys: PublicKey[]) {
     this.acknowledgementKey = acknowledgementKey;
     this.currency = currency;
     this.fundingKey = fundingKey;
@@ -17,13 +17,14 @@ export default class Custodian {
   }
 
   hash() {
-    return Hash.fromMessage('Custodian',
+    return Hash.fromMessage(
+      'Custodian',
       this.acknowledgementKey.buffer,
       Buffutils.fromUint32(this.currency.length),
       Buffutils.fromString(this.currency),
       this.fundingKey.buffer,
-      ...this.blindCoinKeys.map(bk => bk.buffer),
-    )
+      ...this.blindCoinKeys.map(bk => bk.buffer)
+    );
   }
 
   toPOD(): POD.Custodian {
@@ -32,10 +33,10 @@ export default class Custodian {
       currency: this.currency,
       fundingKey: this.fundingKey.toPOD(),
       blindCoinKeys: this.blindCoinKeys.map(bk => bk.toPOD()),
-    }
+    };
   }
 
-  static fromPOD(d: any): Custodian | Error {
+  static fromPOD(d: any): CustodianInfo | Error {
     if (typeof d !== 'object') {
       return new Error('custodian fromPOD expected an object');
     }
@@ -67,8 +68,6 @@ export default class Custodian {
       blindCoinKeys.push(bk);
     }
 
-
-    return new Custodian(acknowledgementKey, currency, fundingKey, blindCoinKeys);
+    return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys);
   }
-
 }
