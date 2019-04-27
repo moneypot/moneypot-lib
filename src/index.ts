@@ -20,7 +20,8 @@ export { default as Signature } from './signature';
 // models
 export { default as Coin } from './coin';
 
-export { default as CustodianInfo } from './custodian-info';
+import CustodianInfo from './custodian-info';
+export { CustodianInfo };
 
 export { default as Hookin } from './hookin';
 
@@ -55,6 +56,7 @@ export { Acknowledged };
 
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
 export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
+export type AcknowledgedCustodianInfo = Acknowledged<CustodianInfo, POD.CustodianInfo>
 
 // util, should be refactored into its own library
 export { Buffutils };

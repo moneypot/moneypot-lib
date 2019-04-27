@@ -1,13 +1,13 @@
 import PublicKey from './public-key';
 import Hash from './hash';
-import * as POD from './pod';
+import * as POD from './pod'
 import * as Buffutils from './util/buffutils';
 
 export default class CustodianInfo {
-  acknowledgementKey: PublicKey;
-  currency: string;
-  fundingKey: PublicKey;
-  blindCoinKeys: PublicKey[]; // of 31...
+  acknowledgementKey: PublicKey
+  currency: string
+  fundingKey: PublicKey
+  blindCoinKeys: PublicKey[] // of 31...
 
   constructor(acknowledgementKey: PublicKey, currency: string, fundingKey: PublicKey, blindCoinKeys: PublicKey[]) {
     this.acknowledgementKey = acknowledgementKey;
@@ -17,23 +17,22 @@ export default class CustodianInfo {
   }
 
   hash() {
-    return Hash.fromMessage(
-      'Custodian',
+    return Hash.fromMessage('Custodian',
       this.acknowledgementKey.buffer,
       Buffutils.fromUint32(this.currency.length),
       Buffutils.fromString(this.currency),
       this.fundingKey.buffer,
-      ...this.blindCoinKeys.map(bk => bk.buffer)
-    );
+      ...this.blindCoinKeys.map(bk => bk.buffer),
+    )
   }
 
-  toPOD(): POD.Custodian {
+  toPOD(): POD.CustodianInfo {
     return {
       acknowledgementKey: this.acknowledgementKey.toPOD(),
       currency: this.currency,
       fundingKey: this.fundingKey.toPOD(),
       blindCoinKeys: this.blindCoinKeys.map(bk => bk.toPOD()),
-    };
+    }
   }
 
   static fromPOD(d: any): CustodianInfo | Error {
@@ -68,6 +67,8 @@ export default class CustodianInfo {
       blindCoinKeys.push(bk);
     }
 
+
     return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys);
   }
+
 }

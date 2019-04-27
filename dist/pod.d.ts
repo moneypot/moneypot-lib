@@ -5,7 +5,7 @@ export declare const MaxMagnitude = 30;
 export interface Acknowledged {
     acknowledgement: string;
 }
-export interface Custodian {
+export interface CustodianInfo {
     acknowledgementKey: string;
     currency: string;
     fundingKey: string;

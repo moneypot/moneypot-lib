@@ -26,7 +26,7 @@ exports.Signature = signature_1.default;
 // models
 var coin_1 = require("./coin");
 exports.Coin = coin_1.default;
-var custodian_info_1 = require("./custodian-info");
+const custodian_info_1 = require("./custodian-info");
 exports.CustodianInfo = custodian_info_1.default;
 var hookin_1 = require("./hookin");
 exports.Hookin = hookin_1.default;

@@ -12,7 +12,7 @@ export interface Acknowledged {
   acknowledgement: string;
 }
 
-export interface Custodian {
+export interface CustodianInfo {
   acknowledgementKey: string; // pubkey
   currency: string;
   fundingKey: string; // pubkey

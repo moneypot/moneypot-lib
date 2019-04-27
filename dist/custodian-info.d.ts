@@ -8,6 +8,6 @@ export default class CustodianInfo {
     blindCoinKeys: PublicKey[];
     constructor(acknowledgementKey: PublicKey, currency: string, fundingKey: PublicKey, blindCoinKeys: PublicKey[]);
     hash(): Hash;
-    toPOD(): POD.Custodian;
+    toPOD(): POD.CustodianInfo;
     static fromPOD(d: any): CustodianInfo | Error;
 }
