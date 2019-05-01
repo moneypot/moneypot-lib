@@ -37,7 +37,7 @@ class CustodianInfo {
         if (fundingKey instanceof Error) {
             return fundingKey;
         }
-        if (Array.isArray(d.blindCoinKeys) || d.blindCoinKeys.length !== 31) {
+        if (!Array.isArray(d.blindCoinKeys) || d.blindCoinKeys.length !== 31) {
             return new Error('custodian expected an 31-length array for blindCoinKeys');
         }
         const blindCoinKeys = [];
