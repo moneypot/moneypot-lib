@@ -3,6 +3,7 @@ import Hash from './hash';
 import PrivateKey from './private-key';
 import * as POD from './pod';
 import Params from './params';
+import { PublicKey } from '.';
 
 // P is used as the POD type that it returns
 interface Acknowledgable<P> {
@@ -23,6 +24,7 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
     return new Acknowledged<T, P>(contents, acknowledgement);
   }
 
+  // Need to check .verify() 
   public static fromPOD<T extends Acknowledgable<P>, P>(
     creator: (data: any) => T | Error,
     data: any
@@ -37,13 +39,13 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
       return acknowledgement;
     }
 
-    const hash = contents.hash();
-
-    if (!acknowledgement.verify(hash.buffer, Params.acknowledgementPublicKey)) {
-      return new Error('acknowledgement does not verify');
-    }
-
     return new Acknowledged<T, P>(contents, acknowledgement);
+  }
+
+  public verify(acknowledgementPublicKey: PublicKey) {
+    const hash = this.contents.hash();
+
+    return this.acknowledgement.verify(hash.buffer, acknowledgementPublicKey);
   }
 
   public hash() {

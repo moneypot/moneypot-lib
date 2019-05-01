@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const signature_1 = require("./signature");
-const params_1 = require("./params");
 // T is what is acknowledged, a P is the type of a  T.toPOD()
 // type inference of this thing kind of sucks. So it's recommended to use
 // x: AcknowledgedX = hi.Acknowledged(....)  to guide it
@@ -16,6 +15,7 @@ class Acknowledged {
         const acknowledgement = signature_1.default.compute(hash.buffer, acknowledgeKey);
         return new Acknowledged(contents, acknowledgement);
     }
+    // Need to check .verify() 
     static fromPOD(creator, data) {
         const contents = creator(data);
         if (contents instanceof Error) {
@@ -25,11 +25,11 @@ class Acknowledged {
         if (acknowledgement instanceof Error) {
             return acknowledgement;
         }
-        const hash = contents.hash();
-        if (!acknowledgement.verify(hash.buffer, params_1.default.acknowledgementPublicKey)) {
-            return new Error('acknowledgement does not verify');
-        }
         return new Acknowledged(contents, acknowledgement);
+    }
+    verify(acknowledgementPublicKey) {
+        const hash = this.contents.hash();
+        return this.acknowledgement.verify(hash.buffer, acknowledgementPublicKey);
     }
     hash() {
         return this.contents.hash();
