@@ -8,6 +8,7 @@ export { default as Hash } from './hash';
 export { default as PrivateKey } from './private-key';
 export { default as PublicKey } from './public-key';
 export { default as Signature } from './signature';
+export { default as Address } from './address';
 export { default as Coin } from './coin';
 import CustodianInfo from './custodian-info';
 export { CustodianInfo };

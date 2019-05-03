@@ -10,6 +10,7 @@ export declare function fromVarInt(n: number): Uint8Array;
 export declare function fromBigInt(n: bigint): Uint8Array;
 export declare function toBigInt(bytes: Uint8Array): bigint;
 export declare function fromString(x: string): Uint8Array;
+export declare function toString(x: Uint8Array): string;
 export declare function isAllZero(buff: Uint8Array): boolean;
 export declare function compare(a: Uint8Array, b: Uint8Array): number;
 export declare function constTimeEqual(a: Uint8Array, b: Uint8Array): boolean;

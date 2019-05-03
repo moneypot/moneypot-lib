@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const public_key_1 = require("./public-key");
 const hash_1 = require("./hash");
+const bech32 = require("./util/bech32");
 const Buffutils = require("./util/buffutils");
 class CustodianInfo {
     constructor(acknowledgementKey, currency, fundingKey, blindCoinKeys) {
@@ -12,6 +13,14 @@ class CustodianInfo {
     }
     hash() {
         return hash_1.default.fromMessage('Custodian', this.acknowledgementKey.buffer, Buffutils.fromUint32(this.currency.length), Buffutils.fromString(this.currency), this.fundingKey.buffer, ...this.blindCoinKeys.map(bk => bk.buffer));
+    }
+    // 4 letter code for using in an Address
+    prefix() {
+        const hash = this.hash().buffer;
+        return (bech32.ALPHABET[hash[0] % 32] +
+            bech32.ALPHABET[hash[1] % 32] +
+            bech32.ALPHABET[hash[2] % 32] +
+            bech32.ALPHABET[hash[3] % 32]);
     }
     toPOD() {
         return {

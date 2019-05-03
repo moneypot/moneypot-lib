@@ -17,6 +17,8 @@ export { default as PublicKey } from './public-key';
 
 export { default as Signature } from './signature';
 
+export { default as Address } from './address';
+
 // models
 export { default as Coin } from './coin';
 
@@ -56,7 +58,7 @@ export { Acknowledged };
 
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
 export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
-export type AcknowledgedCustodianInfo = Acknowledged<CustodianInfo, POD.CustodianInfo>
+export type AcknowledgedCustodianInfo = Acknowledged<CustodianInfo, POD.CustodianInfo>;
 
 // util, should be refactored into its own library
 export { Buffutils };

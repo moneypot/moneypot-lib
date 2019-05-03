@@ -24,7 +24,7 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
     return new Acknowledged<T, P>(contents, acknowledgement);
   }
 
-  // Need to check .verify() 
+  // Need to check .verify()
   public static fromPOD<T extends Acknowledgable<P>, P>(
     creator: (data: any) => T | Error,
     data: any

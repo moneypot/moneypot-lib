@@ -120,6 +120,10 @@ function fromString(x) {
     return new TextEncoder().encode(x);
 }
 exports.fromString = fromString;
+function toString(x) {
+    return new TextDecoder().decode(x);
+}
+exports.toString = toString;
 function isAllZero(buff) {
     for (let i = 0; i < buff.length; i++) {
         if (buff[i] !== 0) {

@@ -11,7 +11,5 @@ export default class PublicKey {
     tweak(n: PublicKey): PublicKey;
     derive(n: Uint8Array | number | bigint): PublicKey;
     hash(): Hash;
-    toAddress(custodianHash: Hash): string;
-    static fromAddress(address: string, custodianHash: Hash | undefined): PublicKey | Error;
     toBitcoinAddress(testnet?: boolean): string;
 }

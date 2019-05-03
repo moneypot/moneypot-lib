@@ -67,22 +67,6 @@ class PublicKey {
     hash() {
         return hash_1.default.fromMessage('PublicKey', this.buffer);
     }
-    toAddress(custodianHash) {
-        let prefix = 'hia' + bech32.ALPHABET[custodianHash.buffer[0] % 32] + bech32.ALPHABET[custodianHash.buffer[1] % 32];
-        const words = bech32.toWords(this.buffer);
-        return bech32.encode(prefix, words);
-    }
-    // If you don't provide the custodian hash, it don't check the prefix is correct!
-    static fromAddress(address, custodianHash) {
-        const { prefix, words } = bech32.decode(address);
-        if (custodianHash !== undefined) {
-            const expectedPrefix = 'hia' + bech32.ALPHABET[custodianHash.buffer[0] % 32] + bech32.ALPHABET[custodianHash.buffer[1] % 32];
-            if (prefix !== expectedPrefix) {
-                return new Error('prefix does not match expected of such custodian');
-            }
-        }
-        return PublicKey.fromBytes(bech32.fromWords(words));
-    }
     toBitcoinAddress(testnet = true) {
         const prefix = testnet ? 'tb' : 'bc';
         const pubkeyHash = rmd160sha256(this.buffer);

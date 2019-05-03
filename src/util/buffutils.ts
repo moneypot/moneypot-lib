@@ -148,6 +148,10 @@ export function fromString(x: string) {
   return new TextEncoder().encode(x);
 }
 
+export function toString(x: Uint8Array) {
+  return new TextDecoder().decode(x);
+}
+
 export function isAllZero(buff: Uint8Array) {
   for (let i = 0; i < buff.length; i++) {
     if (buff[i] !== 0) {

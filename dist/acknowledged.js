@@ -15,7 +15,7 @@ class Acknowledged {
         const acknowledgement = signature_1.default.compute(hash.buffer, acknowledgeKey);
         return new Acknowledged(contents, acknowledgement);
     }
-    // Need to check .verify() 
+    // Need to check .verify()
     static fromPOD(creator, data) {
         const contents = creator(data);
         if (contents instanceof Error) {

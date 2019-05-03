@@ -1,13 +1,14 @@
 import PublicKey from './public-key';
 import Hash from './hash';
-import * as POD from './pod'
+import * as bech32 from './util/bech32';
+import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
 
 export default class CustodianInfo {
-  acknowledgementKey: PublicKey
-  currency: string
-  fundingKey: PublicKey
-  blindCoinKeys: PublicKey[] // of 31...
+  acknowledgementKey: PublicKey;
+  currency: string;
+  fundingKey: PublicKey;
+  blindCoinKeys: PublicKey[]; // of 31...
 
   constructor(acknowledgementKey: PublicKey, currency: string, fundingKey: PublicKey, blindCoinKeys: PublicKey[]) {
     this.acknowledgementKey = acknowledgementKey;
@@ -17,13 +18,25 @@ export default class CustodianInfo {
   }
 
   hash() {
-    return Hash.fromMessage('Custodian',
+    return Hash.fromMessage(
+      'Custodian',
       this.acknowledgementKey.buffer,
       Buffutils.fromUint32(this.currency.length),
       Buffutils.fromString(this.currency),
       this.fundingKey.buffer,
-      ...this.blindCoinKeys.map(bk => bk.buffer),
-    )
+      ...this.blindCoinKeys.map(bk => bk.buffer)
+    );
+  }
+
+  // 4 letter code for using in an Address
+  prefix(): string {
+    const hash = this.hash().buffer;
+    return (
+      bech32.ALPHABET[hash[0] % 32] +
+      bech32.ALPHABET[hash[1] % 32] +
+      bech32.ALPHABET[hash[2] % 32] +
+      bech32.ALPHABET[hash[3] % 32]
+    );
   }
 
   toPOD(): POD.CustodianInfo {
@@ -32,7 +45,7 @@ export default class CustodianInfo {
       currency: this.currency,
       fundingKey: this.fundingKey.toPOD(),
       blindCoinKeys: this.blindCoinKeys.map(bk => bk.toPOD()),
-    }
+    };
   }
 
   static fromPOD(d: any): CustodianInfo | Error {
@@ -67,8 +80,6 @@ export default class CustodianInfo {
       blindCoinKeys.push(bk);
     }
 
-
     return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys);
   }
-
 }
