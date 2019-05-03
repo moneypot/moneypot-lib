@@ -46,7 +46,7 @@ export default class Address {
   }
 
   public toPOD() {
-    return bech32.encode(serializedPrefix + this.custodianPrefix, bech32.toWords(this.buffer));
+    return bech32.encode(serializedPrefix + this.custodianPrefix, bech32.toWords(this.publicKey.buffer));
   }
 
   public hash() {

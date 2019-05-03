@@ -32,7 +32,7 @@ class Address {
         return buffutils.concat(buffutils.fromString(this.custodianPrefix), this.publicKey.buffer);
     }
     toPOD() {
-        return bech32.encode(serializedPrefix + this.custodianPrefix, bech32.toWords(this.buffer));
+        return bech32.encode(serializedPrefix + this.custodianPrefix, bech32.toWords(this.publicKey.buffer));
     }
     hash() {
         return hash_1.default.fromMessage('Address', this.buffer);
