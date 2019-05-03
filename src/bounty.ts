@@ -1,6 +1,6 @@
 import Hash from './hash';
 
-import PublicKey from './public-key';
+import Address from './address';
 import * as assert from './util/assert';
 import * as Buffutils from './util/buffutils';
 import * as POD from './pod';
@@ -15,7 +15,7 @@ export default class Bounty {
       return new Error('Bounty should be a positive integer');
     }
 
-    const claimant = PublicKey.fromPOD(data.claimant);
+    const claimant = Address.fromPOD(data.claimant);
     if (claimant instanceof Error) {
       return claimant;
     }
@@ -29,10 +29,10 @@ export default class Bounty {
   }
 
   amount: number;
-  claimant: PublicKey;
+  claimant: Address;
   nonce: Uint8Array;
 
-  constructor(amount: number, claimant: PublicKey, nonce: Uint8Array) {
+  constructor(amount: number, claimant: Address, nonce: Uint8Array) {
     this.amount = amount;
     this.claimant = claimant;
     assert.equal(nonce.length, 32);

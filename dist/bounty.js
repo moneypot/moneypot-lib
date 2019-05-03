@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const hash_1 = require("./hash");
-const public_key_1 = require("./public-key");
+const address_1 = require("./address");
 const assert = require("./util/assert");
 const Buffutils = require("./util/buffutils");
 const POD = require("./pod");
@@ -14,7 +14,7 @@ class Bounty {
         if (!POD.isAmount(amount)) {
             return new Error('Bounty should be a positive integer');
         }
-        const claimant = public_key_1.default.fromPOD(data.claimant);
+        const claimant = address_1.default.fromPOD(data.claimant);
         if (claimant instanceof Error) {
             return claimant;
         }
