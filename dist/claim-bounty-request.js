@@ -67,6 +67,9 @@ class ClaimBountyRequest {
             })),
         };
     }
+    verify() {
+        return this.authorization.verify(this.hash().buffer, this.claim.claimant.publicKey);
+    }
 }
 exports.default = ClaimBountyRequest;
 //# sourceMappingURL=claim-bounty-request.js.map

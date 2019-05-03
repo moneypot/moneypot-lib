@@ -14,4 +14,5 @@ export default class ClaimHookinRequest {
     prune(): ClaimRequest;
     hash(): Hash;
     toPOD(): POD.ClaimHookinRequest;
+    verify(): boolean;
 }

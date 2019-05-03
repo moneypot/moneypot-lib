@@ -89,4 +89,8 @@ export default class ClaimBountyRequest {
       })),
     };
   }
+
+  public verify() {
+    return this.authorization.verify(this.hash().buffer, this.claim.claimant.publicKey);
+  }
 }

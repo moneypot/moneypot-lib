@@ -88,4 +88,8 @@ export default class ClaimHookinRequest {
       })),
     };
   }
+
+  public verify() {
+    return this.authorization.verify(this.hash().buffer, this.claim.claimant);
+  }
 }

@@ -67,6 +67,9 @@ class ClaimHookinRequest {
             })),
         };
     }
+    verify() {
+        return this.authorization.verify(this.hash().buffer, this.claim.claimant);
+    }
 }
 exports.default = ClaimHookinRequest;
 //# sourceMappingURL=claim-hookin-request.js.map

@@ -14,4 +14,5 @@ export default class ClaimBountyRequest {
     prune(): ClaimRequest;
     hash(): Hash;
     toPOD(): POD.ClaimBountyRequest;
+    verify(): boolean;
 }
