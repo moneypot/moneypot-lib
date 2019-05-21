@@ -20,28 +20,21 @@ export default class Hookout {
       return new Error('Hookout.fromPOD invalid bitcoin address');
     }
 
-    const immediate = data.immediate;
-    if (typeof immediate !== 'boolean') {
-      return new Error('Hookout.fromPOD invalid immediate');
-    }
-
     const nonce = Buffutils.fromHex(data.nonce, 32);
     if (nonce instanceof Error) {
       return nonce;
     }
 
-    return new Hookout(amount, bitcoinAddress, immediate, nonce);
+    return new Hookout(amount, bitcoinAddress, nonce);
   }
 
   public amount: POD.Amount;
   public bitcoinAddress: string;
-  public immediate: boolean;
   public nonce: Uint8Array;
 
-  constructor(amount: POD.Amount, bitcoinAddress: string, immediate: boolean, nonce: Uint8Array) {
+  constructor(amount: POD.Amount, bitcoinAddress: string, nonce: Uint8Array) {
     this.amount = amount;
     this.bitcoinAddress = bitcoinAddress;
-    this.immediate = immediate;
 
     assert.equal(nonce.length, 32);
     this.nonce = nonce;
@@ -51,7 +44,6 @@ export default class Hookout {
     return {
       amount: this.amount,
       bitcoinAddress: this.bitcoinAddress,
-      immediate: this.immediate,
       nonce: Buffutils.toHex(this.nonce),
     };
   }
@@ -61,7 +53,6 @@ export default class Hookout {
 
     h.update(Buffutils.fromUint64(this.amount));
     h.update(Buffutils.fromString(this.bitcoinAddress));
-    h.update(Buffutils.fromUint8(this.immediate ? 1 : 0));
     h.update(this.nonce);
 
     return h.digest();

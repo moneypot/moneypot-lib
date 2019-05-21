@@ -60,7 +60,6 @@ export interface Change {
 export interface Hookout {
   amount: number;
   bitcoinAddress: string;
-  immediate: boolean;
   nonce: string;
 }
 
