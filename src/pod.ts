@@ -1,4 +1,7 @@
 export type Amount = number;
+export type Signature = string;
+export type PublicKey = string;
+export type Hash = string;
 
 export function isAmount(x: any): x is Amount {
   return typeof x === 'number' && Number.isSafeInteger(x) && x > 0;
@@ -9,50 +12,49 @@ export type Magnitude = number;
 export const MaxMagnitude = 30;
 
 export interface Acknowledged {
-  acknowledgement: string;
+  acknowledgement: Signature;
 }
 
 export interface CustodianInfo {
-  acknowledgementKey: string; // pubkey
+  acknowledgementKey: PublicKey; 
   currency: string;
-  fundingKey: string; // pubkey
-  blindCoinKeys: string[]; // pubkeys
+  fundingKey: PublicKey;
+  blindCoinKeys: PublicKey[];
 }
 
 export interface ClaimRequest {
-  authorization: string;
-  claim: string; // hash
-  coins: { blindingNonce: string; blindedOwner: string; magnitude: Magnitude }[];
+  authorization: Signature;
+  claim: Hash;
+  coins: { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
 }
 
-export interface ClaimBountyRequest {
+export interface ClaimChangeRequest {
   authorization: string;
-  claim: Bounty;
-  coins: { blindingNonce: string; blindedOwner: string; magnitude: Magnitude }[];
+  claim: Change;
+  coins: { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
 }
 
 export interface ClaimHookinRequest {
-  authorization: string;
+  authorization: Signature;
   claim: Hookin;
-  coins: { blindingNonce: string; blindedOwner: string; magnitude: Magnitude }[];
+  coins: { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
 }
 
 export interface ClaimResponse {
   claimRequest: ClaimRequest;
-  blindedReceipts: string[];
+  blindedReceipts: Signature[];
 }
 
 export interface Coin {
-  receipt: string;
+  receipt: Signature;
   magnitude: Magnitude;
   owner: string;
 }
 export type CoinSet = Coin[];
 
-export interface Bounty {
-  claimant: string;
+export interface Change {
+  claimant: PublicKey;
   amount: number;
-  nonce: string;
 }
 
 export interface Hookout {
@@ -69,18 +71,11 @@ export interface Hookin {
   claimant: string;
 }
 
-export interface KindedHookout extends Hookout {
-  kind: 'Hookout';
-}
 
-export interface KindedBounty extends Bounty {
-  kind: 'Bounty';
-}
-
-export interface FullTransfer {
+export interface BitcoinTransfer {
   inputs: Coin[];
-  output: KindedHookout | KindedBounty;
-  change: Bounty;
+  output: Hookout;
+  change: Change;
   authorization: string; // bech32 pubkey
 }
 

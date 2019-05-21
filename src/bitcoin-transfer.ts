@@ -1,23 +1,23 @@
 import assert from './util/assert';
 import Hash from './hash';
+import PublicKey from './public-key';
 import Signature from './signature';
 import * as POD from './pod';
 import Coin from './coin';
-import Bounty from './bounty';
 import { Hookout } from '.';
 import { muSig } from './util/ecc';
-import PublicKey from './public-key';
+import Change from './change';
 import Transfer from './transfer';
 import * as buffutils from './util/buffutils';
 
-export default class FullTransfer {
-  static fromPOD(data: any): FullTransfer | Error {
+export default class BitcoinTransfer {
+  static fromPOD(data: any): BitcoinTransfer | Error {
     if (typeof data !== 'object') {
-      return new Error('expected an object to deserialize a FullTransfer');
+      return new Error('expected an object to deserialize a BitcoinTransfer');
     }
 
     if (!Array.isArray(data.inputs)) {
-      return new Error('expected an array for input in FullTransfer');
+      return new Error('expected an array for input in BitcoinTransfer');
     }
 
     const inputs: Coin[] = [];
@@ -32,26 +32,16 @@ export default class FullTransfer {
       return new Error('inputs are not in sorted order');
     }
 
-    let output;
-
     if (typeof data.output !== 'object') {
-      return new Error('expected object for data in FullTransfer');
-    }
-    if (data.output.kind === 'Bounty') {
-      output = Bounty.fromPOD(data.output);
-      if (output instanceof Error) {
-        return output;
-      }
-    } else if (data.output.kind === 'Hookout') {
-      output = Hookout.fromPOD(data.output);
-      if (output instanceof Error) {
-        return output;
-      }
-    } else {
-      return new Error('unexpected output kind');
+      return new Error('expected object for data in BitcoinTransfer');
     }
 
-    const change = Bounty.fromPOD(data.change);
+    const output = Hookout.fromPOD(data.output);
+    if (output instanceof Error) {
+      return output;
+    }
+
+    const change = Change.fromPOD(data.change);
     if (change instanceof Error) {
       return change;
     }
@@ -61,16 +51,16 @@ export default class FullTransfer {
       return authorization;
     }
 
-    return new FullTransfer(inputs, output, change, authorization);
+    return new BitcoinTransfer(inputs, output, change, authorization);
   }
 
   readonly inputs: ReadonlyArray<Coin>;
-  readonly output: Hookout | Bounty;
-  readonly change: Bounty;
+  readonly output: Hookout;
+  readonly change: Change;
 
   authorization: Signature;
 
-  constructor(inputs: ReadonlyArray<Coin>, output: Hookout | Bounty, change: Bounty, authorization: Signature) {
+  constructor(inputs: ReadonlyArray<Coin>, output: Hookout, change: Change, authorization: Signature) {
     assert(isHashSorted(inputs));
     this.inputs = inputs;
 
@@ -84,20 +74,11 @@ export default class FullTransfer {
     return Transfer.hashOf(this.inputs.map(i => i.hash()), this.output.hash(), this.change.hash());
   }
 
-  toPOD(): POD.FullTransfer {
-    let output: POD.KindedBounty | POD.KindedHookout;
-    if (this.output instanceof Bounty) {
-      output = { kind: 'Bounty', ...this.output.toPOD() };
-    } else if (this.output instanceof Hookout) {
-      output = { kind: 'Hookout', ...this.output.toPOD() };
-    } else {
-      const _impossible: never = this.output;
-      throw new Error('unreachable!');
-    }
+  toPOD(): POD.BitcoinTransfer {
 
     return {
       inputs: this.inputs.map(b => b.toPOD()),
-      output,
+      output: this.output.toPOD(),
       change: this.change.toPOD(),
       authorization: this.authorization.toPOD(),
     };
@@ -116,6 +97,7 @@ export default class FullTransfer {
   }
 
   isValid(): boolean {
+
     if (this.fee() < 0) {
       return false;
     }

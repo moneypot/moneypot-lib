@@ -23,8 +23,6 @@ var public_key_1 = require("./public-key");
 exports.PublicKey = public_key_1.default;
 var signature_1 = require("./signature");
 exports.Signature = signature_1.default;
-var address_1 = require("./address");
-exports.Address = address_1.default;
 // models
 var coin_1 = require("./coin");
 exports.Coin = coin_1.default;
@@ -36,12 +34,12 @@ var hookout_1 = require("./hookout");
 exports.Hookout = hookout_1.default;
 var magnitude_1 = require("./magnitude");
 exports.Magnitude = magnitude_1.default;
-const full_transfer_1 = require("./full-transfer");
-exports.FullTransfer = full_transfer_1.default;
+const bitcoin_transfer_1 = require("./bitcoin-transfer");
+exports.BitcoinTransfer = bitcoin_transfer_1.default;
 const transfer_1 = require("./transfer");
 exports.Transfer = transfer_1.default;
-var bounty_1 = require("./bounty");
-exports.Bounty = bounty_1.default;
+var change_1 = require("./change");
+exports.Change = change_1.default;
 // blind functions
 __export(require("./blind"));
 // helper coin function
@@ -49,8 +47,8 @@ __export(require("./util/coins"));
 // responses
 var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
-var claim_bounty_request_1 = require("./claim-bounty-request");
-exports.ClaimBountyRequest = claim_bounty_request_1.default;
+var claim_change_request_1 = require("./claim-change-request");
+exports.ClaimChangeRequest = claim_change_request_1.default;
 var claim_hookin_request_1 = require("./claim-hookin-request");
 exports.ClaimHookinRequest = claim_hookin_request_1.default;
 const claim_response_1 = require("./claim-response");

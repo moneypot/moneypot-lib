@@ -17,7 +17,6 @@ export { default as PublicKey } from './public-key';
 
 export { default as Signature } from './signature';
 
-export { default as Address } from './address';
 
 // models
 export { default as Coin } from './coin';
@@ -31,13 +30,13 @@ export { default as Hookout } from './hookout';
 
 export { default as Magnitude } from './magnitude';
 
-import FullTransfer from './full-transfer';
-export { FullTransfer };
+import BitcoinTransfer from './bitcoin-transfer';
+export { BitcoinTransfer };
 
 import Transfer from './transfer';
 export { Transfer };
 
-export { default as Bounty } from './bounty';
+export { default as Change } from './change';
 
 // blind functions
 export * from './blind';
@@ -47,7 +46,7 @@ export * from './util/coins';
 
 // responses
 export { default as ClaimRequest } from './claim-request';
-export { default as ClaimBountyRequest } from './claim-bounty-request';
+export { default as ClaimChangeRequest } from './claim-change-request';
 export { default as ClaimHookinRequest } from './claim-hookin-request';
 
 import ClaimResponse from './claim-response';
