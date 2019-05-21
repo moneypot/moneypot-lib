@@ -6,6 +6,7 @@ const signature_1 = require("./signature");
 const coin_1 = require("./coin");
 const ecc_1 = require("./util/ecc");
 const public_key_1 = require("./public-key");
+const change_1 = require("./change");
 const buffutils = require("./util/buffutils");
 class Transfer {
     static fromPOD(data) {
@@ -27,21 +28,21 @@ class Transfer {
         if (outputHash instanceof Error) {
             return outputHash;
         }
-        const changeHash = hash_1.default.fromPOD(data.changeHash);
-        if (changeHash instanceof Error) {
-            return changeHash;
+        const change = change_1.default.fromPOD(data.change);
+        if (change instanceof Error) {
+            return change;
         }
         const authorization = signature_1.default.fromPOD(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new Transfer(inputs, outputHash, changeHash, authorization);
+        return new Transfer(inputs, outputHash, change, authorization);
     }
-    constructor(inputs, outputHash, changeHash, authorization) {
+    constructor(inputs, outputHash, change, authorization) {
         assert_1.default(isHashSorted(inputs));
         this.inputs = inputs;
         this.outputHash = outputHash;
-        this.changeHash = changeHash;
+        this.change = change;
         this.authorization = authorization;
     }
     static sort(hashable) {
@@ -61,13 +62,13 @@ class Transfer {
         return h.digest();
     }
     hash() {
-        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.changeHash);
+        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.change);
     }
     toPOD() {
         return {
             authorization: this.authorization.toPOD(),
             outputHash: this.outputHash.toPOD(),
-            changeHash: this.changeHash.toPOD(),
+            change: this.change.toPOD(),
             inputs: this.inputs.map(i => i.toPOD()),
         };
     }

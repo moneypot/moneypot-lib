@@ -7,5 +7,6 @@ export default class Change {
     claimant: PublicKey;
     constructor(amount: number, claimant: PublicKey);
     toPOD(): POD.Change;
+    readonly buffer: Uint8Array;
     hash(): Hash;
 }

@@ -53,7 +53,7 @@ class BitcoinTransfer {
         this.authorization = authorization;
     }
     hash() {
-        return transfer_1.default.hashOf(this.inputs.map(i => i.hash()), this.output.hash(), this.change.hash());
+        return transfer_1.default.hashOf(this.inputs.map(i => i.hash()), this.output.hash(), this.change);
     }
     toPOD() {
         return {
@@ -82,7 +82,7 @@ class BitcoinTransfer {
         return this.authorization.verify(this.hash().buffer, pubkey);
     }
     prune() {
-        return new transfer_1.default(this.inputs, this.output.hash(), this.change.hash(), this.authorization);
+        return new transfer_1.default(this.inputs, this.output.hash(), this.change, this.authorization);
     }
 }
 exports.default = BitcoinTransfer;

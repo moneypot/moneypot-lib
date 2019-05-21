@@ -39,10 +39,11 @@ export default class Change {
     };
   }
 
+  public get buffer() {
+    return Buffutils.concat(Buffutils.fromUint64(this.amount), this.claimant.buffer)
+  }
+
   public hash() {
-    const h = Hash.newBuilder('Change');
-    h.update(Buffutils.fromUint64(this.amount));
-    h.update(this.claimant.buffer);
-    return h.digest();
+    return Hash.fromMessage('Change', this.buffer);
   }
 }

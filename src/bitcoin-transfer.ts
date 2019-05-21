@@ -71,7 +71,7 @@ export default class BitcoinTransfer {
   }
 
   hash(): Hash {
-    return Transfer.hashOf(this.inputs.map(i => i.hash()), this.output.hash(), this.change.hash());
+    return Transfer.hashOf(this.inputs.map(i => i.hash()), this.output.hash(), this.change);
   }
 
   toPOD(): POD.BitcoinTransfer {
@@ -109,7 +109,7 @@ export default class BitcoinTransfer {
   }
 
   prune(): Transfer {
-    return new Transfer(this.inputs, this.output.hash(), this.change.hash(), this.authorization);
+    return new Transfer(this.inputs, this.output.hash(), this.change, this.authorization);
   }
 }
 

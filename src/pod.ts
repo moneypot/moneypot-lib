@@ -81,7 +81,7 @@ export interface BitcoinTransfer {
 export interface Transfer {
   inputs: Coin[];
   outputHash: string;
-  changeHash: string;
+  change: Change;
   authorization: string; // bech32 pubkey
 }
 

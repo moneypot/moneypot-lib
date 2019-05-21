@@ -29,11 +29,11 @@ class Change {
             claimant: this.claimant.toPOD(),
         };
     }
+    get buffer() {
+        return Buffutils.concat(Buffutils.fromUint64(this.amount), this.claimant.buffer);
+    }
     hash() {
-        const h = hash_1.default.newBuilder('Change');
-        h.update(Buffutils.fromUint64(this.amount));
-        h.update(this.claimant.buffer);
-        return h.digest();
+        return hash_1.default.fromMessage('Change', this.buffer);
     }
 }
 exports.default = Change;
