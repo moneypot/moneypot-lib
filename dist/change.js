@@ -4,6 +4,7 @@ const hash_1 = require("./hash");
 const public_key_1 = require("./public-key");
 const Buffutils = require("./util/buffutils");
 const POD = require("./pod");
+const assert = require("./util/assert");
 class Change {
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -17,20 +18,27 @@ class Change {
         if (claimant instanceof Error) {
             return claimant;
         }
-        return new Change(amount, claimant);
+        const nonce = Buffutils.fromHex(data.nonce, 32);
+        if (nonce instanceof Error) {
+            return nonce;
+        }
+        return new Change(amount, claimant, nonce);
     }
-    constructor(amount, claimant) {
+    constructor(amount, claimant, nonce) {
         this.amount = amount;
         this.claimant = claimant;
+        assert.equal(nonce.length, 32);
+        this.nonce = nonce;
     }
     toPOD() {
         return {
             amount: this.amount,
             claimant: this.claimant.toPOD(),
+            nonce: Buffutils.toHex(this.nonce),
         };
     }
     get buffer() {
-        return Buffutils.concat(Buffutils.fromUint64(this.amount), this.claimant.buffer);
+        return Buffutils.concat(Buffutils.fromUint64(this.amount), this.claimant.buffer, this.nonce);
     }
     hash() {
         return hash_1.default.fromMessage('Change', this.buffer);

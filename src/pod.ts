@@ -55,6 +55,7 @@ export type CoinSet = Coin[];
 export interface Change {
   claimant: PublicKey;
   amount: number;
+  nonce: string; // hex
 }
 
 export interface Hookout {
