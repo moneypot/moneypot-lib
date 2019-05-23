@@ -21,6 +21,7 @@ export { Transfer };
 export { default as Change } from './change';
 export * from './blind';
 export * from './util/coins';
+export { default as CoinsRequest } from './coins-request';
 export { default as ClaimRequest } from './claim-request';
 import ClaimResponse from './claim-response';
 export { ClaimResponse };

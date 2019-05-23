@@ -75,7 +75,6 @@ export default class BitcoinTransfer {
   }
 
   toPOD(): POD.BitcoinTransfer {
-
     return {
       inputs: this.inputs.map(b => b.toPOD()),
       output: this.output.toPOD(),
@@ -97,7 +96,6 @@ export default class BitcoinTransfer {
   }
 
   isValid(): boolean {
-
     if (this.fee() < 0) {
       return false;
     }

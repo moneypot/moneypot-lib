@@ -6,8 +6,6 @@ import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
 import Magnitude from './magnitude';
 
-// represents a pruned request
-
 export interface CoinClaim {
   blindingNonce: PublicKey;
   blindedOwner: BlindedMessage;
@@ -15,6 +13,7 @@ export interface CoinClaim {
 }
 
 export default class ClaimRequest {
+
   public static fromPOD(data: any): ClaimRequest | Error {
     if (typeof data !== 'object') {
       return new Error('ClaimRequest.fromPOD expected an object');
@@ -25,73 +24,46 @@ export default class ClaimRequest {
       return claim;
     }
 
-    if (!Array.isArray(data.coins)) {
-      return new Error('ClaimRequest expected an array of coins');
+    const coinsRequestHash = Hash.fromPOD(data.coinsRequestHash);
+    if (coinsRequestHash instanceof Error) {
+      return coinsRequestHash;
     }
 
-    const coins = [];
-    for (const coin of data.coins) {
-      const blindingNonce = PublicKey.fromPOD(coin.blindingNonce);
-      if (blindingNonce instanceof Error) {
-        return blindingNonce;
-      }
-
-      const blindedOwner = BlindedMessage.fromPOD(coin.blindedOwner);
-      if (blindedOwner instanceof Error) {
-        return blindedOwner;
-      }
-
-      const magnitude = Magnitude.fromPOD(coin.magnitude);
-      if (magnitude instanceof Error) {
-        return magnitude;
-      }
-
-      coins.push({ blindingNonce, blindedOwner, magnitude });
-    }
-
+  
     const authorization = Signature.fromPOD(data.authorization);
     if (authorization instanceof Error) {
       return authorization;
     }
 
-    return new ClaimRequest(claim, coins, authorization);
+    return new ClaimRequest(claim, coinsRequestHash, authorization);
   }
 
   public claimHash: Hash;
-  public coins: CoinClaim[];
+  public coinsRequestHash: Hash;
   public authorization: Signature;
 
-  constructor(claimHash: Hash, coins: CoinClaim[], authorization: Signature) {
+  constructor(claimHash: Hash, coinsRequestHash: Hash, authorization: Signature) {
     this.claimHash = claimHash;
-    this.coins = coins;
+    this.coinsRequestHash = coinsRequestHash;
     this.authorization = authorization;
   }
 
-  public static hashOf(claimHash: Hash, coins: CoinClaim[]) {
+  public static hashOf(claimHash: Hash, coinsRequestHash: Hash) {
     const h = Hash.newBuilder('ClaimRequest');
     h.update(claimHash.buffer);
-    for (const coin of coins) {
-      h.update(coin.blindedOwner.buffer);
-      h.update(coin.blindingNonce.buffer);
-      h.update(coin.magnitude.buffer);
-    }
-
+    h.update(coinsRequestHash.buffer);
     return h.digest();
   }
 
   public hash(): Hash {
-    return ClaimRequest.hashOf(this.claimHash, this.coins);
+    return ClaimRequest.hashOf(this.claimHash, this.coinsRequestHash);
   }
 
   public toPOD(): POD.ClaimRequest {
     return {
       authorization: this.authorization.toPOD(),
       claimHash: this.claimHash.toPOD(),
-      coins: this.coins.map(coin => ({
-        blindingNonce: coin.blindingNonce.toPOD(),
-        blindedOwner: coin.blindedOwner.toPOD(),
-        magnitude: coin.magnitude.toPOD(),
-      })),
+      coinsRequestHash: this.coinsRequestHash.toPOD(),
     };
   }
 }

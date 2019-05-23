@@ -11,7 +11,9 @@ function encrypt(plainText, key) {
     const encrypted = Buffutils.concat(start, end);
     const tag = cipher.getAuthTag();
     return {
-        iv, tag, encrypted
+        iv,
+        tag,
+        encrypted,
     };
 }
 exports.encrypt = encrypt;

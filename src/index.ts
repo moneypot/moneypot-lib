@@ -17,7 +17,6 @@ export { default as PublicKey } from './public-key';
 
 export { default as Signature } from './signature';
 
-
 // models
 export { default as Coin } from './coin';
 
@@ -44,7 +43,9 @@ export * from './blind';
 // helper coin function
 export * from './util/coins';
 
-// responses
+
+
+export { default as CoinsRequest } from './coins-request'
 export { default as ClaimRequest } from './claim-request';
 
 import ClaimResponse from './claim-response';

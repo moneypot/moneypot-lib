@@ -44,7 +44,8 @@ exports.Change = change_1.default;
 __export(require("./blind"));
 // helper coin function
 __export(require("./util/coins"));
-// responses
+var coins_request_1 = require("./coins-request");
+exports.CoinsRequest = coins_request_1.default;
 var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
 const claim_response_1 = require("./claim-response");

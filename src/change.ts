@@ -5,7 +5,6 @@ import * as Buffutils from './util/buffutils';
 import * as POD from './pod';
 import * as assert from './util/assert';
 
-
 export default class Change {
   public static fromPOD(data: any): Change | Error {
     if (typeof data !== 'object') {
@@ -40,10 +39,6 @@ export default class Change {
   }
 
   public get buffer() {
-    return Buffutils.concat(
-      Buffutils.fromUint64(this.amount),
-      this.claimant.buffer,
-    );
+    return Buffutils.concat(Buffutils.fromUint64(this.amount), this.claimant.buffer);
   }
-
 }

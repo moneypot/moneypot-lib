@@ -16,28 +16,18 @@ export interface Acknowledged {
 }
 
 export interface CustodianInfo {
-  acknowledgementKey: PublicKey; 
+  acknowledgementKey: PublicKey;
   currency: string;
   fundingKey: PublicKey;
   blindCoinKeys: PublicKey[];
 }
 
+export type CoinsRequest = { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
+
 export interface ClaimRequest {
   authorization: Signature;
   claimHash: Hash;
-  coins: { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
-}
-
-export interface ClaimChangeRequest {
-  authorization: string;
-  claim: Change;
-  coins: { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
-}
-
-export interface ClaimHookinRequest {
-  authorization: Signature;
-  claim: Hookin;
-  coins: { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
+  coinsRequestHash: Hash;
 }
 
 export interface ClaimResponse {
@@ -69,7 +59,6 @@ export interface Hookin {
   amount: number;
   claimant: string;
 }
-
 
 export interface BitcoinTransfer {
   inputs: Coin[];
