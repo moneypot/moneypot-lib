@@ -21,31 +21,21 @@ export default class Change {
       return claimant;
     }
 
-    const nonce = Buffutils.fromHex(data.nonce, 32);
-    if (nonce instanceof Error) {
-      return nonce;
-    }
-
-    return new Change(amount, claimant, nonce);
+    return new Change(amount, claimant);
   }
 
   amount: number;
   claimant: PublicKey;
-  nonce: Uint8Array;
 
-  constructor(amount: number, claimant: PublicKey, nonce: Uint8Array) {
+  constructor(amount: number, claimant: PublicKey) {
     this.amount = amount;
     this.claimant = claimant;
-
-    assert.equal(nonce.length, 32);
-    this.nonce = nonce;
   }
 
   public toPOD(): POD.Change {
     return {
       amount: this.amount,
       claimant: this.claimant.toPOD(),
-      nonce: Buffutils.toHex(this.nonce),
     };
   }
 
@@ -53,11 +43,7 @@ export default class Change {
     return Buffutils.concat(
       Buffutils.fromUint64(this.amount),
       this.claimant.buffer,
-      this.nonce,
     );
   }
 
-  public hash() {
-    return Hash.fromMessage('Change', this.buffer);
-  }
 }

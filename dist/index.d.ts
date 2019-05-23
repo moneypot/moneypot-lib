@@ -22,7 +22,6 @@ export { default as Change } from './change';
 export * from './blind';
 export * from './util/coins';
 export { default as ClaimRequest } from './claim-request';
-export { default as ClaimChangeRequest } from './claim-change-request';
 export { default as ClaimHookinRequest } from './claim-hookin-request';
 import ClaimResponse from './claim-response';
 export { ClaimResponse };

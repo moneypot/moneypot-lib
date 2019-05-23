@@ -24,7 +24,7 @@ export interface CustodianInfo {
 
 export interface ClaimRequest {
   authorization: Signature;
-  claim: Hash;
+  claimHash: Hash;
   coins: { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
 }
 
@@ -55,7 +55,6 @@ export type CoinSet = Coin[];
 export interface Change {
   claimant: PublicKey;
   amount: number;
-  nonce: string; // hex
 }
 
 export interface Hookout {

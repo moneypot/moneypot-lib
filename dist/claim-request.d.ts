@@ -11,11 +11,11 @@ export interface CoinClaim {
 }
 export default class ClaimRequest {
     static fromPOD(data: any): ClaimRequest | Error;
-    claim: Hash;
+    claimHash: Hash;
     coins: CoinClaim[];
     authorization: Signature;
-    constructor(claim: Hash, coins: CoinClaim[], authorization: Signature);
-    static hashOf(claim: Hash, coins: CoinClaim[]): Hash;
+    constructor(claimHash: Hash, coins: CoinClaim[], authorization: Signature);
+    static hashOf(claimHash: Hash, coins: CoinClaim[]): Hash;
     hash(): Hash;
     toPOD(): POD.ClaimRequest;
 }

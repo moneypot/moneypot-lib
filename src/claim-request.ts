@@ -57,19 +57,19 @@ export default class ClaimRequest {
     return new ClaimRequest(claim, coins, authorization);
   }
 
-  public claim: Hash;
+  public claimHash: Hash;
   public coins: CoinClaim[];
   public authorization: Signature;
 
-  constructor(claim: Hash, coins: CoinClaim[], authorization: Signature) {
-    this.claim = claim;
+  constructor(claimHash: Hash, coins: CoinClaim[], authorization: Signature) {
+    this.claimHash = claimHash;
     this.coins = coins;
     this.authorization = authorization;
   }
 
-  public static hashOf(claim: Hash, coins: CoinClaim[]) {
+  public static hashOf(claimHash: Hash, coins: CoinClaim[]) {
     const h = Hash.newBuilder('ClaimRequest');
-    h.update(claim.buffer);
+    h.update(claimHash.buffer);
     for (const coin of coins) {
       h.update(coin.blindedOwner.buffer);
       h.update(coin.blindingNonce.buffer);
@@ -80,13 +80,13 @@ export default class ClaimRequest {
   }
 
   public hash(): Hash {
-    return ClaimRequest.hashOf(this.claim, this.coins);
+    return ClaimRequest.hashOf(this.claimHash, this.coins);
   }
 
   public toPOD(): POD.ClaimRequest {
     return {
       authorization: this.authorization.toPOD(),
-      claim: this.claim.toPOD(),
+      claimHash: this.claimHash.toPOD(),
       coins: this.coins.map(coin => ({
         blindingNonce: coin.blindingNonce.toPOD(),
         blindedOwner: coin.blindedOwner.toPOD(),

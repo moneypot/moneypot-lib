@@ -39,14 +39,14 @@ class ClaimRequest {
         }
         return new ClaimRequest(claim, coins, authorization);
     }
-    constructor(claim, coins, authorization) {
-        this.claim = claim;
+    constructor(claimHash, coins, authorization) {
+        this.claimHash = claimHash;
         this.coins = coins;
         this.authorization = authorization;
     }
-    static hashOf(claim, coins) {
+    static hashOf(claimHash, coins) {
         const h = hash_1.default.newBuilder('ClaimRequest');
-        h.update(claim.buffer);
+        h.update(claimHash.buffer);
         for (const coin of coins) {
             h.update(coin.blindedOwner.buffer);
             h.update(coin.blindingNonce.buffer);
@@ -55,12 +55,12 @@ class ClaimRequest {
         return h.digest();
     }
     hash() {
-        return ClaimRequest.hashOf(this.claim, this.coins);
+        return ClaimRequest.hashOf(this.claimHash, this.coins);
     }
     toPOD() {
         return {
             authorization: this.authorization.toPOD(),
-            claim: this.claim.toPOD(),
+            claimHash: this.claimHash.toPOD(),
             coins: this.coins.map(coin => ({
                 blindingNonce: coin.blindingNonce.toPOD(),
                 blindedOwner: coin.blindedOwner.toPOD(),

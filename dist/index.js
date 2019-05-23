@@ -47,8 +47,6 @@ __export(require("./util/coins"));
 // responses
 var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
-var claim_change_request_1 = require("./claim-change-request");
-exports.ClaimChangeRequest = claim_change_request_1.default;
 var claim_hookin_request_1 = require("./claim-hookin-request");
 exports.ClaimHookinRequest = claim_hookin_request_1.default;
 const claim_response_1 = require("./claim-response");
