@@ -14,15 +14,15 @@ export interface CustodianInfo {
     fundingKey: PublicKey;
     blindCoinKeys: PublicKey[];
 }
-export declare type CoinsRequest = {
+export declare type CoinRequest = {
     blindingNonce: PublicKey;
     blindedOwner: PublicKey;
     magnitude: Magnitude;
-}[];
+};
 export interface ClaimRequest {
     authorization: Signature;
     claimHash: Hash;
-    coinsRequestHash: Hash;
+    coinRequests: CoinRequest[];
 }
 export interface ClaimResponse {
     claimRequest: ClaimRequest;

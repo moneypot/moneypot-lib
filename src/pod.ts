@@ -22,12 +22,12 @@ export interface CustodianInfo {
   blindCoinKeys: PublicKey[];
 }
 
-export type CoinsRequest = { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude }[];
+export type CoinRequest = { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude };
 
 export interface ClaimRequest {
   authorization: Signature;
   claimHash: Hash;
-  coinsRequestHash: Hash;
+  coinRequests: CoinRequest[];
 }
 
 export interface ClaimResponse {
