@@ -1,13 +1,6 @@
-import BlindedMessage from './blinded-message';
 import Hash from './hash';
-import PublicKey from './public-key';
 import * as POD from './pod';
-import Magnitude from './magnitude';
-export interface CoinRequest {
-    blindingNonce: PublicKey;
-    blindedOwner: BlindedMessage;
-    magnitude: Magnitude;
-}
+import CoinRequest from './coin-request';
 export default class CoinsRequest {
     static fromPOD(data: any): CoinsRequest | Error;
     coinRequest: CoinRequest[];

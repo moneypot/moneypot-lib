@@ -3,13 +3,8 @@ import Hash from './hash';
 import PublicKey from './public-key';
 import * as POD from './pod';
 import Magnitude from './magnitude';
+import CoinRequest from './coin-request'
 
-
-export interface CoinRequest {
-  blindingNonce: PublicKey;
-  blindedOwner: BlindedMessage;
-  magnitude: Magnitude;
-}
 
 export default class CoinsRequest {
 

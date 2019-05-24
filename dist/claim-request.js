@@ -3,6 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const hash_1 = require("./hash");
 const signature_1 = require("./signature");
 class ClaimRequest {
+    static newAuthorized(claimHash, coinsRequestHash, claimantPrivateKey) {
+        const hash = ClaimRequest.hashOf(claimHash, coinsRequestHash);
+        const authorization = signature_1.default.compute(hash.buffer, claimantPrivateKey);
+        return new ClaimRequest(claimHash, coinsRequestHash, authorization);
+    }
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('ClaimRequest.fromPOD expected an object');

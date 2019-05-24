@@ -43,8 +43,7 @@ export * from './blind';
 // helper coin function
 export * from './util/coins';
 
-
-
+export { default as CoinRequest } from './coin-request'
 export { default as CoinsRequest } from './coins-request'
 export { default as ClaimRequest } from './claim-request';
 

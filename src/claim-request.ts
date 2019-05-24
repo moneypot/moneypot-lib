@@ -1,18 +1,23 @@
 import BlindedMessage from './blinded-message';
 import Hash from './hash';
 import PublicKey from './public-key';
+import PrivateKey from './private-key';
 import Signature from './signature';
 import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
 import Magnitude from './magnitude';
 
-export interface CoinClaim {
-  blindingNonce: PublicKey;
-  blindedOwner: BlindedMessage;
-  magnitude: Magnitude;
-}
 
 export default class ClaimRequest {
+
+  public static newAuthorized( claimHash: Hash, coinsRequestHash: Hash, claimantPrivateKey: PrivateKey, ) {	
+
+    const hash = ClaimRequest.hashOf(claimHash, coinsRequestHash);	
+    const authorization = Signature.compute(hash.buffer, claimantPrivateKey);	
+
+     return new ClaimRequest(claimHash, coinsRequestHash, authorization);	
+  }
+
 
   public static fromPOD(data: any): ClaimRequest | Error {
     if (typeof data !== 'object') {
