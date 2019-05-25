@@ -15,11 +15,11 @@ class ClaimRequest {
         if (typeof data !== 'object') {
             return new Error('ClaimRequest.fromPOD expected an object');
         }
-        const claim = hash_1.default.fromPOD(data.claim);
-        if (claim instanceof Error) {
-            return claim;
+        const claimHash = hash_1.default.fromPOD(data.claimHash);
+        if (claimHash instanceof Error) {
+            return claimHash;
         }
-        if (Array.isArray(data.coinRequests)) {
+        if (!Array.isArray(data.coinRequests)) {
             return new Error('ClaimRequest.fromPOD expected an array for coinRequests');
         }
         const coinRequests = [];
@@ -42,7 +42,7 @@ class ClaimRequest {
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new ClaimRequest(claim, coinRequests, authorization);
+        return new ClaimRequest(claimHash, coinRequests, authorization);
     }
     constructor(claimHash, coinRequests, authorization) {
         this.claimHash = claimHash;
