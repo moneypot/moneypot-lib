@@ -3,7 +3,8 @@ import * as POD from './pod';
 import PublicKey from './public-key';
 import Signature from './signature';
 import Magnitude from './magnitude';
-import { Params } from '.';
+import * as Buffutils from './util/buffutils';
+
 
 export default class Coin {
   public static fromPOD(data: any): Coin | Error {
@@ -35,8 +36,12 @@ export default class Coin {
     this.receipt = receipt;
   }
 
+  get buffer() {
+    return Buffutils.concat(this.owner.buffer, this.magnitude.buffer, this.receipt.buffer);
+  }
+
   public hash() {
-    return Hash.fromMessage('Coin', this.owner.buffer, this.magnitude.buffer, this.receipt.buffer);
+    return Hash.fromMessage('Coin', this.buffer);
   }
 
   public toPOD(): POD.Coin {
@@ -51,7 +56,4 @@ export default class Coin {
     return this.magnitude.toAmount();
   }
 
-  public isValid(): boolean {
-    return this.receipt.verify(this.owner.buffer, Params.blindingCoinPublicKeys[this.magnitude.n]);
-  }
 }
