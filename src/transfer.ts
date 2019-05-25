@@ -68,20 +68,12 @@ export default class Transfer {
     hashes.sort((a: Hash, b: Hash) => buffutils.compare(a.buffer, b.buffer));
   }
 
-  public static inputHash(inputs: ReadonlyArray<Hash>) {
-    const h = Hash.newBuilder('TransferInputs');
+  static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, change: Change) {
+    const h = Hash.newBuilder('Transfer');
 
     for (const input of inputs) {
       h.update(input.buffer);
     }
-
-    return h.digest();
-  }
-
-  static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, change: Change) {
-    const h = Hash.newBuilder('Transfer');
-
-    h.update(Transfer.inputHash(inputs).buffer);
     h.update(output.buffer);
     h.update(change.buffer);
 

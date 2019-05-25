@@ -14,7 +14,6 @@ export default class Transfer {
         hash(): Hash;
     }[]): void;
     static sortHashes(hashes: Hash[]): void;
-    static inputHash(inputs: ReadonlyArray<Hash>): Hash;
     static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, change: Change): Hash;
     hash(): Hash;
     toPOD(): POD.Transfer;

@@ -51,16 +51,11 @@ class Transfer {
     static sortHashes(hashes) {
         hashes.sort((a, b) => buffutils.compare(a.buffer, b.buffer));
     }
-    static inputHash(inputs) {
-        const h = hash_1.default.newBuilder('TransferInputs');
+    static hashOf(inputs, output, change) {
+        const h = hash_1.default.newBuilder('Transfer');
         for (const input of inputs) {
             h.update(input.buffer);
         }
-        return h.digest();
-    }
-    static hashOf(inputs, output, change) {
-        const h = hash_1.default.newBuilder('Transfer');
-        h.update(Transfer.inputHash(inputs).buffer);
         h.update(output.buffer);
         h.update(change.buffer);
         return h.digest();
