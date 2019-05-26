@@ -71,7 +71,14 @@ class Transfer {
             inputs: this.inputs.map(i => i.toPOD()),
         };
     }
-    isValid() {
+    inputAmount() {
+        let amount = 0;
+        for (const coin of this.inputs) {
+            amount += coin.amount;
+        }
+        return amount;
+    }
+    isAuthorized() {
         const p = ecc_1.muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
         const pubkey = new public_key_1.default(p.x, p.y);
         return this.authorization.verify(this.hash().buffer, pubkey);

@@ -93,7 +93,15 @@ export default class Transfer {
     };
   }
 
-  isValid(): boolean {
+  inputAmount(): number {	
+    let amount = 0;	
+    for (const coin of this.inputs) {	
+      amount += coin.amount;	
+    }	
+    return amount;	
+  }
+
+  isAuthorized(): boolean {
     const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
     const pubkey = new PublicKey(p.x, p.y);
 

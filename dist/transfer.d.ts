@@ -17,5 +17,6 @@ export default class Transfer {
     static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, change: Change): Hash;
     hash(): Hash;
     toPOD(): POD.Transfer;
-    isValid(): boolean;
+    inputAmount(): number;
+    isAuthorized(): boolean;
 }
