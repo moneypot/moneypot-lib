@@ -14,8 +14,6 @@ export { CustodianInfo };
 export { default as Hookin } from './hookin';
 export { default as Hookout } from './hookout';
 export { default as Magnitude } from './magnitude';
-import BitcoinTransfer from './bitcoin-transfer';
-export { BitcoinTransfer };
 import Transfer from './transfer';
 export { Transfer };
 export { default as Change } from './change';
