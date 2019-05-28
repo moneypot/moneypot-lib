@@ -43,6 +43,11 @@ export interface Hookout {
     bitcoinAddress: string;
     nonce: string;
 }
+export interface FeeBump {
+    totalFee: number;
+    txid: string;
+    nonce: string;
+}
 export interface Hookin {
     txid: string;
     vout: number;

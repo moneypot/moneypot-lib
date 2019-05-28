@@ -5,7 +5,6 @@ import Signature from './signature';
 import Magnitude from './magnitude';
 import * as Buffutils from './util/buffutils';
 
-
 export default class Coin {
   public static fromPOD(data: any): Coin | Error {
     const owner = PublicKey.fromPOD(data.owner);
@@ -55,5 +54,4 @@ export default class Coin {
   public get amount(): number {
     return this.magnitude.toAmount();
   }
-
 }

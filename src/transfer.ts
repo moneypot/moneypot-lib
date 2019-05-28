@@ -93,12 +93,12 @@ export default class Transfer {
     };
   }
 
-  inputAmount(): number {	
-    let amount = 0;	
-    for (const coin of this.inputs) {	
-      amount += coin.amount;	
-    }	
-    return amount;	
+  inputAmount(): number {
+    let amount = 0;
+    for (const coin of this.inputs) {
+      amount += coin.amount;
+    }
+    return amount;
   }
 
   isAuthorized(): boolean {

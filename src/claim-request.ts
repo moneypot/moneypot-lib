@@ -4,20 +4,16 @@ import PublicKey from './public-key';
 import PrivateKey from './private-key';
 import Signature from './signature';
 import * as POD from './pod';
-import CoinRequest from './coin-request'
-import Magnitude from './magnitude'
-
+import CoinRequest from './coin-request';
+import Magnitude from './magnitude';
 
 export default class ClaimRequest {
+  public static newAuthorized(claimHash: Hash, coinRequests: CoinRequest[], claimantPrivateKey: PrivateKey) {
+    const hash = ClaimRequest.hashOf(claimHash, coinRequests);
+    const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
-  public static newAuthorized( claimHash: Hash, coinRequests: CoinRequest[], claimantPrivateKey: PrivateKey, ) {	
-
-    const hash = ClaimRequest.hashOf(claimHash, coinRequests);	
-    const authorization = Signature.compute(hash.buffer, claimantPrivateKey);	
-
-     return new ClaimRequest(claimHash, coinRequests, authorization);	
+    return new ClaimRequest(claimHash, coinRequests, authorization);
   }
-
 
   public static fromPOD(data: any): ClaimRequest | Error {
     if (typeof data !== 'object') {
@@ -52,7 +48,7 @@ export default class ClaimRequest {
 
       coinRequests.push({ blindingNonce, blindedOwner, magnitude });
     }
-  
+
     const authorization = Signature.fromPOD(data.authorization);
     if (authorization instanceof Error) {
       return authorization;

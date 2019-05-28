@@ -26,6 +26,7 @@ export { CustodianInfo };
 export { default as Hookin } from './hookin';
 
 export { default as Hookout } from './hookout';
+export { default as FeeBump } from './fee-bump';
 
 export { default as Magnitude } from './magnitude';
 
@@ -40,7 +41,7 @@ export * from './blind';
 // helper coin function
 export * from './util/coins';
 
-export { default as CoinRequest } from './coin-request'
+export { default as CoinRequest } from './coin-request';
 export { default as ClaimRequest } from './claim-request';
 
 import ClaimResponse from './claim-response';

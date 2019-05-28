@@ -4,7 +4,7 @@ export type PublicKey = string;
 export type Hash = string;
 
 export function isAmount(x: any): x is Amount {
-  return typeof x === 'number' && Number.isSafeInteger(x) && x > 0;
+  return typeof x === 'number' && Number.isSafeInteger(x) && x >= 0;
 }
 
 export type Magnitude = number;
@@ -50,6 +50,12 @@ export interface Change {
 export interface Hookout {
   amount: number;
   bitcoinAddress: string;
+  nonce: string;
+}
+
+export interface FeeBump {
+  totalFee: number;
+  txid: string;
   nonce: string;
 }
 
