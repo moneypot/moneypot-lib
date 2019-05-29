@@ -10,11 +10,6 @@ export default class FeeBump {
       return new Error('FeeBump.fromPOD is not object');
     }
 
-    const totalFee = data.totalFee;
-    if (!POD.isAmount(totalFee)) {
-      return new Error('FeeBump.fromPOD invalid amount');
-    }
-
     const txid = Buffutils.fromHex(data.txid, 32);
     if (typeof txid !== 'string') {
       return new Error('FeeBump.fromPOD invalid txid');
@@ -25,16 +20,13 @@ export default class FeeBump {
       return nonce;
     }
 
-    return new FeeBump(totalFee, txid, nonce);
+    return new FeeBump(txid, nonce);
   }
 
-  public totalFee: POD.Amount;
   public txid: Uint8Array;
   public nonce: Uint8Array;
 
-  constructor(totalFee: POD.Amount, txid: Uint8Array, nonce: Uint8Array) {
-    this.totalFee = totalFee;
-
+  constructor(txid: Uint8Array, nonce: Uint8Array) {
     assert.equal(txid.length, 32);
     this.txid = txid;
 
@@ -44,16 +36,14 @@ export default class FeeBump {
 
   public toPOD(): POD.FeeBump {
     return {
-      totalFee: this.totalFee,
       txid: Buffutils.toHex(this.txid),
       nonce: Buffutils.toHex(this.nonce),
     };
   }
 
   public hash() {
-    const h = Hash.newBuilder('Feebump');
+    const h = Hash.newBuilder('FeeBump');
 
-    h.update(Buffutils.fromUint64(this.totalFee));
     h.update(this.txid);
     h.update(this.nonce);
 

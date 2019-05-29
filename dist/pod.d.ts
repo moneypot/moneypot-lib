@@ -44,7 +44,6 @@ export interface Hookout {
     nonce: string;
 }
 export interface FeeBump {
-    totalFee: number;
     txid: string;
     nonce: string;
 }
