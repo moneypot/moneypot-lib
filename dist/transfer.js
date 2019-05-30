@@ -81,7 +81,7 @@ class Transfer {
     isAuthorized() {
         const p = ecc_1.muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
         const pubkey = new public_key_1.default(p.x, p.y);
-        return this.authorization.verify(this.hash().buffer, pubkey);
+        return this.authorization.verify(this.hash(), pubkey);
     }
 }
 exports.default = Transfer;

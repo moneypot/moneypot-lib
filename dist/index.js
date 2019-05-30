@@ -48,8 +48,6 @@ var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
 const claim_response_1 = require("./claim-response");
 exports.ClaimResponse = claim_response_1.default;
-const acknowledged_1 = require("./acknowledged");
-exports.Acknowledged = acknowledged_1.default;
 // crypto, should be in it's own lib too..
 var random_1 = require("./util/random");
 exports.random = random_1.default;

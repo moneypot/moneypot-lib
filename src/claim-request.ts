@@ -10,7 +10,7 @@ import Magnitude from './magnitude';
 export default class ClaimRequest {
   public static newAuthorized(claimHash: Hash, coinRequests: CoinRequest[], claimantPrivateKey: PrivateKey) {
     const hash = ClaimRequest.hashOf(claimHash, coinRequests);
-    const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
+    const authorization = Signature.compute(hash, claimantPrivateKey);
 
     return new ClaimRequest(claimHash, coinRequests, authorization);
   }

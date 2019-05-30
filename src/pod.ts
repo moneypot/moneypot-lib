@@ -11,9 +11,6 @@ export type Magnitude = number;
 
 export const MaxMagnitude = 30;
 
-export interface Acknowledged {
-  acknowledgement: Signature;
-}
 
 export interface CustodianInfo {
   acknowledgementKey: PublicKey;

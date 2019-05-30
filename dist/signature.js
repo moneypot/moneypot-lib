@@ -8,11 +8,11 @@ const serializedPrefix = 'sighi'; // signature hookedin
 class Signature {
     // actually creates a schnorr sig. This takes a message, not a hash to prevent existential forgeries
     static compute(message, privkey) {
-        const sig = ecc.sign(message, privkey.scalar);
+        const sig = ecc.sign(message.buffer, privkey.scalar);
         return new Signature(sig.r, sig.s);
     }
     static computeMu(message, privkeys) {
-        const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message);
+        const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message.buffer);
         return new Signature(sig.r, sig.s);
     }
     static fromPOD(data) {
@@ -45,7 +45,7 @@ class Signature {
         return Buffutils.concat(ecc.Scalar.toBytes(this.r), ecc.Scalar.toBytes(this.s));
     }
     verify(message, pubkey) {
-        return ecc.verify(pubkey, message, this);
+        return ecc.verify(pubkey, message.buffer, this);
     }
     toPOD() {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));

@@ -8,7 +8,7 @@ const magnitude_1 = require("./magnitude");
 class ClaimRequest {
     static newAuthorized(claimHash, coinRequests, claimantPrivateKey) {
         const hash = ClaimRequest.hashOf(claimHash, coinRequests);
-        const authorization = signature_1.default.compute(hash.buffer, claimantPrivateKey);
+        const authorization = signature_1.default.compute(hash, claimantPrivateKey);
         return new ClaimRequest(claimHash, coinRequests, authorization);
     }
     static fromPOD(data) {

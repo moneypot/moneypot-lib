@@ -31,7 +31,7 @@ class FeeBump {
         };
     }
     hash() {
-        const h = hash_1.default.newBuilder('Feebump');
+        const h = hash_1.default.newBuilder('FeeBump');
         h.update(this.txid);
         h.update(this.nonce);
         return h.digest();

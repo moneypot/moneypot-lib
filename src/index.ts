@@ -47,13 +47,6 @@ export { default as ClaimRequest } from './claim-request';
 import ClaimResponse from './claim-response';
 export { ClaimResponse };
 
-import Acknowledged from './acknowledged';
-export { Acknowledged };
-
-export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
-export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
-export type AcknowledgedCustodianInfo = Acknowledged<CustodianInfo, POD.CustodianInfo>;
-
 // util, should be refactored into its own library
 export { Buffutils };
 

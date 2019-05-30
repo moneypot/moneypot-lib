@@ -5,9 +5,6 @@ export declare type Hash = string;
 export declare function isAmount(x: any): x is Amount;
 export declare type Magnitude = number;
 export declare const MaxMagnitude = 30;
-export interface Acknowledged {
-    acknowledgement: Signature;
-}
 export interface CustodianInfo {
     acknowledgementKey: PublicKey;
     currency: string;

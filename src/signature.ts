@@ -5,18 +5,19 @@ import * as ecc from './util/ecc';
 
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
+import Hash from './hash';
 
 const serializedPrefix = 'sighi'; // signature hookedin
 
 export default class Signature {
   // actually creates a schnorr sig. This takes a message, not a hash to prevent existential forgeries
-  public static compute(message: Uint8Array, privkey: PrivateKey) {
-    const sig = ecc.sign(message, privkey.scalar);
+  public static compute(message: Hash, privkey: PrivateKey) {
+    const sig = ecc.sign(message.buffer, privkey.scalar);
     return new Signature(sig.r, sig.s);
   }
 
-  public static computeMu(message: Uint8Array, privkeys: PrivateKey[]) {
-    const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message);
+  public static computeMu(message: Hash, privkeys: PrivateKey[]) {
+    const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message.buffer);
     return new Signature(sig.r, sig.s);
   }
 
@@ -62,8 +63,8 @@ export default class Signature {
     return Buffutils.concat(ecc.Scalar.toBytes(this.r), ecc.Scalar.toBytes(this.s));
   }
 
-  public verify(message: Uint8Array, pubkey: PublicKey) {
-    return ecc.verify(pubkey, message, this);
+  public verify(message: Hash, pubkey: PublicKey) {
+    return ecc.verify(pubkey, message.buffer, this);
   }
 
   public toPOD() {

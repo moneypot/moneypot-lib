@@ -105,7 +105,7 @@ export default class Transfer {
     const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
     const pubkey = new PublicKey(p.x, p.y);
 
-    return this.authorization.verify(this.hash().buffer, pubkey);
+    return this.authorization.verify(this.hash(), pubkey);
   }
 }
 
