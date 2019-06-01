@@ -50,7 +50,7 @@ export interface Change {
 export interface Hookout {
   amount: number;
   bitcoinAddress: string;
-  priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'LOW';
+  priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
   nonce: string;
 }
 

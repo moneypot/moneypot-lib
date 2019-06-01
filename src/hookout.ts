@@ -4,7 +4,7 @@ import * as Buffutils from './util/buffutils';
 import Hash from './hash';
 import * as assert from './util/assert';
 
-export type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'LOW';
+export type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
 
 
 export default class Hookout {
@@ -24,7 +24,7 @@ export default class Hookout {
     }
 
     const priority = data.priority;
-    if (['CUSTOM', 'IMMEDIATE', 'BATCH', 'CONSOLIDATION'].indexOf(priority) === -1) {
+    if (['CUSTOM', 'IMMEDIATE', 'BATCH', 'FREE'].indexOf(priority) === -1) {
       return new Error('Unrecognized priority');
     }
 
