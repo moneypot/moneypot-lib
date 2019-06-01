@@ -18,7 +18,7 @@ class Hookout {
             return new Error('Hookout.fromPOD invalid bitcoin address');
         }
         const priority = data.priority;
-        if (['CUSTOM', 'IMMEDIATE', 'QUEUED', 'CONSOLIDATION'].indexOf(priority) === -1) {
+        if (['CUSTOM', 'IMMEDIATE', 'BATCH', 'FREE'].indexOf(priority) === -1) {
             return new Error('Unrecognized priority');
         }
         const nonce = Buffutils.fromHex(data.nonce, 32);

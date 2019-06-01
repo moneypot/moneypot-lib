@@ -1,6 +1,6 @@
 import * as POD from './pod';
 import Hash from './hash';
-export declare type Priority = 'CUSTOM' | 'IMMEDIATE' | 'QUEUED' | 'LOW';
+export declare type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
 export default class Hookout {
     static fromPOD(data: any): Hookout | Error;
     amount: POD.Amount;

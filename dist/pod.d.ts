@@ -41,7 +41,7 @@ export interface Change {
 export interface Hookout {
     amount: number;
     bitcoinAddress: string;
-    priority: 'CUSTOM' | 'IMMEDIATE' | 'QUEUED' | 'LOW';
+    priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
     nonce: string;
 }
 export interface FeeBump {
