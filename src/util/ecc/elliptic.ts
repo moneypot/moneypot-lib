@@ -10,6 +10,7 @@ import {
   pointFromBuffer,
   pointToBuffer,
   powmod,
+  pointFromX,
 } from './util';
 
 export type Scalar = bigint;
@@ -55,6 +56,9 @@ export const Point = {
   },
   fromBytes(buf: Uint8Array): Point | Error {
     return pointFromBuffer(buf);
+  },
+  fromX(x: bigint, isOdd: boolean) {
+    return pointFromX(x, isOdd ? BigInt(1) : BigInt(0));
   },
   fromHex(hex: string): Point | Error {
     const buff = bufferFromHex(hex);

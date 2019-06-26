@@ -1,7 +1,6 @@
 import * as assert from 'assert';
-import { Point, pointAdd } from '.';
 import * as check from './check';
-import { INFINITE_POINT, pointEq, pointMultiply, pointSubtract } from './elliptic';
+import { INFINITE_POINT, pointEq, pointMultiply, pointSubtract, pointAdd, Point, scalarAdd } from './elliptic';
 import {
   buffer32FromBigInt,
   bufferFromHex,
@@ -13,6 +12,8 @@ import {
   getK,
   getK0,
   jacobi,
+  mod,
+  modInverse,
 } from './util';
 
 // Schnorr Signatures
@@ -92,4 +93,50 @@ export function verify(pubkey: Point, message: Uint8Array, sig: Signature): bool
   } else {
     return true;
   }
+}
+
+// this is for ecdsa?! not schnorr ?!
+export function ecdsaRecover(message: Uint8Array, sig: Signature, j: number): Point {
+  // var sigObj = { r: signature.slice(0, 32), s: signature.slice(32, 64) }
+
+  // var sigr = new BN(sigObj.r)
+  // var sigs = new BN(sigObj.s)
+  // if (sigr.cmp(ecparams.n) >= 0 || sigs.cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
+  if (!check.isValidSignature(sig)) {
+    throw new Error('invalid sig');
+  }
+
+  if ((3 & j) === j) {
+    throw new Error('The recovery param is more than two bits');
+  }
+
+  let e = 0n; // TODO: should be message!
+
+  let r = sig.r;
+
+  // A set LSB signifies that the y-coordinate is odd
+  var isYOdd = (j & 1) == 1;
+  var isSecondKey = j >> 1;
+  // if (r.cmp(this.curve.p.umod(this.curve.n)) >= 0 && isSecondKey)
+  //   throw new Error('Unable to find sencond key candinate');
+  if (r >= curve.p % curve.n && isSecondKey) {
+    throw new Error('Unable to find second key coordinate');
+  }
+
+  // 1.1. Let x = r + jn.
+  const r2 = Point.fromX(r + (isSecondKey ? curve.n : BigInt(0)), isYOdd);
+  if (r2 instanceof Error) {
+    throw r2;
+  }
+
+  let rInv = modInverse(sig.r, curve.n);
+  //var s1 = n.sub(e).mul(rInv).umod(n);
+  let s1 = mod((curve.n - e) * rInv, curve.n);
+  // var s2 = s.mul(rInv).umod(n);
+  let s2 = mod(sig.s * rInv, curve.n);
+
+  // 1.6.1 Compute Q = r^-1 (sR -  eG)
+  //               Q = r^-1 (sR + -eG)
+  // return this.g.mulAdd(s1, r, s2);
+  return pointAdd(pointMultiply(curve.g, s1), pointMultiply(r2, s2));
 }

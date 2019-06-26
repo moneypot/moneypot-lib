@@ -6,7 +6,6 @@ import * as assert from './util/assert';
 
 export type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
 
-
 export default class Hookout {
   public static fromPOD(data: any): Hookout | Error {
     if (typeof data !== 'object') {

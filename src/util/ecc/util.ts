@@ -177,13 +177,21 @@ export function pointFromBuffer(buf: Uint8Array): Point | Error {
 
   const x = bufferToBigInt(buf.slice(1, 33));
 
+  return pointFromX(x, odd);
+}
+
+export function pointFromX(x: bigint, isOdd: bigint): Point | Error {
+  if (isOdd !== BigInt(0) && isOdd !== BigInt(1)) {
+    throw new Error('isOdd must be 0n or 1n');
+  }
+
   const { p } = curve;
   const ysq = (powmod(x, BigInt(3), p) + BigInt(7)) % p;
   const y0 = powmod(ysq, (p + BigInt(1)) / BigInt(4), p);
   if (powmod(y0, BigInt(2), p) !== ysq) {
     return new Error('point not on curve');
   }
-  const y = (y0 & BigInt(1)) !== odd ? p - y0 : y0;
+  const y = (y0 & BigInt(1)) !== isOdd ? p - y0 : y0;
   const point = { x, y };
 
   assert.equal(isValidPubkey(point), true);
