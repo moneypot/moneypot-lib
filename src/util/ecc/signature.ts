@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as check from './check';
-import { INFINITE_POINT, pointEq, pointMultiply, pointSubtract, pointAdd, Point, scalarAdd } from './elliptic';
+import { INFINITE_POINT, pointEq, pointMultiply, pointSubtract, pointAdd, Point, scalarAdd, Scalar } from './elliptic';
 import {
   buffer32FromBigInt,
   bufferFromHex,
@@ -110,7 +110,10 @@ export function ecdsaRecover(message: Uint8Array, sig: Signature, j: number): Po
     throw new Error('The recovery param is more than two bits');
   }
 
-  let e = 0n; // TODO: should be message!
+  let e = Scalar.fromBytes(message); // TODO: should be message!
+  if (e instanceof Error) {
+    throw e;
+  }
 
   let r = sig.r;
 

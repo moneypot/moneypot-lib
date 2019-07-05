@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("assert");
+const assert_1 = require("../assert");
 const sha256_1 = require("../bcrypto/sha256");
 const check_1 = require("./check");
 // secp256k1 parameters
@@ -50,7 +50,7 @@ function modInverse(a, m) {
     }
     // At this point, d is the GCD, and ud*a+vd*m = d.
     // If d == 1, this means that ud is a inverse.
-    assert.strictEqual(d, BigInt(1));
+    assert_1.default(d === BigInt(1));
     if (ud > 0) {
         return ud;
     }
@@ -133,7 +133,7 @@ exports.buffer32FromBigInt = buffer32FromBigInt;
 function concatBuffers(...bufs) {
     let totalSize = 0;
     for (const buf of bufs) {
-        assert(buf instanceof Uint8Array);
+        assert_1.default(buf instanceof Uint8Array);
         totalSize += buf.length;
     }
     const res = new Uint8Array(totalSize);
@@ -156,24 +156,31 @@ function pointFromBuffer(buf) {
     // odd is BigInt(1)  or BigInt(0)
     const odd = BigInt(buf[0] - 0x02);
     const x = bufferToBigInt(buf.slice(1, 33));
+    return pointFromX(x, odd);
+}
+exports.pointFromBuffer = pointFromBuffer;
+function pointFromX(x, isOdd) {
+    if (isOdd !== BigInt(0) && isOdd !== BigInt(1)) {
+        throw new Error('isOdd must be 0n or 1n');
+    }
     const { p } = exports.curve;
     const ysq = (powmod(x, BigInt(3), p) + BigInt(7)) % p;
     const y0 = powmod(ysq, (p + BigInt(1)) / BigInt(4), p);
     if (powmod(y0, BigInt(2), p) !== ysq) {
         return new Error('point not on curve');
     }
-    const y = (y0 & BigInt(1)) !== odd ? p - y0 : y0;
+    const y = (y0 & BigInt(1)) !== isOdd ? p - y0 : y0;
     const point = { x, y };
-    assert.equal(check_1.isValidPubkey(point), true);
+    assert_1.default(check_1.isValidPubkey(point));
     return point;
 }
-exports.pointFromBuffer = pointFromBuffer;
+exports.pointFromX = pointFromX;
 function pointToBuffer(point) {
     // 0x02: y is even
     // 0x03: y is odd
     const b0 = point.y % BigInt(2) === BigInt(0) ? 0x02 : 0x03;
     const xbuf = buffer32FromBigInt(point.x);
-    assert.equal(xbuf.length, 32);
+    assert_1.default(xbuf.length === 32);
     const result = new Uint8Array(33);
     result.set([b0], 0);
     result.set(xbuf, 1);

@@ -5,9 +5,6 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Buffutils = require("./util/buffutils");
 exports.Buffutils = Buffutils;
-// config stuff
-var params_1 = require("./params");
-exports.Params = params_1.default;
 const POD = require("./pod");
 exports.POD = POD;
 // types

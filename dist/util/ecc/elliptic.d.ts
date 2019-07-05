@@ -12,6 +12,7 @@ export interface Point {
 export declare const Point: {
     fromPrivKey(privkey: bigint): Point;
     fromBytes(buf: Uint8Array): Error | Point;
+    fromX(x: bigint, isOdd: boolean): Error | Point;
     fromHex(hex: string): Error | Point;
     toHex(point: Point): string;
     toBytes(point: Point): Uint8Array;

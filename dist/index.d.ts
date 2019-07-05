@@ -1,5 +1,4 @@
 import * as Buffutils from './util/buffutils';
-export { default as Params } from './params';
 import * as POD from './pod';
 export { POD };
 export { default as BlindedMessage } from './blinded-message';

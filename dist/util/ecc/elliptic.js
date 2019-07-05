@@ -38,6 +38,9 @@ exports.Point = {
     fromBytes(buf) {
         return util_1.pointFromBuffer(buf);
     },
+    fromX(x, isOdd) {
+        return util_1.pointFromX(x, isOdd ? BigInt(1) : BigInt(0));
+    },
     fromHex(hex) {
         const buff = util_1.bufferFromHex(hex);
         if (buff instanceof Error) {

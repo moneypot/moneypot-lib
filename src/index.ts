@@ -1,6 +1,4 @@
 import * as Buffutils from './util/buffutils';
-// config stuff
-export { default as Params } from './params';
 
 import * as POD from './pod';
 export { POD };

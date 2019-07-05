@@ -18,6 +18,7 @@ export declare function bufferToBigInt(bytes: Uint8Array): bigint;
 export declare function buffer32FromBigInt(n: bigint): Uint8Array;
 export declare function concatBuffers(...bufs: Uint8Array[]): Uint8Array;
 export declare function pointFromBuffer(buf: Uint8Array): Point | Error;
+export declare function pointFromX(x: bigint, isOdd: bigint): Point | Error;
 export declare function pointToBuffer(point: Point): Uint8Array;
 export declare function constantTimeBufferEquals(a: Uint8Array, b: Uint8Array): boolean;
 export declare function utf8ToBuffer(text: string): Uint8Array;

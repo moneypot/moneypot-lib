@@ -1,4 +1,4 @@
-import { Point } from '.';
+import { Point } from './elliptic';
 export declare type Signature = {
     r: bigint;
     s: bigint;
@@ -11,3 +11,4 @@ export declare const Signature: {
 };
 export declare function sign(message: Uint8Array, privkey: bigint): Signature;
 export declare function verify(pubkey: Point, message: Uint8Array, sig: Signature): boolean;
+export declare function ecdsaRecover(message: Uint8Array, sig: Signature, j: number): Point;

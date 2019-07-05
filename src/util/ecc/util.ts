@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from '../assert';
 import { Point, Scalar } from './elliptic';
 import sha256 from '../bcrypto/sha256';
 import { isValidPubkey } from './check';
@@ -53,7 +53,7 @@ export function modInverse(a: bigint, m: bigint): bigint {
 
   // At this point, d is the GCD, and ud*a+vd*m = d.
   // If d == 1, this means that ud is a inverse.
-  assert.strictEqual(d, BigInt(1));
+  assert(d === BigInt(1));
   if (ud > 0) {
     return ud;
   } else {
@@ -194,7 +194,7 @@ export function pointFromX(x: bigint, isOdd: bigint): Point | Error {
   const y = (y0 & BigInt(1)) !== isOdd ? p - y0 : y0;
   const point = { x, y };
 
-  assert.equal(isValidPubkey(point), true);
+  assert(isValidPubkey(point));
 
   return point;
 }
@@ -205,7 +205,7 @@ export function pointToBuffer(point: Point): Uint8Array {
   const b0 = point.y % BigInt(2) === BigInt(0) ? 0x02 : 0x03;
 
   const xbuf = buffer32FromBigInt(point.x);
-  assert.equal(xbuf.length, 32);
+  assert(xbuf.length === 32);
 
   const result = new Uint8Array(33);
   result.set([b0], 0);

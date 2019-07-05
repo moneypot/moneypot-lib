@@ -2,7 +2,6 @@ import Signature from './signature';
 import Hash from './hash';
 import PrivateKey from './private-key';
 import * as POD from './pod';
-import Params from './params';
 import { PublicKey } from '.';
 
 // P is used as the POD type that it returns
