@@ -64,8 +64,8 @@ function hrpToSat(hrpString) {
 }
 function wordsToIntBE(words) {
     let total = 0;
-    for (const [item, index] of words.reverse().entries()) {
-        total += item * 32 ** index;
+    for (const [index, item] of words.reverse().entries()) {
+        total += item * (32 ** index);
     }
     return total;
 }
@@ -288,6 +288,7 @@ function decode(paymentRequest) {
     }
     // reminder: left padded 0 bits
     let timestamp = wordsToIntBE(words.slice(0, 7));
+    console.log('time stamp is: ', timestamp);
     let timestampString = new Date(timestamp * 1000).toISOString();
     words = words.slice(7); // trim off the left 7 words
     let tags = [];
@@ -316,7 +317,7 @@ function decode(paymentRequest) {
         timeExpireDate = (timestamp + isDefined(tagsItems(tags, isDefined(TAGNAMES.get(6)))));
         timeExpireDateString = new Date(timeExpireDate * 1000).toISOString();
     }
-    let toSign = buffutils.concat(buffutils.fromString(decoded.prefix), bech32.convert(wordsNoSig, 5, 8, false)); // TODO: pad?
+    let toSign = buffutils.concat(buffutils.fromString(decoded.prefix), bech32.convert(wordsNoSig, 5, 8, true));
     let payReqHash = sha256_1.default.digest(toSign);
     let sig = signature_2.default.fromBytes(sigBuffer);
     if (sig instanceof Error) {

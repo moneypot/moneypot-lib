@@ -31,5 +31,22 @@ export declare type PaymentRequestObject = {
         data: TagData;
     }>;
 };
-export declare function decode(paymentRequest: string): any;
+export declare function decode(paymentRequest: string): {
+    paymentRequest: string;
+    complete: boolean;
+    prefix: string;
+    wordsTemp: string;
+    coinType: string;
+    satoshis: number | null;
+    millisatoshis: bigint | null;
+    timestamp: number;
+    timestampString: string;
+    payeeNodeKey: string;
+    signature: string;
+    recoveryFlag: number;
+    tags: {
+        tagName: string;
+        data: any;
+    }[];
+};
 export {};

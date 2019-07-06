@@ -106,11 +106,11 @@ export function ecdsaRecover(message: Uint8Array, sig: Signature, j: number): Po
     throw new Error('invalid sig');
   }
 
-  if ((3 & j) === j) {
+  if ((3 & j) !== j) {
     throw new Error('The recovery param is more than two bits');
   }
 
-  let e = Scalar.fromBytes(message); // TODO: should be message!
+  let e = Scalar.fromBytes(message);
   if (e instanceof Error) {
     throw e;
   }

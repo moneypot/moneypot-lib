@@ -110,8 +110,8 @@ function hrpToSat(hrpString: string): bigint {
 
 function wordsToIntBE(words: Uint8Array | (number[])): number {
   let total = 0;
-  for (const [item, index] of words.reverse().entries()) {
-    total += item * 32 ** index;
+  for (const [index, item] of words.reverse().entries()) {
+    total += item * (32 ** index);
   }
 
   return total;
@@ -361,6 +361,7 @@ export function decode(paymentRequest: string) {
 
   // reminder: left padded 0 bits
   let timestamp = wordsToIntBE(words.slice(0, 7));
+  console.log('time stamp is: ', timestamp);
   let timestampString = new Date(timestamp * 1000).toISOString();
   words = words.slice(7); // trim off the left 7 words
 
@@ -395,7 +396,7 @@ export function decode(paymentRequest: string) {
     timeExpireDateString = new Date(timeExpireDate * 1000).toISOString();
   }
 
-  let toSign = buffutils.concat(buffutils.fromString(decoded.prefix), bech32.convert(wordsNoSig, 5, 8, false)); // TODO: pad?
+  let toSign = buffutils.concat(buffutils.fromString(decoded.prefix), bech32.convert(wordsNoSig, 5, 8, true));
   let payReqHash = Sha256.digest(toSign);
 
   let sig = Signature.fromBytes(sigBuffer);
@@ -438,7 +439,7 @@ export function decode(paymentRequest: string) {
   return orderKeys(finalResult);
 }
 
-function orderKeys(unorderedObj: any) {
+function orderKeys<T extends any>(unorderedObj: T): T {
   let orderedObj: any = {};
   Object.keys(unorderedObj)
     .sort()
