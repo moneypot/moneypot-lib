@@ -1,3 +1,11 @@
+import Hash from './hash';
+export default class LightningInvoice {
+    paymentReq: PaymentRequestObject;
+    static fromPOD(data: string): LightningInvoice | Error;
+    constructor(paymentReq: PaymentRequestObject);
+    hash(): Hash;
+    toPOD(): string;
+}
 declare type RoutingInfo = Array<{
     pubkey: string;
     short_channel_id: string;
@@ -18,7 +26,7 @@ export declare type PaymentRequestObject = {
     wordsTemp?: string;
     coinType?: string;
     satoshis?: number;
-    millisatoshis?: string;
+    millisatoshis?: bigint;
     timestamp?: number;
     timestampString?: string;
     timeExpireDate?: number;
@@ -30,23 +38,5 @@ export declare type PaymentRequestObject = {
         tagName: string;
         data: TagData;
     }>;
-};
-export declare function decode(paymentRequest: string): {
-    paymentRequest: string;
-    complete: boolean;
-    prefix: string;
-    wordsTemp: string;
-    coinType: string;
-    satoshis: number | null;
-    millisatoshis: bigint | null;
-    timestamp: number;
-    timestampString: string;
-    payeeNodeKey: string;
-    signature: string;
-    recoveryFlag: number;
-    tags: {
-        tagName: string;
-        data: any;
-    }[];
 };
 export {};

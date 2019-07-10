@@ -46,8 +46,11 @@ export function copy(
   return sourceEnd - sourceStart;
 }
 
-export function slice(buff: Uint8Array, begin: number, end: number) {
+export function slice(buff: Uint8Array, begin: number = 0, end: number = buff.length) {
   assert.is(buff, Uint8Array);
+  if (begin < 0) {
+    begin = Math.max(buff.length + begin, 0);
+  }
 
   return new Uint8Array(buff.buffer, buff.byteOffset + begin, end - begin);
 }
@@ -183,6 +186,20 @@ export function compare(a: Uint8Array, b: Uint8Array) {
   }
 
   return 0;
+}
+
+export function equal(a: Uint8Array, b: Uint8Array) {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 // only constant time if both arrays are the same length

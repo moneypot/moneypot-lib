@@ -34,8 +34,11 @@ function copy(buff, target, targetStart = 0, sourceStart = 0, sourceEnd = buff.l
     return sourceEnd - sourceStart;
 }
 exports.copy = copy;
-function slice(buff, begin, end) {
+function slice(buff, begin = 0, end = buff.length) {
     assert.is(buff, Uint8Array);
+    if (begin < 0) {
+        begin = Math.max(buff.length + begin, 0);
+    }
     return new Uint8Array(buff.buffer, buff.byteOffset + begin, end - begin);
 }
 exports.slice = slice;
@@ -152,6 +155,18 @@ function compare(a, b) {
     return 0;
 }
 exports.compare = compare;
+function equal(a, b) {
+    if (a.length !== b.length) {
+        return false;
+    }
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.equal = equal;
 // only constant time if both arrays are the same length
 function constTimeEqual(a, b) {
     if (a.length !== b.length) {
