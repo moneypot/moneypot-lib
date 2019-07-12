@@ -41,6 +41,8 @@ export * from './blind';
 
 // helper coin function
 export * from './util/coins';
+export * from './bolt11';
+
 
 export { default as CoinRequest } from './coin-request';
 export { default as ClaimRequest } from './claim-request';
