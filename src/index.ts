@@ -16,6 +16,9 @@ export { default as PublicKey } from './public-key';
 export { default as Signature } from './signature';
 
 // models
+
+export { default as LightningInvoice } from './lightning-invoice';
+
 export { default as Coin } from './coin';
 
 import CustodianInfo from './custodian-info';

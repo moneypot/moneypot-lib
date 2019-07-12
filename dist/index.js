@@ -21,6 +21,8 @@ exports.PublicKey = public_key_1.default;
 var signature_1 = require("./signature");
 exports.Signature = signature_1.default;
 // models
+var lightning_invoice_1 = require("./lightning-invoice");
+exports.LightningInvoice = lightning_invoice_1.default;
 var coin_1 = require("./coin");
 exports.Coin = coin_1.default;
 const custodian_info_1 = require("./custodian-info");
