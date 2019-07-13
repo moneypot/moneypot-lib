@@ -21,8 +21,6 @@ exports.PublicKey = public_key_1.default;
 var signature_1 = require("./signature");
 exports.Signature = signature_1.default;
 // models
-var lightning_invoice_1 = require("./lightning-invoice");
-exports.LightningInvoice = lightning_invoice_1.default;
 var coin_1 = require("./coin");
 exports.Coin = coin_1.default;
 const custodian_info_1 = require("./custodian-info");
@@ -50,6 +48,8 @@ const claim_response_1 = require("./claim-response");
 exports.ClaimResponse = claim_response_1.default;
 const acknowledged_1 = require("./acknowledged");
 exports.Acknowledged = acknowledged_1.default;
+const lightning_invoice_1 = require("./lightning-invoice");
+exports.LightningInvoice = lightning_invoice_1.default;
 // crypto, should be in it's own lib too..
 var random_1 = require("./util/random");
 exports.random = random_1.default;

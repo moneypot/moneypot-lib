@@ -17,7 +17,6 @@ export { default as Signature } from './signature';
 
 // models
 
-export { default as LightningInvoice } from './lightning-invoice';
 
 export { default as Coin } from './coin';
 
@@ -53,6 +52,11 @@ export { ClaimResponse };
 import Acknowledged from './acknowledged';
 export { Acknowledged };
 
+import LightningInvoice from './lightning-invoice';
+export { LightningInvoice };
+
+
+export type AcknowledgedLightningInvoice = Acknowledged<LightningInvoice, POD.LightningInvoice>;
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
 export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
 export type AcknowledgedCustodianInfo = Acknowledged<CustodianInfo, POD.CustodianInfo>;
