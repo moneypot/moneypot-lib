@@ -19,16 +19,16 @@ class LightningInvoice {
     }
     static fromPOD(data) {
         if (typeof data !== 'object') {
-            throw new Error('LightningInvoice.fromPOD expected an object');
+            return new Error('LightningInvoice.fromPOD expected an object');
         }
         // should we use bolt11 to validate the payment request?
         const beneficiary = public_key_1.default.fromPOD(data.beneficiary);
         if (beneficiary instanceof Error) {
-            throw new Error('lightninginvoice needs a publickey beneficiary');
+            return new Error('lightninginvoice needs a publickey beneficiary');
         }
         const paymentRequest = data.paymentRequest;
         if (typeof paymentRequest !== 'string' || !paymentRequest.startsWith('ln')) {
-            throw new Error('expected valid payment request for lightninginvoice');
+            return new Error('expected valid payment request for lightninginvoice');
         }
         return {
             beneficiary,
