@@ -93,4 +93,13 @@ export default class ClaimRequest {
       })),
     };
   }
+
+  // how much is being claimed
+  public amount() {
+    let n = 0;
+    for (const coinRequest of this.coinRequests) {
+      n += coinRequest.magnitude.toAmount()
+    }
+    return n;
+  }
 }

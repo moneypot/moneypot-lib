@@ -13,4 +13,5 @@ export default class ClaimRequest {
     static hashOf(claimHash: Hash, coinRequests: CoinRequest[]): Hash;
     hash(): Hash;
     toPOD(): POD.ClaimRequest;
+    amount(): number;
 }

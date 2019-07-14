@@ -73,6 +73,14 @@ class ClaimRequest {
             })),
         };
     }
+    // how much is being claimed
+    amount() {
+        let n = 0;
+        for (const coinRequest of this.coinRequests) {
+            n += coinRequest.magnitude.toAmount();
+        }
+        return n;
+    }
 }
 exports.default = ClaimRequest;
 //# sourceMappingURL=claim-request.js.map
