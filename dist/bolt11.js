@@ -272,16 +272,10 @@ function decodeBolt11(paymentRequest) {
         throw new Error('Unknown coin bech32 prefix: ' + p1);
     }
     let value = prefixMatches[2];
-    let satoshis, millisatoshis, removeSatoshis;
+    let satoshis, millisatoshis;
     if (value) {
         let divisor = prefixMatches[3];
-        try {
-            satoshis = Number(hrpToSat(value + divisor));
-        }
-        catch (e) {
-            satoshis = undefined;
-            removeSatoshis = true;
-        }
+        satoshis = Number(hrpToSat(value + divisor));
         millisatoshis = hrpToMillisat(value + divisor);
     }
     else {
@@ -345,9 +339,6 @@ function decodeBolt11(paymentRequest) {
         recoveryFlag,
         tags,
     };
-    if (removeSatoshis) {
-        delete finalResult['satoshis'];
-    }
     if (timeExpireDate) {
         finalResult = Object.assign(finalResult, { timeExpireDate, timeExpireDateString });
     }

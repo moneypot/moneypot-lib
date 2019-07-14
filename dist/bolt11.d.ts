@@ -12,20 +12,20 @@ declare type FallbackAddress = {
 };
 export declare type TagData = string | number | RoutingInfo | FallbackAddress;
 export declare type PaymentRequestObject = {
-    paymentRequest?: string;
-    complete?: boolean;
-    prefix?: string;
-    wordsTemp?: string;
-    coinType?: string;
+    paymentRequest: string;
+    complete: boolean;
+    prefix: string;
+    wordsTemp: string;
+    coinType: string;
     satoshis?: number;
     millisatoshis?: bigint;
-    timestamp?: number;
-    timestampString?: string;
+    timestamp: number;
+    timestampString: string;
     timeExpireDate?: number;
     timeExpireDateString?: string;
-    payeeNodeKey?: string;
-    signature?: string;
-    recoveryFlag?: number;
+    payeeNodeKey: string;
+    signature: string;
+    recoveryFlag: number;
     tags: Array<{
         tagName: string;
         data: TagData;
@@ -33,20 +33,20 @@ export declare type PaymentRequestObject = {
 };
 export declare function decodeBolt11(paymentRequest: string): PaymentRequestObject;
 export declare function encodeBolt11(paymentRequest: PaymentRequestObject): {
-    paymentRequest?: string | undefined;
-    complete?: boolean | undefined;
-    prefix?: string | undefined;
-    wordsTemp?: string | undefined;
-    coinType?: string | undefined;
+    paymentRequest: string;
+    complete: boolean;
+    prefix: string;
+    wordsTemp: string;
+    coinType: string;
     satoshis?: number | undefined;
     millisatoshis?: bigint | undefined;
-    timestamp?: number | undefined;
-    timestampString?: string | undefined;
+    timestamp: number;
+    timestampString: string;
     timeExpireDate?: number | undefined;
     timeExpireDateString?: string | undefined;
-    payeeNodeKey?: string | undefined;
-    signature?: string | undefined;
-    recoveryFlag?: number | undefined;
+    payeeNodeKey: string;
+    signature: string;
+    recoveryFlag: number;
     tags: {
         tagName: string;
         data: TagData;

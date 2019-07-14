@@ -26,6 +26,8 @@ export { CustodianInfo };
 export { default as Hookin } from './hookin';
 
 export { default as Hookout } from './hookout';
+export { default as LightningPayment } from './lightning-payment';
+
 export { default as FeeBump } from './fee-bump';
 
 export { default as Magnitude } from './magnitude';

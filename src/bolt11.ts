@@ -25,20 +25,20 @@ type FallbackAddress = {
 // Start exports
 export declare type TagData = string | number | RoutingInfo | FallbackAddress;
 export declare type PaymentRequestObject = {
-  paymentRequest?: string;
-  complete?: boolean;
-  prefix?: string;
-  wordsTemp?: string;
-  coinType?: string;
+  paymentRequest: string;
+  complete: boolean;
+  prefix: string;
+  wordsTemp: string;
+  coinType: string;
   satoshis?: number;
   millisatoshis?: bigint;
-  timestamp?: number;
-  timestampString?: string;
+  timestamp: number;
+  timestampString: string;
   timeExpireDate?: number;
   timeExpireDateString?: string;
-  payeeNodeKey?: string;
-  signature?: string;
-  recoveryFlag?: number;
+  payeeNodeKey: string;
+  signature: string;
+  recoveryFlag: number;
   tags: Array<{
     tagName: string;
     data: TagData;
@@ -347,15 +347,10 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
   }
 
   let value = prefixMatches[2];
-  let satoshis, millisatoshis, removeSatoshis;
+  let satoshis, millisatoshis;
   if (value) {
     let divisor = prefixMatches[3];
-    try {
-      satoshis = Number(hrpToSat(value + divisor));
-    } catch (e) {
-      satoshis = undefined;
-      removeSatoshis = true;
-    }
+    satoshis = Number(hrpToSat(value + divisor));
     millisatoshis = hrpToMillisat(value + divisor);
   } else {
     satoshis = undefined;
@@ -431,9 +426,6 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
     tags,
   };
 
-  if (removeSatoshis) {
-    delete finalResult['satoshis'];
-  }
 
   if (timeExpireDate) {
     finalResult = Object.assign(finalResult, { timeExpireDate, timeExpireDateString });
