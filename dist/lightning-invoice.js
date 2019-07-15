@@ -32,7 +32,7 @@ class LightningInvoice {
         }
         return {
             beneficiary,
-            paymentRequest
+            paymentRequest,
         };
     }
 }

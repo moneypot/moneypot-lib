@@ -7,4 +7,6 @@ export default class LightningPayment {
     toPOD(): string;
     hash(): Hash;
     static hashOf(paymentRequest: string): Hash;
+    readonly amount: number | undefined;
+    setAmount(satoshis: number): void;
 }

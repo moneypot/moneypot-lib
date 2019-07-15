@@ -8,7 +8,6 @@ import { ecdsaRecover } from './util/ecc/signature';
 import Signature from './signature';
 import * as bs58check from './util/bs58check';
 
-
 type RoutingInfo = Array<{
   pubkey: string;
   short_channel_id: string;
@@ -25,7 +24,6 @@ type FallbackAddress = {
 // Start exports
 export declare type TagData = string | number | RoutingInfo | FallbackAddress;
 export declare type PaymentRequestObject = {
-  paymentRequest: string;
   complete: boolean;
   prefix: string;
   wordsTemp: string;
@@ -44,8 +42,6 @@ export declare type PaymentRequestObject = {
     data: TagData;
   }>;
 };
-
-//export declare function decode(paymentRequest: string): PaymentRequestObject;
 
 const MAX_MILLISATS = BigInt('2100000000000000000');
 
@@ -425,7 +421,6 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
     recoveryFlag,
     tags,
   };
-
 
   if (timeExpireDate) {
     finalResult = Object.assign(finalResult, { timeExpireDate, timeExpireDateString });
@@ -830,7 +825,7 @@ export function encodeBolt11(paymentRequest: PaymentRequestObject) {
   // with the buffer conversion of the data words excluding the signature
   // (right padded with 0 bits)
   //Buffer.concat([Buffer.from(prefix, 'utf8'), Buffer.from(convert(dataWords, 5, 8))])
-  let toSign = buffutils.concat(buffutils.fromString(prefix),  bech32.convert(dataWords, 5, 8, true));
+  let toSign = buffutils.concat(buffutils.fromString(prefix), bech32.convert(dataWords, 5, 8, true));
   // single SHA256 hash for the signature
   let payReqHash = Sha256.digest(toSign);
 
@@ -858,7 +853,6 @@ export function encodeBolt11(paymentRequest: PaymentRequestObject) {
         throw new Error('expected signature to be valid hex');
       }
 
-
       let recoveredPubkey = ecc.Point.toBytes(ecdsaRecover(payReqHash, sig, data.recoveryFlag));
       if (nodePublicKey && !buffutils.equal(nodePublicKey, recoveredPubkey)) {
         throw new Error('Signature, message, and recoveryID did not produce the same pubkey as payeeNodeKey');
@@ -885,14 +879,15 @@ export function encodeBolt11(paymentRequest: PaymentRequestObject) {
     data.timeExpireDateString = new Date(data.timeExpireDate * 1000).toISOString();
   }
   data.timestampString = new Date(data.timestamp * 1000).toISOString();
-  data.paymentRequest = data.complete ? bech32.encode(prefix, dataWords) : '';
   data.prefix = prefix;
   data.wordsTemp = bech32.encode('temp', dataWords);
   data.complete = !!sigWords;
 
-  // payment requests get pretty long. Nothing in the spec says anything about length.
-  // Even though bech32 loses error correction power over 1023 characters.
-  return orderKeys(data);
+
+  if (!data.complete) {
+    throw new Error('can not encode incomplete');
+  }
+  return bech32.encode(prefix, dataWords);
 }
 
 function intBEToWords(intBE: number = 0, bits: number = 5) {

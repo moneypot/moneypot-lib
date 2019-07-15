@@ -98,7 +98,7 @@ export default class ClaimRequest {
   public amount() {
     let n = 0;
     for (const coinRequest of this.coinRequests) {
-      n += coinRequest.magnitude.toAmount()
+      n += coinRequest.magnitude.toAmount();
     }
     return n;
   }

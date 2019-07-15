@@ -12,7 +12,6 @@ declare type FallbackAddress = {
 };
 export declare type TagData = string | number | RoutingInfo | FallbackAddress;
 export declare type PaymentRequestObject = {
-    paymentRequest: string;
     complete: boolean;
     prefix: string;
     wordsTemp: string;
@@ -32,24 +31,5 @@ export declare type PaymentRequestObject = {
     }>;
 };
 export declare function decodeBolt11(paymentRequest: string): PaymentRequestObject;
-export declare function encodeBolt11(paymentRequest: PaymentRequestObject): {
-    paymentRequest: string;
-    complete: boolean;
-    prefix: string;
-    wordsTemp: string;
-    coinType: string;
-    satoshis?: number | undefined;
-    millisatoshis?: bigint | undefined;
-    timestamp: number;
-    timestampString: string;
-    timeExpireDate?: number | undefined;
-    timeExpireDateString?: string | undefined;
-    payeeNodeKey: string;
-    signature: string;
-    recoveryFlag: number;
-    tags: {
-        tagName: string;
-        data: TagData;
-    }[];
-};
+export declare function encodeBolt11(paymentRequest: PaymentRequestObject): string;
 export {};

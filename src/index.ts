@@ -17,7 +17,6 @@ export { default as Signature } from './signature';
 
 // models
 
-
 export { default as Coin } from './coin';
 
 import CustodianInfo from './custodian-info';
@@ -44,7 +43,6 @@ export * from './blind';
 export * from './util/coins';
 export * from './bolt11';
 
-
 export { default as CoinRequest } from './coin-request';
 export { default as ClaimRequest } from './claim-request';
 
@@ -56,7 +54,6 @@ export { Acknowledged };
 
 import LightningInvoice from './lightning-invoice';
 export { LightningInvoice };
-
 
 export type AcknowledgedLightningInvoice = Acknowledged<LightningInvoice, POD.LightningInvoice>;
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;

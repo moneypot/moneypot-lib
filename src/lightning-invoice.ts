@@ -4,9 +4,8 @@ import * as buffutils from './util/buffutils';
 import * as POD from './pod';
 
 export default class LightningInvoice {
-
-  beneficiary: PublicKey
-  paymentRequest: string
+  beneficiary: PublicKey;
+  paymentRequest: string;
 
   constructor(beneficiary: PublicKey, paymentRequest: string) {
     this.beneficiary = beneficiary;
@@ -21,7 +20,7 @@ export default class LightningInvoice {
     return {
       beneficiary: this.beneficiary.toPOD(),
       paymentRequest: this.paymentRequest,
-    }
+    };
   }
 
   static fromPOD(data: any) {
@@ -42,9 +41,7 @@ export default class LightningInvoice {
 
     return {
       beneficiary,
-      paymentRequest
+      paymentRequest,
     };
   }
-
-
 }

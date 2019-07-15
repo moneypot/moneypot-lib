@@ -9,7 +9,6 @@ const ecc = require("./util/ecc");
 const signature_1 = require("./util/ecc/signature");
 const signature_2 = require("./signature");
 const bs58check = require("./util/bs58check");
-//export declare function decode(paymentRequest: string): PaymentRequestObject;
 const MAX_MILLISATS = BigInt('2100000000000000000');
 const MILLISATS_PER_BTC = BigInt(1e11);
 const MILLISATS_PER_MILLIBTC = BigInt(1e8);
@@ -754,13 +753,13 @@ function encodeBolt11(paymentRequest) {
         data.timeExpireDateString = new Date(data.timeExpireDate * 1000).toISOString();
     }
     data.timestampString = new Date(data.timestamp * 1000).toISOString();
-    data.paymentRequest = data.complete ? bech32.encode(prefix, dataWords) : '';
     data.prefix = prefix;
     data.wordsTemp = bech32.encode('temp', dataWords);
     data.complete = !!sigWords;
-    // payment requests get pretty long. Nothing in the spec says anything about length.
-    // Even though bech32 loses error correction power over 1023 characters.
-    return orderKeys(data);
+    if (!data.complete) {
+        throw new Error('can not encode incomplete');
+    }
+    return bech32.encode(prefix, dataWords);
 }
 exports.encodeBolt11 = encodeBolt11;
 function intBEToWords(intBE = 0, bits = 5) {

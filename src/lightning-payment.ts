@@ -1,11 +1,8 @@
-import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
 
 import Hash from './hash';
-import * as assert from './util/assert';
 
 import * as bolt11 from './bolt11';
-
 
 export default class LightningPayment {
   public static fromPOD(data: any): LightningPayment | Error {
@@ -25,18 +22,17 @@ export default class LightningPayment {
   }
 
   paymentRequestObject: bolt11.PaymentRequestObject;
-  
 
   constructor(paymentRequestObject: bolt11.PaymentRequestObject) {
     this.paymentRequestObject = paymentRequestObject;
   }
 
-  public toPOD() {
-    return this.paymentRequestObject.paymentRequest;
+  public toPOD(): string {
+    return bolt11.encodeBolt11(this.paymentRequestObject);
   }
 
   public hash() {
-    return LightningPayment.hashOf(this.paymentRequestObject.paymentRequest);
+    return LightningPayment.hashOf(this.toPOD());
   }
 
   static hashOf(paymentRequest: string) {
@@ -45,5 +41,14 @@ export default class LightningPayment {
     h.update(Buffutils.fromString(paymentRequest));
 
     return h.digest();
+  }
+
+  get amount() {
+    return this.paymentRequestObject.satoshis;
+  }
+
+  setAmount(satoshis: number) {
+    this.paymentRequestObject.satoshis = satoshis;
+    this.paymentRequestObject.millisatoshis = BigInt(satoshis) * BigInt(1000);
   }
 }
