@@ -6,49 +6,49 @@ import * as bolt11 from './bolt11';
 
 export default class LightningPayment {
   public static fromPOD(data: any): LightningPayment | Error {
-    if (typeof data !== 'string') {
-      return new Error('LightningPayment.fromPOD is not string');
+    if (typeof data !== 'object') {
+      return new Error('LightningPayment.fromPOD is not an object');
     }
 
     let pro;
     try {
-      pro = bolt11.decodeBolt11(data);
+      pro = bolt11.decodeBolt11(data.paymentRequest);
     } catch (err) {
       console.warn('warn: bolt11 decode error: ', err);
-      return new Error('could not decode lightning paymentRequest');
+      return err;
     }
 
-    return new LightningPayment(pro);
+    let amount = data.amount;
+    if (!Number.isSafeInteger(amount) || amount <= 0) {
+      return new Error('LightningPayment.fromPOD must have a natural amount');
+    }
+
+    return new LightningPayment(data.paymentRequest, amount);
   }
 
-  paymentRequestObject: bolt11.PaymentRequestObject;
+  paymentRequest: string;
+  amount: number
 
-  constructor(paymentRequestObject: bolt11.PaymentRequestObject) {
-    this.paymentRequestObject = paymentRequestObject;
+  constructor(paymentRequest: string, amount: number) {
+    this.paymentRequest = paymentRequest;
+    this.amount = amount;
   }
 
-  public toPOD(): string {
-    return bolt11.encodeBolt11(this.paymentRequestObject);
+  public toPOD() {
+    return { paymentRequest: this.paymentRequest, amount: this.amount };
   }
 
   public hash() {
-    return LightningPayment.hashOf(this.toPOD());
+    return LightningPayment.hashOf(this.paymentRequest, this.amount);
   }
 
-  static hashOf(paymentRequest: string) {
+  static hashOf(paymentRequest: string, amount: number) {
     const h = Hash.newBuilder('LightningPayment');
 
     h.update(Buffutils.fromString(paymentRequest));
+    h.update(Buffutils.fromUint64(amount));
 
     return h.digest();
   }
 
-  get amount() {
-    return this.paymentRequestObject.satoshis;
-  }
-
-  setAmount(satoshis: number) {
-    this.paymentRequestObject.satoshis = satoshis;
-    this.paymentRequestObject.millisatoshis = BigInt(satoshis) * BigInt(1000);
-  }
 }
