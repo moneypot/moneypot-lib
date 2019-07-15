@@ -1,12 +1,13 @@
 import Hash from './hash';
-import * as bolt11 from './bolt11';
 export default class LightningPayment {
     static fromPOD(data: any): LightningPayment | Error;
-    paymentRequestObject: bolt11.PaymentRequestObject;
-    constructor(paymentRequestObject: bolt11.PaymentRequestObject);
-    toPOD(): string;
+    paymentRequest: string;
+    amount: number;
+    constructor(paymentRequest: string, amount: number);
+    toPOD(): {
+        paymentRequest: string;
+        amount: number;
+    };
     hash(): Hash;
-    static hashOf(paymentRequest: string): Hash;
-    readonly amount: number | undefined;
-    setAmount(satoshis: number): void;
+    static hashOf(paymentRequest: string, amount: number): Hash;
 }

@@ -5,39 +5,41 @@ const hash_1 = require("./hash");
 const bolt11 = require("./bolt11");
 class LightningPayment {
     static fromPOD(data) {
-        if (typeof data !== 'string') {
-            return new Error('LightningPayment.fromPOD is not string');
+        if (typeof data !== 'object') {
+            return new Error('LightningPayment.fromPOD is not an object');
         }
         let pro;
         try {
-            pro = bolt11.decodeBolt11(data);
+            pro = bolt11.decodeBolt11(data.paymentRequest);
         }
         catch (err) {
             console.warn('warn: bolt11 decode error: ', err);
-            return new Error('could not decode lightning paymentRequest');
+            return err;
         }
-        return new LightningPayment(pro);
+        let amount = data.amount;
+        if (!Number.isSafeInteger(amount) || amount <= 0) {
+            return new Error('LightningPayment.fromPOD must have a natural amount');
+        }
+        if (pro.satoshis && pro.satoshis !== amount) {
+            return new Error('amount does not match invoice amount');
+        }
+        return new LightningPayment(data.paymentRequest, amount);
     }
-    constructor(paymentRequestObject) {
-        this.paymentRequestObject = paymentRequestObject;
+    constructor(paymentRequest, amount) {
+        this.paymentRequest = paymentRequest;
+        this.amount = amount;
     }
     toPOD() {
-        return bolt11.encodeBolt11(this.paymentRequestObject);
+        return { paymentRequest: this.paymentRequest, amount: this.amount };
     }
     hash() {
-        return LightningPayment.hashOf(this.toPOD());
+        return LightningPayment.hashOf(this.paymentRequest, this.amount);
     }
-    static hashOf(paymentRequest) {
+    static hashOf(paymentRequest, amount) {
         const h = hash_1.default.newBuilder('LightningPayment');
         h.update(Buffutils.fromString(paymentRequest));
+        h.update(Buffutils.fromUint64(amount));
         return h.digest();
-    }
-    get amount() {
-        return this.paymentRequestObject.satoshis;
-    }
-    setAmount(satoshis) {
-        this.paymentRequestObject.satoshis = satoshis;
-        this.paymentRequestObject.millisatoshis = BigInt(satoshis) * BigInt(1000);
     }
 }
 exports.default = LightningPayment;

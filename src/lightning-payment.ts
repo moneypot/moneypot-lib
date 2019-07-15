@@ -23,6 +23,10 @@ export default class LightningPayment {
       return new Error('LightningPayment.fromPOD must have a natural amount');
     }
 
+    if (pro.satoshis && pro.satoshis !== amount) {
+      return new Error('amount does not match invoice amount');
+    }
+
     return new LightningPayment(data.paymentRequest, amount);
   }
 
