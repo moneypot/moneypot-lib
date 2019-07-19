@@ -39,9 +39,6 @@ export default class LightningInvoice {
       return new Error('expected valid payment request for lightninginvoice');
     }
 
-    return {
-      beneficiary,
-      paymentRequest,
-    };
+    return new LightningInvoice(beneficiary, paymentRequest);
   }
 }

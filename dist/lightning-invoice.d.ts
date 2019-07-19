@@ -7,8 +7,5 @@ export default class LightningInvoice {
     constructor(beneficiary: PublicKey, paymentRequest: string);
     hash(): Hash;
     toPOD(): POD.LightningInvoice;
-    static fromPOD(data: any): Error | {
-        beneficiary: PublicKey;
-        paymentRequest: string;
-    };
+    static fromPOD(data: any): Error | LightningInvoice;
 }

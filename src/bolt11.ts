@@ -883,7 +883,6 @@ export function encodeBolt11(paymentRequest: PaymentRequestObject) {
   data.wordsTemp = bech32.encode('temp', dataWords);
   data.complete = !!sigWords;
 
-
   if (!data.complete) {
     throw new Error('can not encode incomplete');
   }

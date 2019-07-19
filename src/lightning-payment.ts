@@ -31,7 +31,7 @@ export default class LightningPayment {
   }
 
   paymentRequest: string;
-  amount: number
+  amount: number;
 
   constructor(paymentRequest: string, amount: number) {
     this.paymentRequest = paymentRequest;
@@ -54,5 +54,4 @@ export default class LightningPayment {
 
     return h.digest();
   }
-
 }

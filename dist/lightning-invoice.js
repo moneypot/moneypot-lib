@@ -30,10 +30,7 @@ class LightningInvoice {
         if (typeof paymentRequest !== 'string' || !paymentRequest.startsWith('ln')) {
             return new Error('expected valid payment request for lightninginvoice');
         }
-        return {
-            beneficiary,
-            paymentRequest,
-        };
+        return new LightningInvoice(beneficiary, paymentRequest);
     }
 }
 exports.default = LightningInvoice;
