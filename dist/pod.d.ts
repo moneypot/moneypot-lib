@@ -70,6 +70,6 @@ export interface TransferHash {
     transferHash: string;
 }
 export interface LightningInvoice {
-    beneficiary: PublicKey;
+    claimant: PublicKey;
     paymentRequest: string;
 }

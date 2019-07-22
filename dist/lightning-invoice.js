@@ -4,16 +4,16 @@ const public_key_1 = require("./public-key");
 const hash_1 = require("./hash");
 const buffutils = require("./util/buffutils");
 class LightningInvoice {
-    constructor(beneficiary, paymentRequest) {
-        this.beneficiary = beneficiary;
+    constructor(claimant, paymentRequest) {
+        this.claimant = claimant;
         this.paymentRequest = paymentRequest;
     }
     hash() {
-        return hash_1.default.fromMessage('LightningInvoice', this.beneficiary.buffer, buffutils.fromString(this.paymentRequest));
+        return hash_1.default.fromMessage('LightningInvoice', this.claimant.buffer, buffutils.fromString(this.paymentRequest));
     }
     toPOD() {
         return {
-            beneficiary: this.beneficiary.toPOD(),
+            claimant: this.claimant.toPOD(),
             paymentRequest: this.paymentRequest,
         };
     }
@@ -22,15 +22,15 @@ class LightningInvoice {
             return new Error('LightningInvoice.fromPOD expected an object');
         }
         // should we use bolt11 to validate the payment request?
-        const beneficiary = public_key_1.default.fromPOD(data.beneficiary);
-        if (beneficiary instanceof Error) {
-            return new Error('lightninginvoice needs a publickey beneficiary');
+        const claimant = public_key_1.default.fromPOD(data.claimant);
+        if (claimant instanceof Error) {
+            return new Error('lightninginvoice needs a publickey claimant');
         }
         const paymentRequest = data.paymentRequest;
         if (typeof paymentRequest !== 'string' || !paymentRequest.startsWith('ln')) {
             return new Error('expected valid payment request for lightninginvoice');
         }
-        return new LightningInvoice(beneficiary, paymentRequest);
+        return new LightningInvoice(claimant, paymentRequest);
     }
 }
 exports.default = LightningInvoice;

@@ -85,6 +85,6 @@ export interface TransferHash {
 }
 
 export interface LightningInvoice {
-  beneficiary: PublicKey;
+  claimant: PublicKey;
   paymentRequest: string;
 }

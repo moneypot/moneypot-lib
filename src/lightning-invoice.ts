@@ -4,21 +4,21 @@ import * as buffutils from './util/buffutils';
 import * as POD from './pod';
 
 export default class LightningInvoice {
-  beneficiary: PublicKey;
+  claimant: PublicKey;
   paymentRequest: string;
 
-  constructor(beneficiary: PublicKey, paymentRequest: string) {
-    this.beneficiary = beneficiary;
+  constructor(claimant: PublicKey, paymentRequest: string) {
+    this.claimant = claimant;
     this.paymentRequest = paymentRequest;
   }
 
   hash() {
-    return Hash.fromMessage('LightningInvoice', this.beneficiary.buffer, buffutils.fromString(this.paymentRequest));
+    return Hash.fromMessage('LightningInvoice', this.claimant.buffer, buffutils.fromString(this.paymentRequest));
   }
 
   toPOD(): POD.LightningInvoice {
     return {
-      beneficiary: this.beneficiary.toPOD(),
+      claimant: this.claimant.toPOD(),
       paymentRequest: this.paymentRequest,
     };
   }
@@ -29,9 +29,9 @@ export default class LightningInvoice {
     }
 
     // should we use bolt11 to validate the payment request?
-    const beneficiary = PublicKey.fromPOD(data.beneficiary);
-    if (beneficiary instanceof Error) {
-      return new Error('lightninginvoice needs a publickey beneficiary');
+    const claimant = PublicKey.fromPOD(data.claimant);
+    if (claimant instanceof Error) {
+      return new Error('lightninginvoice needs a publickey claimant');
     }
 
     const paymentRequest = data.paymentRequest;
@@ -39,6 +39,6 @@ export default class LightningInvoice {
       return new Error('expected valid payment request for lightninginvoice');
     }
 
-    return new LightningInvoice(beneficiary, paymentRequest);
+    return new LightningInvoice(claimant, paymentRequest);
   }
 }
