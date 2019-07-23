@@ -30,7 +30,10 @@ class LightningPayment {
         this.amount = amount;
     }
     toPOD() {
-        return { paymentRequest: this.paymentRequest, amount: this.amount };
+        return {
+            amount: this.amount,
+            paymentRequest: this.paymentRequest,
+        };
     }
     hash() {
         return LightningPayment.hashOf(this.paymentRequest, this.amount);

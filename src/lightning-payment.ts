@@ -1,8 +1,11 @@
 import * as Buffutils from './util/buffutils';
 
+import * as POD from './pod'
+
 import Hash from './hash';
 
 import * as bolt11 from './bolt11';
+
 
 export default class LightningPayment {
   public static fromPOD(data: any): LightningPayment | Error {
@@ -38,8 +41,11 @@ export default class LightningPayment {
     this.amount = amount;
   }
 
-  public toPOD() {
-    return { paymentRequest: this.paymentRequest, amount: this.amount };
+  public toPOD(): POD.LightningPayment {
+    return {
+      amount: this.amount,
+      paymentRequest: this.paymentRequest,
+    };
   }
 
   public hash() {

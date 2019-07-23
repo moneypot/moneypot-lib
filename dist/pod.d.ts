@@ -73,3 +73,7 @@ export interface LightningInvoice {
     claimant: PublicKey;
     paymentRequest: string;
 }
+export interface LightningPayment {
+    amount: Amount;
+    paymentRequest: string;
+}
