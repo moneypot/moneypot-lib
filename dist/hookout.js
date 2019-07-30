@@ -21,16 +21,21 @@ class Hookout {
         if (['CUSTOM', 'IMMEDIATE', 'BATCH', 'FREE'].indexOf(priority) === -1) {
             return new Error('Unrecognized priority');
         }
+        const fee = data.fee;
+        if (!POD.isAmount(fee)) {
+            return new Error('Hookout.fromPOD invalid fee');
+        }
         const nonce = Buffutils.fromHex(data.nonce, 32);
         if (nonce instanceof Error) {
             return nonce;
         }
-        return new Hookout(amount, bitcoinAddress, priority, nonce);
+        return new Hookout(amount, bitcoinAddress, priority, fee, nonce);
     }
-    constructor(amount, bitcoinAddress, priority, nonce) {
+    constructor(amount, bitcoinAddress, priority, fee, nonce) {
         this.amount = amount;
         this.bitcoinAddress = bitcoinAddress;
         this.priority = priority;
+        this.fee = fee;
         assert.equal(nonce.length, 32);
         this.nonce = nonce;
     }
@@ -39,6 +44,7 @@ class Hookout {
             amount: this.amount,
             bitcoinAddress: this.bitcoinAddress,
             priority: this.priority,
+            fee: this.fee,
             nonce: Buffutils.toHex(this.nonce),
         };
     }
@@ -47,6 +53,7 @@ class Hookout {
         h.update(Buffutils.fromUint64(this.amount));
         h.update(Buffutils.fromString(this.bitcoinAddress));
         h.update(Buffutils.fromUint8(this.priority.charCodeAt(0)));
+        h.update(Buffutils.fromUint64(this.fee));
         h.update(this.nonce);
         return h.digest();
     }

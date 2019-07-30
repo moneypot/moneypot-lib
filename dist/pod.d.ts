@@ -35,9 +35,10 @@ export interface Coin {
 }
 export declare type CoinSet = Coin[];
 export interface Hookout {
-    amount: number;
+    amount: Amount;
     bitcoinAddress: string;
     priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
+    fee: Amount;
     nonce: string;
 }
 export interface FeeBump {

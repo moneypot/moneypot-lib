@@ -27,23 +27,30 @@ export default class Hookout {
       return new Error('Unrecognized priority');
     }
 
+    const fee = data.fee;
+    if (!POD.isAmount(fee)) {
+      return new Error('Hookout.fromPOD invalid fee');
+    }
+
     const nonce = Buffutils.fromHex(data.nonce, 32);
     if (nonce instanceof Error) {
       return nonce;
     }
 
-    return new Hookout(amount, bitcoinAddress, priority, nonce);
+    return new Hookout(amount, bitcoinAddress, priority, fee, nonce);
   }
 
   public amount: POD.Amount;
   public bitcoinAddress: string;
   public priority: Priority;
+  public fee: POD.Amount;
   public nonce: Uint8Array;
 
-  constructor(amount: POD.Amount, bitcoinAddress: string, priority: Priority, nonce: Uint8Array) {
+  constructor(amount: POD.Amount, bitcoinAddress: string, priority: Priority, fee: POD.Amount, nonce: Uint8Array) {
     this.amount = amount;
     this.bitcoinAddress = bitcoinAddress;
     this.priority = priority;
+    this.fee = fee;
 
     assert.equal(nonce.length, 32);
     this.nonce = nonce;
@@ -54,6 +61,7 @@ export default class Hookout {
       amount: this.amount,
       bitcoinAddress: this.bitcoinAddress,
       priority: this.priority,
+      fee: this.fee,
       nonce: Buffutils.toHex(this.nonce),
     };
   }
@@ -64,6 +72,7 @@ export default class Hookout {
     h.update(Buffutils.fromUint64(this.amount));
     h.update(Buffutils.fromString(this.bitcoinAddress));
     h.update(Buffutils.fromUint8(this.priority.charCodeAt(0)));
+    h.update(Buffutils.fromUint64(this.fee));
     h.update(this.nonce);
 
     return h.digest();
