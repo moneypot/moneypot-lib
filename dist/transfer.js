@@ -6,7 +6,6 @@ const signature_1 = require("./signature");
 const coin_1 = require("./coin");
 const ecc_1 = require("./util/ecc");
 const public_key_1 = require("./public-key");
-const change_1 = require("./change");
 const buffutils = require("./util/buffutils");
 class Transfer {
     static fromPOD(data) {
@@ -28,21 +27,21 @@ class Transfer {
         if (outputHash instanceof Error) {
             return outputHash;
         }
-        const change = change_1.default.fromPOD(data.change);
-        if (change instanceof Error) {
-            return change;
+        const changeClaimant = public_key_1.default.fromPOD(data.changeClaimant);
+        if (changeClaimant instanceof Error) {
+            return changeClaimant;
         }
         const authorization = signature_1.default.fromPOD(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new Transfer(inputs, outputHash, change, authorization);
+        return new Transfer(inputs, outputHash, changeClaimant, authorization);
     }
-    constructor(inputs, outputHash, change, authorization) {
+    constructor(inputs, outputHash, changeClaimant, authorization) {
         assert_1.default(isHashSorted(inputs));
         this.inputs = inputs;
         this.outputHash = outputHash;
-        this.change = change;
+        this.changeClaimant = changeClaimant;
         this.authorization = authorization;
     }
     static sort(hashable) {
@@ -51,23 +50,23 @@ class Transfer {
     static sortHashes(hashes) {
         hashes.sort((a, b) => buffutils.compare(a.buffer, b.buffer));
     }
-    static hashOf(inputs, output, change) {
+    static hashOf(inputs, output, changeClaimant) {
         const h = hash_1.default.newBuilder('Transfer');
         for (const input of inputs) {
             h.update(input.buffer);
         }
         h.update(output.buffer);
-        h.update(change.buffer);
+        h.update(changeClaimant.buffer);
         return h.digest();
     }
     hash() {
-        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.change);
+        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.changeClaimant);
     }
     toPOD() {
         return {
             authorization: this.authorization.toPOD(),
             outputHash: this.outputHash.toPOD(),
-            change: this.change.toPOD(),
+            changeClaimant: this.changeClaimant.toPOD(),
             inputs: this.inputs.map(i => i.toPOD()),
         };
     }

@@ -37,8 +37,6 @@ var magnitude_1 = require("./magnitude");
 exports.Magnitude = magnitude_1.default;
 const transfer_1 = require("./transfer");
 exports.Transfer = transfer_1.default;
-var change_1 = require("./change");
-exports.Change = change_1.default;
 // blind functions
 __export(require("./blind"));
 // helper coin function

@@ -42,11 +42,6 @@ export interface Coin {
 }
 export type CoinSet = Coin[];
 
-export interface Change {
-  claimant: PublicKey;
-  amount: number;
-}
-
 export interface Hookout {
   amount: number;
   bitcoinAddress: string;
@@ -66,17 +61,10 @@ export interface Hookin {
   claimant: string;
 }
 
-export interface BitcoinTransfer {
-  inputs: Coin[];
-  output: Hookout;
-  change: Change;
-  authorization: string; // bech32 pubkey
-}
-
 export interface Transfer {
   inputs: Coin[];
   outputHash: string;
-  change: Change;
+  changeClaimant: PublicKey;
   authorization: string; // bech32 pubkey
 }
 

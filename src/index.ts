@@ -34,8 +34,6 @@ export { default as Magnitude } from './magnitude';
 import Transfer from './transfer';
 export { Transfer };
 
-export { default as Change } from './change';
-
 // blind functions
 export * from './blind';
 

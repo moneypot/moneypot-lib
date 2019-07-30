@@ -5,7 +5,6 @@ import * as POD from './pod';
 import Coin from './coin';
 import { muSig } from './util/ecc';
 import PublicKey from './public-key';
-import Change from './change';
 import * as buffutils from './util/buffutils';
 
 export default class Transfer {
@@ -31,9 +30,9 @@ export default class Transfer {
       return outputHash;
     }
 
-    const change = Change.fromPOD(data.change);
-    if (change instanceof Error) {
-      return change;
+    const changeClaimant = PublicKey.fromPOD(data.changeClaimant);
+    if (changeClaimant instanceof Error) {
+      return changeClaimant;
     }
 
     const authorization = Signature.fromPOD(data.authorization);
@@ -41,21 +40,21 @@ export default class Transfer {
       return authorization;
     }
 
-    return new Transfer(inputs, outputHash, change, authorization);
+    return new Transfer(inputs, outputHash, changeClaimant, authorization);
   }
 
   readonly inputs: ReadonlyArray<Coin>;
   readonly outputHash: Hash;
-  readonly change: Change;
+  readonly changeClaimant: PublicKey;
 
   authorization: Signature;
 
-  constructor(inputs: ReadonlyArray<Coin>, outputHash: Hash, change: Change, authorization: Signature) {
+  constructor(inputs: ReadonlyArray<Coin>, outputHash: Hash, changeClaimant: PublicKey, authorization: Signature) {
     assert(isHashSorted(inputs));
     this.inputs = inputs;
 
     this.outputHash = outputHash;
-    this.change = change;
+    this.changeClaimant = changeClaimant;
 
     this.authorization = authorization;
   }
@@ -68,27 +67,27 @@ export default class Transfer {
     hashes.sort((a: Hash, b: Hash) => buffutils.compare(a.buffer, b.buffer));
   }
 
-  static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, change: Change) {
+  static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, changeClaimant: PublicKey) {
     const h = Hash.newBuilder('Transfer');
 
     for (const input of inputs) {
       h.update(input.buffer);
     }
     h.update(output.buffer);
-    h.update(change.buffer);
+    h.update(changeClaimant.buffer);
 
     return h.digest();
   }
 
   hash(): Hash {
-    return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.change);
+    return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.changeClaimant);
   }
 
   toPOD(): POD.Transfer {
     return {
       authorization: this.authorization.toPOD(),
       outputHash: this.outputHash.toPOD(),
-      change: this.change.toPOD(),
+      changeClaimant: this.changeClaimant.toPOD(),
       inputs: this.inputs.map(i => i.toPOD()),
     };
   }

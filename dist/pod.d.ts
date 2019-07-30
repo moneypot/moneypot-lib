@@ -34,10 +34,6 @@ export interface Coin {
     owner: string;
 }
 export declare type CoinSet = Coin[];
-export interface Change {
-    claimant: PublicKey;
-    amount: number;
-}
 export interface Hookout {
     amount: number;
     bitcoinAddress: string;
@@ -54,16 +50,10 @@ export interface Hookin {
     amount: number;
     claimant: string;
 }
-export interface BitcoinTransfer {
-    inputs: Coin[];
-    output: Hookout;
-    change: Change;
-    authorization: string;
-}
 export interface Transfer {
     inputs: Coin[];
     outputHash: string;
-    change: Change;
+    changeClaimant: PublicKey;
     authorization: string;
 }
 export interface TransferHash {

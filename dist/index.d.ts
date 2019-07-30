@@ -17,7 +17,6 @@ export { default as FeeBump } from './fee-bump';
 export { default as Magnitude } from './magnitude';
 import Transfer from './transfer';
 export { Transfer };
-export { default as Change } from './change';
 export * from './blind';
 export * from './util/coins';
 export * from './bolt11';
