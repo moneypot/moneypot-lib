@@ -30,34 +30,34 @@ export default class LightningPayment {
       return new Error('amount does not match invoice amount');
     }
 
-    let feeLimit = data.feeLimit;
-    if (!POD.isAmount(feeLimit)) {
-      return new Error('LightningPayment.fromPOD must have a int feeLimit');
+    let fee = data.fee;
+    if (!POD.isAmount(fee)) {
+      return new Error('LightningPayment.fromPOD must have a int fee');
     }
 
-    return new LightningPayment(data.paymentRequest, amount, feeLimit);
+    return new LightningPayment(data.paymentRequest, amount, fee);
   }
 
   paymentRequest: string;
   amount: number;
-  feeLimit: number;
+  fee: number;
 
-  constructor(paymentRequest: string, amount: POD.Amount, feeLimit: POD.Amount) {
+  constructor(paymentRequest: string, amount: POD.Amount, fee: POD.Amount) {
     this.paymentRequest = paymentRequest;
     this.amount = amount;
-    this.feeLimit = feeLimit;
+    this.fee = fee;
   }
 
   public toPOD(): POD.LightningPayment {
     return {
       amount: this.amount,
       paymentRequest: this.paymentRequest,
-      feeLimit: this.feeLimit,
+      fee: this.fee,
     };
   }
 
   public hash() {
-    return LightningPayment.hashOf(this.paymentRequest, this.amount, this.feeLimit);
+    return LightningPayment.hashOf(this.paymentRequest, this.amount, this.fee);
   }
 
   static hashOf(paymentRequest: string, amount: POD.Amount, feeLimit: POD.Amount) {

@@ -24,26 +24,26 @@ class LightningPayment {
         if (pro.satoshis && pro.satoshis !== amount) {
             return new Error('amount does not match invoice amount');
         }
-        let feeLimit = data.feeLimit;
-        if (!POD.isAmount(feeLimit)) {
-            return new Error('LightningPayment.fromPOD must have a int feeLimit');
+        let fee = data.fee;
+        if (!POD.isAmount(fee)) {
+            return new Error('LightningPayment.fromPOD must have a int fee');
         }
-        return new LightningPayment(data.paymentRequest, amount, feeLimit);
+        return new LightningPayment(data.paymentRequest, amount, fee);
     }
-    constructor(paymentRequest, amount, feeLimit) {
+    constructor(paymentRequest, amount, fee) {
         this.paymentRequest = paymentRequest;
         this.amount = amount;
-        this.feeLimit = feeLimit;
+        this.fee = fee;
     }
     toPOD() {
         return {
             amount: this.amount,
             paymentRequest: this.paymentRequest,
-            feeLimit: this.feeLimit,
+            fee: this.fee,
         };
     }
     hash() {
-        return LightningPayment.hashOf(this.paymentRequest, this.amount, this.feeLimit);
+        return LightningPayment.hashOf(this.paymentRequest, this.amount, this.fee);
     }
     static hashOf(paymentRequest, amount, feeLimit) {
         const h = hash_1.default.newBuilder('LightningPayment');

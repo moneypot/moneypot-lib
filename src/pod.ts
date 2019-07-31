@@ -82,5 +82,5 @@ export interface LightningInvoice {
 export interface LightningPayment {
   amount: Amount,
   paymentRequest: string,
-  feeLimit: Amount,
+  fee: Amount,
 }
