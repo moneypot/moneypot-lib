@@ -66,7 +66,7 @@ export interface Hookin {
 export interface Transfer {
   inputs: Coin[];
   outputHash: string;
-  changeClaimant: PublicKey;
+  claimant: PublicKey;
   authorization: string; // bech32 pubkey
 }
 

@@ -27,21 +27,21 @@ class Transfer {
         if (outputHash instanceof Error) {
             return outputHash;
         }
-        const changeClaimant = public_key_1.default.fromPOD(data.changeClaimant);
-        if (changeClaimant instanceof Error) {
-            return changeClaimant;
+        const claimant = public_key_1.default.fromPOD(data.claimant);
+        if (claimant instanceof Error) {
+            return claimant;
         }
         const authorization = signature_1.default.fromPOD(data.authorization);
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new Transfer(inputs, outputHash, changeClaimant, authorization);
+        return new Transfer(inputs, outputHash, claimant, authorization);
     }
-    constructor(inputs, outputHash, changeClaimant, authorization) {
+    constructor(inputs, outputHash, claimant, authorization) {
         assert_1.default(isHashSorted(inputs));
         this.inputs = inputs;
         this.outputHash = outputHash;
-        this.changeClaimant = changeClaimant;
+        this.claimant = claimant;
         this.authorization = authorization;
     }
     static sort(hashable) {
@@ -50,23 +50,23 @@ class Transfer {
     static sortHashes(hashes) {
         hashes.sort((a, b) => buffutils.compare(a.buffer, b.buffer));
     }
-    static hashOf(inputs, output, changeClaimant) {
+    static hashOf(inputs, output, claimant) {
         const h = hash_1.default.newBuilder('Transfer');
         for (const input of inputs) {
             h.update(input.buffer);
         }
         h.update(output.buffer);
-        h.update(changeClaimant.buffer);
+        h.update(claimant.buffer);
         return h.digest();
     }
     hash() {
-        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.changeClaimant);
+        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.claimant);
     }
     toPOD() {
         return {
             authorization: this.authorization.toPOD(),
             outputHash: this.outputHash.toPOD(),
-            changeClaimant: this.changeClaimant.toPOD(),
+            claimant: this.claimant.toPOD(),
             inputs: this.inputs.map(i => i.toPOD()),
         };
     }
