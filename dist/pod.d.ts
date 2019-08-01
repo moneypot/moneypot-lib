@@ -34,17 +34,13 @@ export interface Coin {
     owner: string;
 }
 export declare type CoinSet = Coin[];
-export interface Hookout {
-    amount: Amount;
+export interface Hookout extends Transfer {
     bitcoinAddress: string;
     priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
     fee: Amount;
-    nonce: string;
 }
-export interface FeeBump {
+export interface FeeBump extends Transfer {
     txid: string;
-    nonce: string;
-    amount: Amount;
 }
 export interface Hookin {
     txid: string;
@@ -53,10 +49,11 @@ export interface Hookin {
     claimant: string;
 }
 export interface Transfer {
-    inputs: Coin[];
-    outputHash: string;
+    amount: Amount;
+    authorization: string | null;
     claimant: PublicKey;
-    authorization: string;
+    fee: Amount;
+    inputs: Coin[];
 }
 export interface TransferHash {
     transferHash: string;
@@ -65,8 +62,6 @@ export interface LightningInvoice {
     claimant: PublicKey;
     paymentRequest: string;
 }
-export interface LightningPayment {
-    amount: Amount;
+export interface LightningPayment extends Transfer {
     paymentRequest: string;
-    fee: Amount;
 }

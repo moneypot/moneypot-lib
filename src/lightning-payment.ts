@@ -6,11 +6,16 @@ import Hash from './hash';
 
 import * as bolt11 from './bolt11';
 
+import Transfer, { parseTransferData, TransferData } from './transfer'
 
-export default class LightningPayment {
+
+export default class LightningPayment extends Transfer {
+
   public static fromPOD(data: any): LightningPayment | Error {
-    if (typeof data !== 'object') {
-      return new Error('LightningPayment.fromPOD is not an object');
+
+    const transferData = parseTransferData(data);
+    if (transferData instanceof Error) {
+      throw transferData;
     }
 
     let pro;
@@ -21,52 +26,34 @@ export default class LightningPayment {
       return err;
     }
 
-    let amount = data.amount;
-    if (!POD.isAmount(amount)) {
-      return new Error('LightningPayment.fromPOD must have a int amount');
-    }
-
-    if (pro.satoshis && pro.satoshis !== amount) {
+    if (pro.satoshis && pro.satoshis !== transferData.amount) {
       return new Error('amount does not match invoice amount');
     }
 
-    let fee = data.fee;
-    if (!POD.isAmount(fee)) {
-      return new Error('LightningPayment.fromPOD must have a int fee');
-    }
 
-    return new LightningPayment(data.paymentRequest, amount, fee);
+    return new LightningPayment(transferData, data.paymentRequest);
   }
 
   paymentRequest: string;
-  amount: number;
-  fee: number;
 
-  constructor(paymentRequest: string, amount: POD.Amount, fee: POD.Amount) {
+  constructor(transferData: TransferData, paymentRequest: string) {
+    super(transferData);
     this.paymentRequest = paymentRequest;
-    this.amount = amount;
-    this.fee = fee;
   }
 
   public toPOD(): POD.LightningPayment {
     return {
-      amount: this.amount,
+      ...super.toPOD(),
       paymentRequest: this.paymentRequest,
-      fee: this.fee,
     };
   }
 
-  public hash() {
-    return LightningPayment.hashOf(this.paymentRequest, this.amount, this.fee);
-  }
 
-  static hashOf(paymentRequest: string, amount: POD.Amount, feeLimit: POD.Amount) {
+  public hash() {
     const h = Hash.newBuilder('LightningPayment');
 
-    h.update(Buffutils.fromString(paymentRequest));
-    h.update(Buffutils.fromUint64(amount));
-    h.update(Buffutils.fromUint64(feeLimit));
-
+    h.update(this.transferHash().buffer);
+    h.update(Buffutils.fromString(this.paymentRequest));
 
     return h.digest();
   }

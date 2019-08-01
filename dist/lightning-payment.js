@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Buffutils = require("./util/buffutils");
-const POD = require("./pod");
 const hash_1 = require("./hash");
 const bolt11 = require("./bolt11");
-class LightningPayment {
+const transfer_1 = require("./transfer");
+class LightningPayment extends transfer_1.default {
     static fromPOD(data) {
-        if (typeof data !== 'object') {
-            return new Error('LightningPayment.fromPOD is not an object');
+        const transferData = transfer_1.parseTransferData(data);
+        if (transferData instanceof Error) {
+            throw transferData;
         }
         let pro;
         try {
@@ -17,39 +18,25 @@ class LightningPayment {
             console.warn('warn: bolt11 decode error: ', err);
             return err;
         }
-        let amount = data.amount;
-        if (!POD.isAmount(amount)) {
-            return new Error('LightningPayment.fromPOD must have a int amount');
-        }
-        if (pro.satoshis && pro.satoshis !== amount) {
+        if (pro.satoshis && pro.satoshis !== transferData.amount) {
             return new Error('amount does not match invoice amount');
         }
-        let fee = data.fee;
-        if (!POD.isAmount(fee)) {
-            return new Error('LightningPayment.fromPOD must have a int fee');
-        }
-        return new LightningPayment(data.paymentRequest, amount, fee);
+        return new LightningPayment(transferData, data.paymentRequest);
     }
-    constructor(paymentRequest, amount, fee) {
+    constructor(transferData, paymentRequest) {
+        super(transferData);
         this.paymentRequest = paymentRequest;
-        this.amount = amount;
-        this.fee = fee;
     }
     toPOD() {
         return {
-            amount: this.amount,
+            ...super.toPOD(),
             paymentRequest: this.paymentRequest,
-            fee: this.fee,
         };
     }
     hash() {
-        return LightningPayment.hashOf(this.paymentRequest, this.amount, this.fee);
-    }
-    static hashOf(paymentRequest, amount, feeLimit) {
         const h = hash_1.default.newBuilder('LightningPayment');
-        h.update(Buffutils.fromString(paymentRequest));
-        h.update(Buffutils.fromUint64(amount));
-        h.update(Buffutils.fromUint64(feeLimit));
+        h.update(this.transferHash().buffer);
+        h.update(Buffutils.fromString(this.paymentRequest));
         return h.digest();
     }
 }

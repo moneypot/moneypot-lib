@@ -2,19 +2,16 @@ import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
 
 import Hash from './hash';
-import * as assert from './util/assert';
+import Transfer, { TransferData, parseTransferData } from './transfer';
 
 export type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
 
-export default class Hookout {
+export default class Hookout extends Transfer {
+  
   public static fromPOD(data: any): Hookout | Error {
-    if (typeof data !== 'object') {
-      return new Error('Hookout.fromPOD is not object');
-    }
-
-    const amount = data.amount;
-    if (!POD.isAmount(amount)) {
-      return new Error('Hookout.fromPOD invalid amount');
+    const transferData = parseTransferData(data);
+    if (transferData instanceof Error) {
+      return transferData;
     }
 
     const bitcoinAddress = data.bitcoinAddress;
@@ -27,53 +24,34 @@ export default class Hookout {
       return new Error('Unrecognized priority');
     }
 
-    const fee = data.fee;
-    if (!POD.isAmount(fee)) {
-      return new Error('Hookout.fromPOD invalid fee');
-    }
 
-    const nonce = Buffutils.fromHex(data.nonce, 32);
-    if (nonce instanceof Error) {
-      return nonce;
-    }
-
-    return new Hookout(amount, bitcoinAddress, priority, fee, nonce);
+    return new Hookout(transferData, bitcoinAddress, priority);
   }
 
-  public amount: POD.Amount;
   public bitcoinAddress: string;
   public priority: Priority;
-  public fee: POD.Amount;
-  public nonce: Uint8Array;
 
-  constructor(amount: POD.Amount, bitcoinAddress: string, priority: Priority, fee: POD.Amount, nonce: Uint8Array) {
-    this.amount = amount;
+  constructor(td: TransferData, bitcoinAddress: string, priority: Priority) {
+    super(td);
     this.bitcoinAddress = bitcoinAddress;
     this.priority = priority;
-    this.fee = fee;
-
-    assert.equal(nonce.length, 32);
-    this.nonce = nonce;
   }
 
   public toPOD(): POD.Hookout {
     return {
-      amount: this.amount,
+      ...super.toPOD(),
       bitcoinAddress: this.bitcoinAddress,
       priority: this.priority,
-      fee: this.fee,
-      nonce: Buffutils.toHex(this.nonce),
     };
   }
 
   public hash() {
     const h = Hash.newBuilder('Hookout');
 
-    h.update(Buffutils.fromUint64(this.amount));
+    h.update(super.transferHash().buffer);
+
     h.update(Buffutils.fromString(this.bitcoinAddress));
     h.update(Buffutils.fromUint8(this.priority.charCodeAt(0)));
-    h.update(Buffutils.fromUint64(this.fee));
-    h.update(this.nonce);
 
     return h.digest();
   }

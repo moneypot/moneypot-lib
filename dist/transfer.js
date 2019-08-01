@@ -3,46 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert_1 = require("./util/assert");
 const hash_1 = require("./hash");
 const signature_1 = require("./signature");
+const POD = require("./pod");
 const coin_1 = require("./coin");
 const ecc_1 = require("./util/ecc");
 const public_key_1 = require("./public-key");
 const buffutils = require("./util/buffutils");
 class Transfer {
-    static fromPOD(data) {
-        if (typeof data !== 'object') {
-            return new Error('expected an object to deserialize a Transfer');
-        }
-        const inputs = [];
-        for (const i of data.inputs) {
-            const input = coin_1.default.fromPOD(i);
-            if (input instanceof Error) {
-                return input;
-            }
-            inputs.push(input);
-        }
-        if (!isHashSorted(inputs)) {
-            return new Error('inputs are not in sorted order');
-        }
-        const outputHash = hash_1.default.fromPOD(data.outputHash);
-        if (outputHash instanceof Error) {
-            return outputHash;
-        }
-        const claimant = public_key_1.default.fromPOD(data.claimant);
-        if (claimant instanceof Error) {
-            return claimant;
-        }
-        const authorization = signature_1.default.fromPOD(data.authorization);
-        if (authorization instanceof Error) {
-            return authorization;
-        }
-        return new Transfer(inputs, outputHash, claimant, authorization);
-    }
-    constructor(inputs, outputHash, claimant, authorization) {
+    constructor({ amount, authorization, claimant, fee, inputs }) {
+        this.amount = amount;
+        this.authorization = authorization;
+        this.claimant = claimant;
+        this.fee = fee;
         assert_1.default(isHashSorted(inputs));
         this.inputs = inputs;
-        this.outputHash = outputHash;
-        this.claimant = claimant;
-        this.authorization = authorization;
     }
     static sort(hashable) {
         hashable.sort((a, b) => buffutils.compare(a.hash().buffer, b.hash().buffer));
@@ -50,23 +23,16 @@ class Transfer {
     static sortHashes(hashes) {
         hashes.sort((a, b) => buffutils.compare(a.buffer, b.buffer));
     }
-    static hashOf(inputs, output, claimant) {
-        const h = hash_1.default.newBuilder('Transfer');
-        for (const input of inputs) {
-            h.update(input.buffer);
-        }
-        h.update(output.buffer);
-        h.update(claimant.buffer);
-        return h.digest();
-    }
-    hash() {
-        return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.claimant);
+    // doesn't include authorization, used for hashing
+    transferHash() {
+        return hash_1.default.fromMessage('Transfer', buffutils.fromUint64(this.amount), this.claimant.buffer, buffutils.fromUint64(this.fee), buffutils.fromUint64(this.inputs.length), ...this.inputs.map(i => i.buffer));
     }
     toPOD() {
         return {
-            authorization: this.authorization.toPOD(),
-            outputHash: this.outputHash.toPOD(),
+            amount: this.amount,
+            authorization: this.authorization ? this.authorization.toPOD() : null,
             claimant: this.claimant.toPOD(),
+            fee: this.fee,
             inputs: this.inputs.map(i => i.toPOD()),
         };
     }
@@ -78,12 +44,49 @@ class Transfer {
         return amount;
     }
     isAuthorized() {
+        if (!this.authorization) {
+            return false;
+        }
         const p = ecc_1.muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
         const pubkey = new public_key_1.default(p.x, p.y);
         return this.authorization.verify(this.hash().buffer, pubkey);
     }
 }
 exports.default = Transfer;
+function parseTransferData(data) {
+    if (typeof data !== 'object') {
+        return new Error('expected an object to deserialize a Transfer');
+    }
+    const amount = data.amount;
+    if (!POD.isAmount(amount)) {
+        return new Error('Transfer.fromPOD invalid amount');
+    }
+    const authorization = data.authorization !== null ? signature_1.default.fromPOD(data.authorization) : undefined;
+    if (authorization instanceof Error) {
+        return authorization;
+    }
+    const claimant = public_key_1.default.fromPOD(data.claimant);
+    if (claimant instanceof Error) {
+        return claimant;
+    }
+    const fee = data.fee;
+    if (!POD.isAmount(fee)) {
+        return new Error('Transfer.fromPOD invalid fee');
+    }
+    const inputs = [];
+    for (const i of data.inputs) {
+        const input = coin_1.default.fromPOD(i);
+        if (input instanceof Error) {
+            return input;
+        }
+        inputs.push(input);
+    }
+    if (!isHashSorted(inputs)) {
+        return new Error('inputs are not in sorted order');
+    }
+    return { amount, authorization, claimant, fee, inputs };
+}
+exports.parseTransferData = parseTransferData;
 function isHashSorted(ts) {
     for (let i = 1; i < ts.length; i++) {
         const c = buffutils.compare(ts[i - 1].hash().buffer, ts[i].hash().buffer);

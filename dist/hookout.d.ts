@@ -1,14 +1,12 @@
 import * as POD from './pod';
 import Hash from './hash';
+import Transfer, { TransferData } from './transfer';
 export declare type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
-export default class Hookout {
+export default class Hookout extends Transfer {
     static fromPOD(data: any): Hookout | Error;
-    amount: POD.Amount;
     bitcoinAddress: string;
     priority: Priority;
-    fee: POD.Amount;
-    nonce: Uint8Array;
-    constructor(amount: POD.Amount, bitcoinAddress: string, priority: Priority, fee: POD.Amount, nonce: Uint8Array);
+    constructor(td: TransferData, bitcoinAddress: string, priority: Priority);
     toPOD(): POD.Hookout;
     hash(): Hash;
 }

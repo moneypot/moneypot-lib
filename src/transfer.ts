@@ -7,56 +7,24 @@ import { muSig } from './util/ecc';
 import PublicKey from './public-key';
 import * as buffutils from './util/buffutils';
 
-export default class Transfer {
-  static fromPOD(data: any): Transfer | Error {
-    if (typeof data !== 'object') {
-      return new Error('expected an object to deserialize a Transfer');
-    }
+export default abstract class Transfer {
 
-    const inputs: Coin[] = [];
-    for (const i of data.inputs) {
-      const input = Coin.fromPOD(i);
-      if (input instanceof Error) {
-        return input;
-      }
-      inputs.push(input);
-    }
-    if (!isHashSorted(inputs)) {
-      return new Error('inputs are not in sorted order');
-    }
+  amount: number;
+  inputs: ReadonlyArray<Coin>;
+  claimant: PublicKey;
+  fee: number;
 
-    const outputHash = Hash.fromPOD(data.outputHash);
-    if (outputHash instanceof Error) {
-      return outputHash;
-    }
+  authorization?: Signature;
 
-    const claimant = PublicKey.fromPOD(data.claimant);
-    if (claimant instanceof Error) {
-      return claimant;
-    }
+  constructor({ amount, authorization, claimant, fee, inputs}: TransferData) {
 
-    const authorization = Signature.fromPOD(data.authorization);
-    if (authorization instanceof Error) {
-      return authorization;
-    }
+    this.amount = amount;
+    this.authorization = authorization;
+    this.claimant = claimant;
+    this.fee = fee;
 
-    return new Transfer(inputs, outputHash, claimant, authorization);
-  }
-
-  readonly inputs: ReadonlyArray<Coin>;
-  readonly outputHash: Hash;
-  readonly claimant: PublicKey;
-
-  authorization: Signature;
-
-  constructor(inputs: ReadonlyArray<Coin>, outputHash: Hash, claimant: PublicKey, authorization: Signature) {
     assert(isHashSorted(inputs));
     this.inputs = inputs;
-
-    this.outputHash = outputHash;
-    this.claimant = claimant;
-
-    this.authorization = authorization;
   }
 
   public static sort(hashable: { hash(): Hash }[]) {
@@ -67,27 +35,26 @@ export default class Transfer {
     hashes.sort((a: Hash, b: Hash) => buffutils.compare(a.buffer, b.buffer));
   }
 
-  static hashOf(inputs: ReadonlyArray<Hash>, output: Hash, claimant: PublicKey) {
-    const h = Hash.newBuilder('Transfer');
-
-    for (const input of inputs) {
-      h.update(input.buffer);
-    }
-    h.update(output.buffer);
-    h.update(claimant.buffer);
-
-    return h.digest();
+  // doesn't include authorization, used for hashing
+  public transferHash(): Hash {
+    return Hash.fromMessage('Transfer',
+      buffutils.fromUint64(this.amount),
+      this.claimant.buffer,
+      buffutils.fromUint64(this.fee),
+      buffutils.fromUint64(this.inputs.length),
+      ...this.inputs.map(i => i.buffer)
+    );
   }
 
-  hash(): Hash {
-    return Transfer.hashOf(this.inputs.map(i => i.hash()), this.outputHash, this.claimant);
-  }
+
+  abstract hash(): Hash
 
   toPOD(): POD.Transfer {
     return {
-      authorization: this.authorization.toPOD(),
-      outputHash: this.outputHash.toPOD(),
+      amount: this.amount,
+      authorization: this.authorization ? this.authorization.toPOD() : null,
       claimant: this.claimant.toPOD(),
+      fee: this.fee,
       inputs: this.inputs.map(i => i.toPOD()),
     };
   }
@@ -101,12 +68,60 @@ export default class Transfer {
   }
 
   isAuthorized(): boolean {
+    if (!this.authorization) {
+      return false;
+    }
     const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
     const pubkey = new PublicKey(p.x, p.y);
 
     return this.authorization.verify(this.hash().buffer, pubkey);
   }
 }
+
+export function parseTransferData(data: any): TransferData | Error {
+  if (typeof data !== 'object') {
+    return new Error('expected an object to deserialize a Transfer');
+  }
+
+  const amount = data.amount;
+  if (!POD.isAmount(amount)) {
+    return new Error('Transfer.fromPOD invalid amount');
+  }
+
+  const authorization = data.authorization !== null ? Signature.fromPOD(data.authorization) : undefined;
+  if (authorization instanceof Error) {
+    return authorization;
+  }
+
+  const claimant = PublicKey.fromPOD(data.claimant);
+  if (claimant instanceof Error) {
+    return claimant;
+  }
+
+  const fee = data.fee;
+  if (!POD.isAmount(fee)) {
+    return new Error('Transfer.fromPOD invalid fee');
+  }
+
+  const inputs: Coin[] = [];
+  for (const i of data.inputs) {
+    const input = Coin.fromPOD(i);
+    if (input instanceof Error) {
+      return input;
+    }
+    inputs.push(input);
+  }
+  if (!isHashSorted(inputs)) {
+    return new Error('inputs are not in sorted order');
+  }
+
+  return { amount, authorization, claimant, fee, inputs }
+}
+
+export interface TransferData {
+  amount: number, authorization?: Signature, claimant: PublicKey, fee: number, inputs: Coin[]
+}
+
 
 function isHashSorted<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
   for (let i = 1; i < ts.length; i++) {

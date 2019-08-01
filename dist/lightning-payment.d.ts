@@ -1,12 +1,10 @@
 import * as POD from './pod';
 import Hash from './hash';
-export default class LightningPayment {
+import Transfer, { TransferData } from './transfer';
+export default class LightningPayment extends Transfer {
     static fromPOD(data: any): LightningPayment | Error;
     paymentRequest: string;
-    amount: number;
-    fee: number;
-    constructor(paymentRequest: string, amount: POD.Amount, fee: POD.Amount);
+    constructor(transferData: TransferData, paymentRequest: string);
     toPOD(): POD.LightningPayment;
     hash(): Hash;
-    static hashOf(paymentRequest: string, amount: POD.Amount, feeLimit: POD.Amount): Hash;
 }

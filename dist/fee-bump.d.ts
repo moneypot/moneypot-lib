@@ -1,11 +1,10 @@
 import * as POD from './pod';
 import Hash from './hash';
-export default class FeeBump {
+import Transfer, { TransferData } from './transfer';
+export default class FeeBump extends Transfer {
     static fromPOD(data: any): FeeBump | Error;
     txid: Uint8Array;
-    nonce: Uint8Array;
-    amount: POD.Amount;
-    constructor(txid: Uint8Array, nonce: Uint8Array, amount: POD.Amount);
+    constructor(transferData: TransferData, txid: Uint8Array);
     toPOD(): POD.FeeBump;
     hash(): Hash;
 }
