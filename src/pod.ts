@@ -42,15 +42,9 @@ export interface Coin {
 }
 export type CoinSet = Coin[];
 
-export interface Hookout extends Transfer {
-  bitcoinAddress: string;
-  priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
-  fee: Amount;
-}
 
-export interface FeeBump extends Transfer {
-  txid: string;
-}
+
+
 
 export interface Hookin {
   txid: string;
@@ -59,13 +53,33 @@ export interface Hookin {
   claimant: string;
 }
 
-export interface Transfer {
+export interface AbstractTransfer {
   amount: Amount;
   authorization: string | null; // bech32 pubkey
   claimant: PublicKey;
   fee: Amount;
   inputs: Coin[];
+  kind: 'LightningPayment' | 'FeeBump' | 'Hookout'
 }
+
+export interface LightningPayment extends AbstractTransfer {
+  paymentRequest: string,
+  kind: 'LightningPayment'
+}
+
+export interface FeeBump extends AbstractTransfer {
+  txid: string;
+  kind: 'FeeBump'
+}
+
+export interface Hookout extends AbstractTransfer {
+  bitcoinAddress: string;
+  priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
+  fee: Amount;
+  kind: 'Hookout';
+}
+
+export type Transfer = LightningPayment | FeeBump | Hookout;
 
 export interface TransferHash {
   transferHash: string;
@@ -76,6 +90,3 @@ export interface LightningInvoice {
   paymentRequest: string;
 }
 
-export interface LightningPayment extends Transfer {
-  paymentRequest: string,
-}

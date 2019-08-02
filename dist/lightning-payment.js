@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Buffutils = require("./util/buffutils");
 const hash_1 = require("./hash");
 const bolt11 = require("./bolt11");
-const transfer_1 = require("./transfer");
-class LightningPayment extends transfer_1.default {
+const abstract_transfer_1 = require("./abstract-transfer");
+class LightningPayment extends abstract_transfer_1.default {
     static fromPOD(data) {
-        const transferData = transfer_1.parseTransferData(data);
+        const transferData = abstract_transfer_1.parseTransferData(data);
         if (transferData instanceof Error) {
             throw transferData;
         }
@@ -23,14 +23,17 @@ class LightningPayment extends transfer_1.default {
         }
         return new LightningPayment(transferData, data.paymentRequest);
     }
+    get kind() { return 'LightningPayment'; }
+    ;
     constructor(transferData, paymentRequest) {
         super(transferData);
         this.paymentRequest = paymentRequest;
     }
     toPOD() {
         return {
-            ...super.toPOD(),
+            ...super.transferPOD(),
             paymentRequest: this.paymentRequest,
+            kind: 'LightningPayment'
         };
     }
     hash() {

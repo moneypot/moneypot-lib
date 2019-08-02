@@ -2,11 +2,11 @@ import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
 
 import Hash from './hash';
-import Transfer, { TransferData, parseTransferData } from './transfer';
+import Abstract, { TransferData, parseTransferData } from './abstract-transfer';
 
 export type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
 
-export default class Hookout extends Transfer {
+export default class Hookout extends Abstract {
   
   public static fromPOD(data: any): Hookout | Error {
     const transferData = parseTransferData(data);
@@ -30,6 +30,8 @@ export default class Hookout extends Transfer {
 
   public bitcoinAddress: string;
   public priority: Priority;
+  public get kind(): 'Hookout' { return 'Hookout' };
+
 
   constructor(td: TransferData, bitcoinAddress: string, priority: Priority) {
     super(td);
@@ -39,8 +41,9 @@ export default class Hookout extends Transfer {
 
   public toPOD(): POD.Hookout {
     return {
-      ...super.toPOD(),
+      ...super.transferPOD(),
       bitcoinAddress: this.bitcoinAddress,
+      kind: 'Hookout',
       priority: this.priority,
     };
   }

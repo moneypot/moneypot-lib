@@ -27,21 +27,21 @@ const custodian_info_1 = require("./custodian-info");
 exports.CustodianInfo = custodian_info_1.default;
 var hookin_1 = require("./hookin");
 exports.Hookin = hookin_1.default;
-var hookout_1 = require("./hookout");
+const hookout_1 = require("./hookout");
 exports.Hookout = hookout_1.default;
-var lightning_payment_1 = require("./lightning-payment");
+const lightning_payment_1 = require("./lightning-payment");
 exports.LightningPayment = lightning_payment_1.default;
-var fee_bump_1 = require("./fee-bump");
+const fee_bump_1 = require("./fee-bump");
 exports.FeeBump = fee_bump_1.default;
 var magnitude_1 = require("./magnitude");
 exports.Magnitude = magnitude_1.default;
-const transfer_1 = require("./transfer");
-exports.Transfer = transfer_1.default;
 // blind functions
 __export(require("./blind"));
 // helper coin function
 __export(require("./util/coins"));
 __export(require("./bolt11"));
+const transfer_1 = require("./transfer");
+exports.parseTransfer = transfer_1.parseTransfer;
 var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
 const claim_response_1 = require("./claim-response");

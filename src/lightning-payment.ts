@@ -6,10 +6,10 @@ import Hash from './hash';
 
 import * as bolt11 from './bolt11';
 
-import Transfer, { parseTransferData, TransferData } from './transfer'
+import Abstract, { parseTransferData, TransferData } from './abstract-transfer'
 
 
-export default class LightningPayment extends Transfer {
+export default class LightningPayment extends Abstract {
 
   public static fromPOD(data: any): LightningPayment | Error {
 
@@ -35,6 +35,8 @@ export default class LightningPayment extends Transfer {
   }
 
   paymentRequest: string;
+  public get kind(): 'LightningPayment' { return 'LightningPayment' };
+
 
   constructor(transferData: TransferData, paymentRequest: string) {
     super(transferData);
@@ -43,8 +45,9 @@ export default class LightningPayment extends Transfer {
 
   public toPOD(): POD.LightningPayment {
     return {
-      ...super.toPOD(),
+      ...super.transferPOD(),
       paymentRequest: this.paymentRequest,
+      kind: 'LightningPayment'
     };
   }
 

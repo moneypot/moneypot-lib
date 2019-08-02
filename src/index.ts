@@ -24,15 +24,19 @@ export { CustodianInfo };
 
 export { default as Hookin } from './hookin';
 
-export { default as Hookout } from './hookout';
-export { default as LightningPayment } from './lightning-payment';
+import Hookout from './hookout';
+export { Hookout };
 
-export { default as FeeBump } from './fee-bump';
+import LightningPayment from './lightning-payment';
+export { LightningPayment };
+
+import FeeBump from './fee-bump';
+export { FeeBump };
+
 
 export { default as Magnitude } from './magnitude';
 
-import Transfer from './transfer';
-export { Transfer };
+import { default as AbstractTransfer } from './abstract-transfer';
 
 // blind functions
 export * from './blind';
@@ -40,6 +44,10 @@ export * from './blind';
 // helper coin function
 export * from './util/coins';
 export * from './bolt11';
+
+import { Transfer, parseTransfer } from './transfer';
+
+export { Transfer, parseTransfer };
 
 export { default as CoinRequest } from './coin-request';
 export { default as ClaimRequest } from './claim-request';
@@ -55,8 +63,8 @@ export { LightningInvoice };
 
 export type AcknowledgedLightningInvoice = Acknowledged<LightningInvoice, POD.LightningInvoice>;
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
-export type AcknowledgedTransfer = Acknowledged<Transfer, POD.Transfer>;
 export type AcknowledgedCustodianInfo = Acknowledged<CustodianInfo, POD.CustodianInfo>;
+export type AcknowledgedTransfer  = Acknowledged<Transfer, POD.Transfer>;
 
 // util, should be refactored into its own library
 export { Buffutils };

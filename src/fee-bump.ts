@@ -4,9 +4,9 @@ import * as Buffutils from './util/buffutils';
 import Hash from './hash';
 import * as assert from './util/assert';
 
-import Transfer, { parseTransferData, TransferData } from './transfer'
+import Abstract, { parseTransferData, TransferData } from './abstract-transfer'
 
-export default class FeeBump extends Transfer {
+export default class FeeBump extends Abstract {
 
 
   public static fromPOD(data: any): FeeBump | Error {
@@ -25,6 +25,7 @@ export default class FeeBump extends Transfer {
   }
 
   public txid: Uint8Array;
+  public get kind(): 'FeeBump' { return 'FeeBump' };
 
   constructor(transferData: TransferData, txid: Uint8Array) {
     super(transferData);
@@ -37,8 +38,9 @@ export default class FeeBump extends Transfer {
 
   public toPOD(): POD.FeeBump {
     return {
-      ...super.toPOD(),
-      txid: Buffutils.toHex(this.txid)
+      ...super.transferPOD(),
+      txid: Buffutils.toHex(this.txid),
+      kind: 'FeeBump'
     };
   }
 

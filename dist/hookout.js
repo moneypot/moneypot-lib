@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Buffutils = require("./util/buffutils");
 const hash_1 = require("./hash");
-const transfer_1 = require("./transfer");
-class Hookout extends transfer_1.default {
+const abstract_transfer_1 = require("./abstract-transfer");
+class Hookout extends abstract_transfer_1.default {
     static fromPOD(data) {
-        const transferData = transfer_1.parseTransferData(data);
+        const transferData = abstract_transfer_1.parseTransferData(data);
         if (transferData instanceof Error) {
             return transferData;
         }
@@ -19,6 +19,8 @@ class Hookout extends transfer_1.default {
         }
         return new Hookout(transferData, bitcoinAddress, priority);
     }
+    get kind() { return 'Hookout'; }
+    ;
     constructor(td, bitcoinAddress, priority) {
         super(td);
         this.bitcoinAddress = bitcoinAddress;
@@ -26,8 +28,9 @@ class Hookout extends transfer_1.default {
     }
     toPOD() {
         return {
-            ...super.toPOD(),
+            ...super.transferPOD(),
             bitcoinAddress: this.bitcoinAddress,
+            kind: 'Hookout',
             priority: this.priority,
         };
     }
