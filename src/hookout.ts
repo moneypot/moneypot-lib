@@ -7,7 +7,6 @@ import Abstract, { TransferData, parseTransferData } from './abstract-transfer';
 export type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
 
 export default class Hookout extends Abstract {
-  
   public static fromPOD(data: any): Hookout | Error {
     const transferData = parseTransferData(data);
     if (transferData instanceof Error) {
@@ -24,14 +23,14 @@ export default class Hookout extends Abstract {
       return new Error('Unrecognized priority');
     }
 
-
     return new Hookout(transferData, bitcoinAddress, priority);
   }
 
   public bitcoinAddress: string;
   public priority: Priority;
-  public get kind(): 'Hookout' { return 'Hookout' };
-
+  public get kind(): 'Hookout' {
+    return 'Hookout';
+  }
 
   constructor(td: TransferData, bitcoinAddress: string, priority: Priority) {
     super(td);
@@ -41,9 +40,8 @@ export default class Hookout extends Abstract {
 
   public toPOD(): POD.Hookout {
     return {
-      ...super.transferPOD(),
+      ...super.toPOD(),
       bitcoinAddress: this.bitcoinAddress,
-      kind: 'Hookout',
       priority: this.priority,
     };
   }

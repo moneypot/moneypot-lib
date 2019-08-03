@@ -42,10 +42,6 @@ export interface Coin {
 }
 export type CoinSet = Coin[];
 
-
-
-
-
 export interface Hookin {
   txid: string;
   vout: number;
@@ -59,27 +55,21 @@ export interface AbstractTransfer {
   claimant: PublicKey;
   fee: Amount;
   inputs: Coin[];
-  kind: 'LightningPayment' | 'FeeBump' | 'Hookout'
 }
 
 export interface LightningPayment extends AbstractTransfer {
-  paymentRequest: string,
-  kind: 'LightningPayment'
+  paymentRequest: string;
 }
 
 export interface FeeBump extends AbstractTransfer {
   txid: string;
-  kind: 'FeeBump'
 }
 
 export interface Hookout extends AbstractTransfer {
   bitcoinAddress: string;
   priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
   fee: Amount;
-  kind: 'Hookout';
 }
-
-export type Transfer = LightningPayment | FeeBump | Hookout;
 
 export interface TransferHash {
   transferHash: string;
@@ -90,3 +80,4 @@ export interface LightningInvoice {
   paymentRequest: string;
 }
 
+export type Claimable = LightningPayment | FeeBump | Hookout | Hookin | LightningInvoice;

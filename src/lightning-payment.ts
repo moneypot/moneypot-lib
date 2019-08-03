@@ -1,18 +1,15 @@
 import * as Buffutils from './util/buffutils';
 
-import * as POD from './pod'
+import * as POD from './pod';
 
 import Hash from './hash';
 
 import * as bolt11 from './bolt11';
 
-import Abstract, { parseTransferData, TransferData } from './abstract-transfer'
-
+import Abstract, { parseTransferData, TransferData } from './abstract-transfer';
 
 export default class LightningPayment extends Abstract {
-
   public static fromPOD(data: any): LightningPayment | Error {
-
     const transferData = parseTransferData(data);
     if (transferData instanceof Error) {
       throw transferData;
@@ -30,13 +27,13 @@ export default class LightningPayment extends Abstract {
       return new Error('amount does not match invoice amount');
     }
 
-
     return new LightningPayment(transferData, data.paymentRequest);
   }
 
   paymentRequest: string;
-  public get kind(): 'LightningPayment' { return 'LightningPayment' };
-
+  public get kind(): 'LightningPayment' {
+    return 'LightningPayment';
+  }
 
   constructor(transferData: TransferData, paymentRequest: string) {
     super(transferData);
@@ -45,12 +42,10 @@ export default class LightningPayment extends Abstract {
 
   public toPOD(): POD.LightningPayment {
     return {
-      ...super.transferPOD(),
+      ...super.toPOD(),
       paymentRequest: this.paymentRequest,
-      kind: 'LightningPayment'
     };
   }
-
 
   public hash() {
     const h = Hash.newBuilder('LightningPayment');

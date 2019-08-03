@@ -35,13 +35,16 @@ const fee_bump_1 = require("./fee-bump");
 exports.FeeBump = fee_bump_1.default;
 var magnitude_1 = require("./magnitude");
 exports.Magnitude = magnitude_1.default;
+var abstract_transfer_1 = require("./abstract-transfer");
+exports.AbstractTransfer = abstract_transfer_1.default;
+var claimable_1 = require("./claimable");
+exports.claimableToPod = claimable_1.claimableToPod;
+exports.podToClaimable = claimable_1.podToClaimable;
 // blind functions
 __export(require("./blind"));
 // helper coin function
 __export(require("./util/coins"));
 __export(require("./bolt11"));
-const transfer_1 = require("./transfer");
-exports.parseTransfer = transfer_1.parseTransfer;
 var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
 const claim_response_1 = require("./claim-response");

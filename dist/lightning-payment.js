@@ -23,17 +23,17 @@ class LightningPayment extends abstract_transfer_1.default {
         }
         return new LightningPayment(transferData, data.paymentRequest);
     }
-    get kind() { return 'LightningPayment'; }
-    ;
+    get kind() {
+        return 'LightningPayment';
+    }
     constructor(transferData, paymentRequest) {
         super(transferData);
         this.paymentRequest = paymentRequest;
     }
     toPOD() {
         return {
-            ...super.transferPOD(),
+            ...super.toPOD(),
             paymentRequest: this.paymentRequest,
-            kind: 'LightningPayment'
         };
     }
     hash() {

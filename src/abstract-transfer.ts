@@ -8,7 +8,6 @@ import PublicKey from './public-key';
 import * as buffutils from './util/buffutils';
 
 export default abstract class Abstract {
-
   amount: number;
   inputs: Coin[];
   claimant: PublicKey;
@@ -18,8 +17,7 @@ export default abstract class Abstract {
 
   abstract kind: 'LightningPayment' | 'FeeBump' | 'Hookout';
 
-  constructor({ amount, authorization, claimant, fee, inputs}: TransferData) {
-
+  constructor({ amount, authorization, claimant, fee, inputs }: TransferData) {
     this.amount = amount;
     this.authorization = authorization;
     this.claimant = claimant;
@@ -39,7 +37,8 @@ export default abstract class Abstract {
 
   // doesn't include authorization, used for hashing
   public transferHash(): Hash {
-    return Hash.fromMessage('Transfer',
+    return Hash.fromMessage(
+      'Transfer',
       buffutils.fromUint64(this.amount),
       this.claimant.buffer,
       buffutils.fromUint64(this.fee),
@@ -48,9 +47,9 @@ export default abstract class Abstract {
     );
   }
 
+  abstract hash(): Hash;
 
-  abstract hash(): Hash
-  transferPOD() {
+  toPOD(): POD.AbstractTransfer {
     return {
       amount: this.amount,
       authorization: this.authorization ? this.authorization.toPOD() : null,
@@ -59,8 +58,6 @@ export default abstract class Abstract {
       inputs: this.inputs.map(i => i.toPOD()),
     };
   }
-
-  abstract toPOD(): POD.AbstractTransfer
 
   inputAmount(): number {
     let amount = 0;
@@ -118,13 +115,16 @@ export function parseTransferData(data: any): TransferData | Error {
     return new Error('inputs are not in sorted order');
   }
 
-  return { amount, authorization, claimant, fee, inputs }
+  return { amount, authorization, claimant, fee, inputs };
 }
 
 export interface TransferData {
-  amount: number, authorization?: Signature, claimant: PublicKey, fee: number, inputs: Coin[]
+  amount: number;
+  authorization?: Signature;
+  claimant: PublicKey;
+  fee: number;
+  inputs: Coin[];
 }
-
 
 function isHashSorted<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {
   for (let i = 1; i < ts.length; i++) {

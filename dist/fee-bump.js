@@ -16,8 +16,9 @@ class FeeBump extends abstract_transfer_1.default {
         }
         return new FeeBump(transferData, txid);
     }
-    get kind() { return 'FeeBump'; }
-    ;
+    get kind() {
+        return 'FeeBump';
+    }
     constructor(transferData, txid) {
         super(transferData);
         this.txid = txid;
@@ -26,9 +27,8 @@ class FeeBump extends abstract_transfer_1.default {
     }
     toPOD() {
         return {
-            ...super.transferPOD(),
+            ...super.toPOD(),
             txid: Buffutils.toHex(this.txid),
-            kind: 'FeeBump'
         };
     }
     hash() {

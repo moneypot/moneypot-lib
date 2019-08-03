@@ -17,14 +17,7 @@ export default abstract class Abstract {
     static sortHashes(hashes: Hash[]): void;
     transferHash(): Hash;
     abstract hash(): Hash;
-    transferPOD(): {
-        amount: number;
-        authorization: string | null;
-        claimant: string;
-        fee: number;
-        inputs: POD.Coin[];
-    };
-    abstract toPOD(): POD.AbstractTransfer;
+    toPOD(): POD.AbstractTransfer;
     inputAmount(): number;
     isAuthorized(): boolean;
 }

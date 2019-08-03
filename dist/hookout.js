@@ -19,8 +19,9 @@ class Hookout extends abstract_transfer_1.default {
         }
         return new Hookout(transferData, bitcoinAddress, priority);
     }
-    get kind() { return 'Hookout'; }
-    ;
+    get kind() {
+        return 'Hookout';
+    }
     constructor(td, bitcoinAddress, priority) {
         super(td);
         this.bitcoinAddress = bitcoinAddress;
@@ -28,9 +29,8 @@ class Hookout extends abstract_transfer_1.default {
     }
     toPOD() {
         return {
-            ...super.transferPOD(),
+            ...super.toPOD(),
             bitcoinAddress: this.bitcoinAddress,
-            kind: 'Hookout',
             priority: this.priority,
         };
     }

@@ -27,7 +27,7 @@ class Abstract {
     transferHash() {
         return hash_1.default.fromMessage('Transfer', buffutils.fromUint64(this.amount), this.claimant.buffer, buffutils.fromUint64(this.fee), buffutils.fromUint64(this.inputs.length), ...this.inputs.map(i => i.buffer));
     }
-    transferPOD() {
+    toPOD() {
         return {
             amount: this.amount,
             authorization: this.authorization ? this.authorization.toPOD() : null,

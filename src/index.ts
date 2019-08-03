@@ -33,10 +33,11 @@ export { LightningPayment };
 import FeeBump from './fee-bump';
 export { FeeBump };
 
-
 export { default as Magnitude } from './magnitude';
 
-import { default as AbstractTransfer } from './abstract-transfer';
+export { default as AbstractTransfer } from './abstract-transfer';
+
+export { Claimable, claimableToPod, podToClaimable } from './claimable';
 
 // blind functions
 export * from './blind';
@@ -44,10 +45,6 @@ export * from './blind';
 // helper coin function
 export * from './util/coins';
 export * from './bolt11';
-
-import { Transfer, parseTransfer } from './transfer';
-
-export { Transfer, parseTransfer };
 
 export { default as CoinRequest } from './coin-request';
 export { default as ClaimRequest } from './claim-request';
@@ -64,7 +61,6 @@ export { LightningInvoice };
 export type AcknowledgedLightningInvoice = Acknowledged<LightningInvoice, POD.LightningInvoice>;
 export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
 export type AcknowledgedCustodianInfo = Acknowledged<CustodianInfo, POD.CustodianInfo>;
-export type AcknowledgedTransfer  = Acknowledged<Transfer, POD.Transfer>;
 
 // util, should be refactored into its own library
 export { Buffutils };
