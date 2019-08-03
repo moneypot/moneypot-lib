@@ -6,9 +6,9 @@ import Hash from './hash';
 
 import * as bolt11 from './bolt11';
 
-import Abstract, { parseTransferData, TransferData } from './abstract-transfer';
+import AbstractTransfer, { parseTransferData, TransferData } from './abstract-transfer';
 
-export default class LightningPayment extends Abstract {
+export default class LightningPayment extends AbstractTransfer {
   public static fromPOD(data: any): LightningPayment | Error {
     const transferData = parseTransferData(data);
     if (transferData instanceof Error) {

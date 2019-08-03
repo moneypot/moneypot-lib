@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const signature_1 = require("./signature");
+const hookout_1 = require("./hookout");
+const fee_bump_1 = require("./fee-bump");
+const lightning_payment_1 = require("./lightning-payment");
+const lightning_invoice_1 = require("./lightning-invoice");
+const hookin_1 = require("./hookin");
 // T is what is acknowledged, a P is the type of a  T.toPOD()
 // type inference of this thing kind of sucks. So it's recommended to use
 // x: AcknowledgedX = hi.Acknowledged(....)  to guide it
@@ -42,4 +47,24 @@ class Acknowledged {
     }
 }
 exports.default = Acknowledged;
+function hookinFromPod(x) {
+    return Acknowledged.fromPOD(hookin_1.default.fromPOD, x);
+}
+exports.hookinFromPod = hookinFromPod;
+function feeBumpFromPod(x) {
+    return Acknowledged.fromPOD(fee_bump_1.default.fromPOD, x);
+}
+exports.feeBumpFromPod = feeBumpFromPod;
+function lightningPaymentFromPod(x) {
+    return Acknowledged.fromPOD(lightning_payment_1.default.fromPOD, x);
+}
+exports.lightningPaymentFromPod = lightningPaymentFromPod;
+function lightningInvoiceFromPod(x) {
+    return Acknowledged.fromPOD(lightning_invoice_1.default.fromPOD, x);
+}
+exports.lightningInvoiceFromPod = lightningInvoiceFromPod;
+function hookoutFromPod(x) {
+    return Acknowledged.fromPOD(hookout_1.default.fromPOD, x);
+}
+exports.hookoutFromPod = hookoutFromPod;
 //# sourceMappingURL=acknowledged.js.map

@@ -4,6 +4,12 @@ import PrivateKey from './private-key';
 import * as POD from './pod';
 import { PublicKey } from '.';
 
+import _Hookout from './hookout';
+import _FeeBump from './fee-bump';
+import _LightningPayment from './lightning-payment';
+import _LightningInvoice from './lightning-invoice';
+import _Hookin from './hookin';
+
 // P is used as the POD type that it returns
 interface Acknowledgable<P> {
   hash(): Hash;
@@ -63,4 +69,32 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
       ...this.contents.toPOD(),
     };
   }
+}
+
+
+export type Hookin = Acknowledged<_Hookin, POD.Hookin>;
+export function hookinFromPod(x: any): Hookin | Error {
+  return Acknowledged.fromPOD(_Hookin.fromPOD, x);
+}
+
+export type FeeBump = Acknowledged<_FeeBump, POD.FeeBump>;
+export function feeBumpFromPod(x: any): FeeBump | Error {
+  return Acknowledged.fromPOD(_FeeBump.fromPOD, x);
+}
+
+export type LightningPayment = Acknowledged<_LightningPayment, POD.LightningPayment>;
+export function lightningPaymentFromPod(x: any): LightningPayment | Error {
+  return Acknowledged.fromPOD(_LightningPayment.fromPOD, x);
+}
+
+
+export type LightningInvoice = Acknowledged<_LightningInvoice, POD.LightningInvoice>;
+export function lightningInvoiceFromPod(x: any): LightningInvoice | Error {
+  return Acknowledged.fromPOD(_LightningInvoice.fromPOD, x);
+}
+
+
+export type Hookout = Acknowledged<_Hookout, POD.Hookout>;
+export function hookoutFromPod(x: any): Hookout | Error {
+  return Acknowledged.fromPOD(_Hookout.fromPOD, x);
 }

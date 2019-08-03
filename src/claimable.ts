@@ -1,44 +1,35 @@
-import Hookout from './hookout';
-import FeeBump from './fee-bump';
-import LightningPayment from './lightning-payment';
-import LightningInvoice from './lightning-invoice';
-import Hookin from './hookin';
+import Acknowledged, * as acknowledged from './acknowledged';
 
-export type Claimable = Hookout | FeeBump | LightningPayment | LightningInvoice | Hookin;
+export type Claimable = acknowledged.Hookout | acknowledged.FeeBump | acknowledged.LightningPayment | acknowledged.LightningInvoice | acknowledged.Hookin;
+
+
+const parsers = new Map<string, (obj: any) => Claimable | Error>([
+    ['Hookout', acknowledged.hookinFromPod],
+    ['FeeBump', acknowledged.feeBumpFromPod],
+    ['LightningPayment', acknowledged.lightningPaymentFromPod],
+    ['LightningInvoice', acknowledged.lightningInvoiceFromPod],
+    ['Hookin', acknowledged.hookinFromPod]
+]);
+
+
 
 export function podToClaimable(obj: any): Claimable | Error {
   if (typeof obj !== 'object' || typeof obj.kind !== 'string') {
     return new Error('parseTransfer expected an object with a kind to parse');
   }
-  switch (obj.kind) {
-    case 'Hookout':
-      return Hookout.fromPOD(obj);
-    case 'FeeBump':
-      return FeeBump.fromPOD(obj);
-    case 'LightningPayment':
-      return LightningPayment.fromPOD(obj);
-    default:
-      throw new Error('parseTransfer unknown kind: ' + obj.kind);
+  const parser = parsers.get(obj.kind);
+  if (!parser) {
+      return new Error('could not parse a: ' + obj.kind);
   }
+
+  return parser(obj);
 }
 
 export function claimableToPod(c: Claimable) {
-  if (c instanceof Hookout) {
-    return { kind: 'Hookout', ...c.toPOD() };
-  }
-  if (c instanceof FeeBump) {
-    return { kind: 'FeeBump', ...c.toPOD() };
-  }
-  if (c instanceof LightningPayment) {
-    return { kind: 'LightningPayment', ...c.toPOD() };
-  }
-  if (c instanceof LightningInvoice) {
-    return { kind: 'LightningInvoice', ...c.toPOD() };
-  }
-  if (c instanceof Hookin) {
-    return { kind: 'Hookin', ...c.toPOD() };
-  }
-  const _: never = c;
-  console.error('unknown claimable ', c);
-  throw new Error('unknown claimable');
+    const kind = c.contents.constructor.name;
+    if (!parsers.has(kind)) {
+        throw new Error('could not serialize a: ' + kind + ' as we have no parsers for such a thing');
+    }
+
+    return { kind, ...c.toPOD() };
 }

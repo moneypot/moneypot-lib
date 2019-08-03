@@ -1,7 +1,7 @@
 import * as POD from './pod';
 import Hash from './hash';
-import Abstract, { TransferData } from './abstract-transfer';
-export default class LightningPayment extends Abstract {
+import AbstractTransfer, { TransferData } from './abstract-transfer';
+export default class LightningPayment extends AbstractTransfer {
     static fromPOD(data: any): LightningPayment | Error;
     paymentRequest: string;
     readonly kind: 'LightningPayment';

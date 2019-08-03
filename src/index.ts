@@ -52,15 +52,13 @@ export { default as ClaimRequest } from './claim-request';
 import ClaimResponse from './claim-response';
 export { ClaimResponse };
 
-import Acknowledged from './acknowledged';
+import * as Acknowledged from './acknowledged';
 export { Acknowledged };
 
 import LightningInvoice from './lightning-invoice';
 export { LightningInvoice };
 
-export type AcknowledgedLightningInvoice = Acknowledged<LightningInvoice, POD.LightningInvoice>;
-export type AcknowledgedClaimResponse = Acknowledged<ClaimResponse, POD.ClaimResponse>;
-export type AcknowledgedCustodianInfo = Acknowledged<CustodianInfo, POD.CustodianInfo>;
+
 
 // util, should be refactored into its own library
 export { Buffutils };

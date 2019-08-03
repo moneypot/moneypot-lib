@@ -49,8 +49,8 @@ var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
 const claim_response_1 = require("./claim-response");
 exports.ClaimResponse = claim_response_1.default;
-const acknowledged_1 = require("./acknowledged");
-exports.Acknowledged = acknowledged_1.default;
+const Acknowledged = require("./acknowledged");
+exports.Acknowledged = Acknowledged;
 const lightning_invoice_1 = require("./lightning-invoice");
 exports.LightningInvoice = lightning_invoice_1.default;
 // crypto, should be in it's own lib too..
