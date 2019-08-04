@@ -1,6 +1,6 @@
 {
   "name": "hookedin-lib",
-  "version": "0.0.49",
+  "version": "0.0.50",
   "description": "a library for hookedin",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

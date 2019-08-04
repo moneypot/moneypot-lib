@@ -32,4 +32,9 @@ export declare type LightningInvoice = Acknowledged<_LightningInvoice, POD.Light
 export declare function lightningInvoiceFromPod(x: any): LightningInvoice | Error;
 export declare type Hookout = Acknowledged<_Hookout, POD.Hookout>;
 export declare function hookoutFromPod(x: any): Hookout | Error;
+export declare function acknowledge(x: _Hookin, acknowledgeKey: PrivateKey): Hookin;
+export declare function acknowledge(x: _Hookout, acknowledgeKey: PrivateKey): Hookout;
+export declare function acknowledge(x: _LightningInvoice, acknowledgeKey: PrivateKey): LightningInvoice;
+export declare function acknowledge(x: _LightningPayment, acknowledgeKey: PrivateKey): LightningPayment;
+export declare function acknowledge(x: _FeeBump, acknowledgeKey: PrivateKey): FeeBump;
 export {};

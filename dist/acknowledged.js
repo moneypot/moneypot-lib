@@ -67,4 +67,8 @@ function hookoutFromPod(x) {
     return Acknowledged.fromPOD(hookout_1.default.fromPOD, x);
 }
 exports.hookoutFromPod = hookoutFromPod;
+function acknowledge(x, acknowledgeKey) {
+    return Acknowledged.acknowledge(x, acknowledgeKey);
+}
+exports.acknowledge = acknowledge;
 //# sourceMappingURL=acknowledged.js.map
