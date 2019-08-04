@@ -101,8 +101,8 @@ export function hookoutFromPod(x: any): Hookout | Error {
 
 export function acknowledge(x: _Hookin, acknowledgeKey: PrivateKey): Hookin;
 export function acknowledge(x: _Hookout, acknowledgeKey: PrivateKey): Hookout;
-export function acknowledge(x: _LightningInvoice, acknowledgeKey: PrivateKey): LightningInvoice;
 export function acknowledge(x: _LightningPayment, acknowledgeKey: PrivateKey): LightningPayment;
+export function acknowledge(x: _LightningInvoice, acknowledgeKey: PrivateKey): LightningInvoice;
 export function acknowledge(x: _FeeBump, acknowledgeKey: PrivateKey): FeeBump;
 export function acknowledge(x: _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump, acknowledgeKey: PrivateKey) {
   return Acknowledged.acknowledge(x, acknowledgeKey);
