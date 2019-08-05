@@ -3,6 +3,7 @@ import Hash from './hash';
 import PrivateKey from './private-key';
 import * as POD from './pod';
 import { PublicKey } from '.';
+import _ClaimResponse from './claim-response';
 import _Hookout from './hookout';
 import _FeeBump from './fee-bump';
 import _LightningPayment from './lightning-payment';
@@ -22,6 +23,8 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
     constructor(contents: T, acknowledgement: Signature);
     toPOD(): POD.Acknowledged & P;
 }
+export declare type ClaimResponse = Acknowledged<_ClaimResponse, POD.ClaimResponse>;
+export declare function claimResponse(x: any): ClaimResponse | Error;
 export declare type Hookin = Acknowledged<_Hookin, POD.Hookin>;
 export declare function hookinFromPod(x: any): Hookin | Error;
 export declare type FeeBump = Acknowledged<_FeeBump, POD.FeeBump>;
@@ -32,6 +35,7 @@ export declare type LightningInvoice = Acknowledged<_LightningInvoice, POD.Light
 export declare function lightningInvoiceFromPod(x: any): LightningInvoice | Error;
 export declare type Hookout = Acknowledged<_Hookout, POD.Hookout>;
 export declare function hookoutFromPod(x: any): Hookout | Error;
+export declare function acknowledge(x: _ClaimResponse, acknowledgeKey: PrivateKey): ClaimResponse;
 export declare function acknowledge(x: _Hookin, acknowledgeKey: PrivateKey): Hookin;
 export declare function acknowledge(x: _Hookout, acknowledgeKey: PrivateKey): Hookout;
 export declare function acknowledge(x: _LightningPayment, acknowledgeKey: PrivateKey): LightningPayment;

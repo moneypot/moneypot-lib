@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const signature_1 = require("./signature");
+const claim_response_1 = require("./claim-response");
 const hookout_1 = require("./hookout");
 const fee_bump_1 = require("./fee-bump");
 const lightning_payment_1 = require("./lightning-payment");
@@ -47,6 +48,10 @@ class Acknowledged {
     }
 }
 exports.default = Acknowledged;
+function claimResponse(x) {
+    return Acknowledged.fromPOD(claim_response_1.default.fromPOD, x);
+}
+exports.claimResponse = claimResponse;
 function hookinFromPod(x) {
     return Acknowledged.fromPOD(hookin_1.default.fromPOD, x);
 }
