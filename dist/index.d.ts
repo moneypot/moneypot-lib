@@ -20,6 +20,8 @@ export { FeeBump };
 export { default as Magnitude } from './magnitude';
 export { default as AbstractTransfer } from './abstract-transfer';
 export { Claimable, claimableToPod, podToClaimable } from './claimable';
+import * as Status from './status';
+export { Status };
 export * from './blind';
 export * from './util/coins';
 export * from './bolt11';
