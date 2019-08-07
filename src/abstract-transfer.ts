@@ -103,16 +103,22 @@ export function parseTransferData(data: any): TransferData | Error {
     return new Error('Transfer.fromPOD invalid fee');
   }
 
+  let inputAmount = 0;
   const inputs: Coin[] = [];
   for (const i of data.inputs) {
     const input = Coin.fromPOD(i);
     if (input instanceof Error) {
       return input;
     }
+    inputAmount += input.amount;
     inputs.push(input);
   }
   if (!isHashSorted(inputs)) {
     return new Error('inputs are not in sorted order');
+  }
+
+  if (inputAmount < amount + fee) {
+    return new Error('not sourcing enough input for amount and fee');
   }
 
   return { amount, authorization, claimant, fee, inputs };

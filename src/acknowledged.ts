@@ -11,7 +11,6 @@ import _LightningPayment from './lightning-payment';
 import _LightningInvoice from './lightning-invoice';
 import _Hookin from './hookin';
 
-
 // P is used as the POD type that it returns
 interface Acknowledgable<P> {
   hash(): Hash;
@@ -93,12 +92,10 @@ export function lightningPaymentFromPod(x: any): LightningPayment | Error {
   return Acknowledged.fromPOD(_LightningPayment.fromPOD, x);
 }
 
-
 export type LightningInvoice = Acknowledged<_LightningInvoice, POD.LightningInvoice>;
 export function lightningInvoiceFromPod(x: any): LightningInvoice | Error {
   return Acknowledged.fromPOD(_LightningInvoice.fromPOD, x);
 }
-
 
 export type Hookout = Acknowledged<_Hookout, POD.Hookout>;
 export function hookoutFromPod(x: any): Hookout | Error {
@@ -111,6 +108,9 @@ export function acknowledge(x: _Hookout, acknowledgeKey: PrivateKey): Hookout;
 export function acknowledge(x: _LightningPayment, acknowledgeKey: PrivateKey): LightningPayment;
 export function acknowledge(x: _LightningInvoice, acknowledgeKey: PrivateKey): LightningInvoice;
 export function acknowledge(x: _FeeBump, acknowledgeKey: PrivateKey): FeeBump;
-export function acknowledge(x: _ClaimResponse | _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump, acknowledgeKey: PrivateKey) {
+export function acknowledge(
+  x: _ClaimResponse | _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump,
+  acknowledgeKey: PrivateKey
+) {
   return Acknowledged.acknowledge(x, acknowledgeKey);
 }

@@ -58,8 +58,6 @@ export { Acknowledged };
 import LightningInvoice from './lightning-invoice';
 export { LightningInvoice };
 
-
-
 // util, should be refactored into its own library
 export { Buffutils };
 
