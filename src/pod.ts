@@ -81,3 +81,38 @@ export interface LightningInvoice {
 }
 
 export type Claimable = LightningPayment | FeeBump | Hookout | Hookin | LightningInvoice;
+
+
+
+export interface StatusInvoiceSettled {
+  kind: 'InvoiceSettled';
+  settlement: {
+    amount: number;
+    rPreimage: string; // hex
+    time: Date;
+  };
+}
+
+export interface StatusLightningPaymentSucceeded {
+  kind: 'LightningPaymentSucceeded';
+  result: {
+    paymentPreimage: string;
+    totalFees: Amount;
+  };
+}
+
+export interface StatusClaimed {
+  kind: 'Claimed';
+  claim: ClaimResponse;
+  amount: Amount;
+}
+
+
+export type Status = { kind: 'LightningPaymentFailed' }
+| StatusLightningPaymentSucceeded
+| { kind: 'FeebumpFailed'; error: string }
+| { kind: 'FeebumpSucceeded'; newTxid: string }
+| { kind: 'HookoutFailed'; error: string }
+| { kind: 'HookoutSucceeded'; txid: string }
+| StatusClaimed
+| StatusInvoiceSettled

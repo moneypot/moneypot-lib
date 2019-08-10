@@ -1,34 +1,43 @@
 import * as POD from './pod';
+import Hash from './hash';
+import { fromString } from './util/buffutils';
 
-export interface InvoiceSettled {
-  kind: 'InvoiceSettled';
-  settlement: {
-    amount: number;
-    rPreimage: string; // hex
-    time: Date;
-  };
+// NOTE: these statuses are unstructured, and unvalidated.
+export default class Status {
+  s: POD.Status
+
+  constructor(s: POD.Status) {
+    this.s = s;
+  }
+
+  toPOD() {
+    return this.s;
+  }
+
+  hash() {
+    const str = this.stringify();
+    console.log('debug: stringified status: ', str);
+    return Hash.fromMessage('Status', fromString(str));
+  }
+
+  private stringify() {
+    return JSON.stringify(this.s, (key, value) => {
+  
+      if (typeof value === 'object') {
+        // if (typeof value.toPOD === 'function') {
+        //   return value.toPOD();
+        // }
+
+        let newObj: any = {};
+        for (const k of Object.keys(value).sort()) {
+          newObj[k] = value[k];
+        }
+        return newObj;
+      }
+      return value;
+    });
+  }
+
 }
 
-export interface LightningPaymentSucceeded {
-  kind: 'LightningPaymentSucceeded';
-  result: {
-    paymentPreimage: string;
-    totalFees: POD.Amount;
-  };
-}
 
-export interface Claimed {
-  kind: 'Claimed';
-  claim: POD.Acknowledged & POD.ClaimResponse;
-  amount: POD.Amount;
-}
-
-export type All =
-  | { kind: 'LightningPaymentFailed' }
-  | LightningPaymentSucceeded
-  | { kind: 'FeebumpFailed'; error: string }
-  | { kind: 'FeebumpSucceeded'; newTxid: string }
-  | { kind: 'HookoutFailed'; error: string }
-  | { kind: 'HookoutSucceeded'; txid: string }
-  | Claimed
-  | InvoiceSettled;
