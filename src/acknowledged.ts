@@ -1,8 +1,8 @@
 import Signature from './signature';
 import Hash from './hash';
 import PrivateKey from './private-key';
+import PublicKey from './public-key';
 import * as POD from './pod';
-import { PublicKey } from '.';
 
 import _ClaimResponse from './claim-response';
 import _Hookout from './hookout';
@@ -10,6 +10,7 @@ import _FeeBump from './fee-bump';
 import _LightningPayment from './lightning-payment';
 import _LightningInvoice from './lightning-invoice';
 import _Hookin from './hookin';
+import _Status from './status';
 
 // P is used as the POD type that it returns
 interface Acknowledgable<P> {
@@ -102,14 +103,20 @@ export function hookoutFromPod(x: any): Hookout | Error {
   return Acknowledged.fromPOD(_Hookout.fromPOD, x);
 }
 
+export type Status = Acknowledged<_Status, POD.Status>;
+export function statusFromPOD(x: any): Status | Error {
+  return Acknowledged.fromPOD(_Status.fromPOD, x);
+}
+
 export function acknowledge(x: _ClaimResponse, acknowledgeKey: PrivateKey): ClaimResponse;
 export function acknowledge(x: _Hookin, acknowledgeKey: PrivateKey): Hookin;
 export function acknowledge(x: _Hookout, acknowledgeKey: PrivateKey): Hookout;
 export function acknowledge(x: _LightningPayment, acknowledgeKey: PrivateKey): LightningPayment;
 export function acknowledge(x: _LightningInvoice, acknowledgeKey: PrivateKey): LightningInvoice;
 export function acknowledge(x: _FeeBump, acknowledgeKey: PrivateKey): FeeBump;
+export function acknowledge(x: _Status, acknowledgeKey: PrivateKey): Status;
 export function acknowledge(
-  x: _ClaimResponse | _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump,
+  x: _ClaimResponse | _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump | _Status,
   acknowledgeKey: PrivateKey
 ) {
   return Acknowledged.acknowledge(x, acknowledgeKey);

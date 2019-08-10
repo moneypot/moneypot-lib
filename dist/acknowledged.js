@@ -7,6 +7,7 @@ const fee_bump_1 = require("./fee-bump");
 const lightning_payment_1 = require("./lightning-payment");
 const lightning_invoice_1 = require("./lightning-invoice");
 const hookin_1 = require("./hookin");
+const status_1 = require("./status");
 // T is what is acknowledged, a P is the type of a  T.toPOD()
 // type inference of this thing kind of sucks. So it's recommended to use
 // x: AcknowledgedX = hi.Acknowledged(....)  to guide it
@@ -72,6 +73,10 @@ function hookoutFromPod(x) {
     return Acknowledged.fromPOD(hookout_1.default.fromPOD, x);
 }
 exports.hookoutFromPod = hookoutFromPod;
+function statusFromPOD(x) {
+    return Acknowledged.fromPOD(status_1.default.fromPOD, x);
+}
+exports.statusFromPOD = statusFromPOD;
 function acknowledge(x, acknowledgeKey) {
     return Acknowledged.acknowledge(x, acknowledgeKey);
 }

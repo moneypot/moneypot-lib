@@ -39,8 +39,7 @@ export { default as AbstractTransfer } from './abstract-transfer';
 
 export { Claimable, claimableToPod, podToClaimable } from './claimable';
 
-import * as Status from './status';
-export { Status }; 
+export { default as Status } from './status';
 
 // blind functions
 export * from './blind';

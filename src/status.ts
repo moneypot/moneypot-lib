@@ -6,6 +6,18 @@ import { fromString } from './util/buffutils';
 export default class Status {
   s: POD.Status
 
+
+  static fromPOD(x: any): Error | Status { // poorly validated..
+    if (typeof x !== 'object') {
+      return new Error('Status.fromPOD expected an object');
+    }
+    if (typeof x.kind !== 'string') {
+      return new Error('Status.fromPOD expected a kind');
+    }
+
+    return new Status(x);
+  }
+
   constructor(s: POD.Status) {
     this.s = s;
   }

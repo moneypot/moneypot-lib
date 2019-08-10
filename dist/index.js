@@ -40,8 +40,8 @@ exports.AbstractTransfer = abstract_transfer_1.default;
 var claimable_1 = require("./claimable");
 exports.claimableToPod = claimable_1.claimableToPod;
 exports.podToClaimable = claimable_1.podToClaimable;
-const Status = require("./status");
-exports.Status = Status;
+var status_1 = require("./status");
+exports.Status = status_1.default;
 // blind functions
 __export(require("./blind"));
 // helper coin function

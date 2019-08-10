@@ -4,6 +4,15 @@ const hash_1 = require("./hash");
 const buffutils_1 = require("./util/buffutils");
 // NOTE: these statuses are unstructured, and unvalidated.
 class Status {
+    static fromPOD(x) {
+        if (typeof x !== 'object') {
+            return new Error('Status.fromPOD expected an object');
+        }
+        if (typeof x.kind !== 'string') {
+            return new Error('Status.fromPOD expected a kind');
+        }
+        return new Status(x);
+    }
     constructor(s) {
         this.s = s;
     }
