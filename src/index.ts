@@ -37,9 +37,23 @@ export { default as Magnitude } from './magnitude';
 
 export { default as AbstractTransfer } from './abstract-transfer';
 
-export { Claimable, claimableToPod, podToClaimable } from './claimable';
+export { default as Claimable } from './claimable';
 
-export { default as Status } from './status';
+
+import StatusFailed from './status/failed';
+import StatusBitcoinTransactionSent from './status/bitcoin-transaction-sent';
+import StatusInvoiceSettled from './status/invoice-settled';
+
+
+
+export namespace Status {
+    export type Failed = StatusFailed;
+    export type BitcoinTransactionSent = StatusBitcoinTransactionSent
+    export type InvoiceSettled = StatusInvoiceSettled
+  }
+
+
+export { default as Status  } from './status';
 
 // blind functions
 export * from './blind';
@@ -51,8 +65,6 @@ export * from './bolt11';
 export { default as CoinRequest } from './coin-request';
 export { default as ClaimRequest } from './claim-request';
 
-import ClaimResponse from './claim-response';
-export { ClaimResponse };
 
 import * as Acknowledged from './acknowledged';
 export { Acknowledged };

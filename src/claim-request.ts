@@ -8,11 +8,11 @@ import CoinRequest from './coin-request';
 import Magnitude from './magnitude';
 
 export default class ClaimRequest {
-  public static newAuthorized(claimHash: Hash, coinRequests: CoinRequest[], claimantPrivateKey: PrivateKey) {
-    const hash = ClaimRequest.hashOf(claimHash, coinRequests);
+  public static newAuthorized(claimableHash: Hash, coinRequests: CoinRequest[], claimantPrivateKey: PrivateKey) {
+    const hash = ClaimRequest.hashOf(claimableHash, coinRequests);
     const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
-    return new ClaimRequest(claimHash, coinRequests, authorization);
+    return new ClaimRequest(claimableHash, coinRequests, authorization);
   }
 
   public static fromPOD(data: any): ClaimRequest | Error {
@@ -57,19 +57,19 @@ export default class ClaimRequest {
     return new ClaimRequest(claimHash, coinRequests, authorization);
   }
 
-  public claimHash: Hash;
+  public claimableHash: Hash;
   public coinRequests: CoinRequest[];
   public authorization: Signature;
 
-  constructor(claimHash: Hash, coinRequests: CoinRequest[], authorization: Signature) {
-    this.claimHash = claimHash;
+  constructor(claimableHash: Hash, coinRequests: CoinRequest[], authorization: Signature) {
+    this.claimableHash = claimableHash;
     this.coinRequests = coinRequests;
     this.authorization = authorization;
   }
 
-  public static hashOf(claimHash: Hash, coinRequests: CoinRequest[]) {
+  public static hashOf(claimableHash: Hash, coinRequests: CoinRequest[]) {
     const h = Hash.newBuilder('ClaimRequest');
-    h.update(claimHash.buffer);
+    h.update(claimableHash.buffer);
     for (const cc of coinRequests) {
       h.update(cc.blindedOwner.buffer);
       h.update(cc.blindingNonce.buffer);
@@ -79,13 +79,13 @@ export default class ClaimRequest {
   }
 
   public hash(): Hash {
-    return ClaimRequest.hashOf(this.claimHash, this.coinRequests);
+    return ClaimRequest.hashOf(this.claimableHash, this.coinRequests);
   }
 
   public toPOD(): POD.ClaimRequest {
     return {
       authorization: this.authorization.toPOD(),
-      claimHash: this.claimHash.toPOD(),
+      claimableHash: this.claimableHash.toPOD(),
       coinRequests: this.coinRequests.map(cr => ({
         blindedOwner: cr.blindedOwner.toPOD(),
         blindingNonce: cr.blindingNonce.toPOD(),

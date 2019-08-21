@@ -1,50 +1,80 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const acknowledged = require("./acknowledged");
 const hookout_1 = require("./hookout");
 const fee_bump_1 = require("./fee-bump");
 const lightning_payment_1 = require("./lightning-payment");
 const lightning_invoice_1 = require("./lightning-invoice");
 const hookin_1 = require("./hookin");
-const parsers = new Map([
-    ['Hookout', acknowledged.hookinFromPod],
-    ['FeeBump', acknowledged.feeBumpFromPod],
-    ['LightningPayment', acknowledged.lightningPaymentFromPod],
-    ['LightningInvoice', acknowledged.lightningInvoiceFromPod],
-    ['Hookin', acknowledged.hookinFromPod],
-]);
-function podToClaimable(obj) {
-    if (typeof obj !== 'object' || typeof obj.kind !== 'string') {
-        return new Error('parseTransfer expected an object with a kind to parse');
+class Claimable {
+    constructor(c) {
+        this.c = c;
     }
-    const parser = parsers.get(obj.kind);
-    if (!parser) {
-        return new Error('could not parse a: ' + obj.kind);
+    hash() {
+        return this.c.hash();
     }
-    return parser(obj);
+    toPOD() {
+        if (this.c instanceof hookout_1.default) {
+            return { kind: 'Hookout', ...this.c.toPOD() };
+        }
+        else if (this.c instanceof fee_bump_1.default) {
+            return { kind: 'FeeBump', ...this.c.toPOD() };
+        }
+        else if (this.c instanceof lightning_payment_1.default) {
+            return { kind: 'LightningPayment', ...this.c.toPOD() };
+        }
+        else if (this.c instanceof lightning_invoice_1.default) {
+            return { kind: 'LightningInvoice', ...this.c.toPOD() };
+        }
+        else if (this.c instanceof hookin_1.default) {
+            return { kind: 'Hookin', ...this.c.toPOD() };
+        }
+        else {
+            const _ = this.c;
+            throw new Error('unknown claimable kind');
+        }
+    }
+    static fromPOD(obj) {
+        if (typeof obj !== 'object') {
+            return new Error('Claimable.fromPOD expected an object');
+        }
+        if (typeof obj.kind !== 'string') {
+            return new Error('Claimable.fromPOD expected a string kind');
+        }
+        const parser = parserFromKind(obj.kind);
+        if (!parser) {
+            return new Error('Claimble.fromPOD couldnt handle that kind');
+        }
+        const parseRes = parser(obj);
+        if (parseRes instanceof Error) {
+            return parseRes;
+        }
+        return new Claimable(parseRes);
+    }
 }
-exports.podToClaimable = podToClaimable;
-function claimableToPod(claimable) {
-    const c = claimable.contents;
-    if (c instanceof hookout_1.default) {
-        return { kind: 'Hookout', ...c.toPOD() };
-    }
-    else if (c instanceof fee_bump_1.default) {
-        return { kind: 'FeeBump', ...c.toPOD() };
-    }
-    else if (c instanceof lightning_payment_1.default) {
-        return { kind: 'LightningPayment', ...c.toPOD() };
-    }
-    else if (c instanceof lightning_invoice_1.default) {
-        return { kind: 'LightningInvoice', ...c.toPOD() };
-    }
-    else if (c instanceof hookin_1.default) {
-        return { kind: 'Hookin', ...c.toPOD() };
-    }
-    else {
-        const _ = c;
-        throw new Error('did not know what a: ' + c + ' is');
+exports.default = Claimable;
+function parserFromKind(kind) {
+    switch (kind) {
+        case 'Hookout':
+            return hookout_1.default.fromPOD;
+        case 'FeeBump':
+            return fee_bump_1.default.fromPOD;
+        case 'LightningPayment':
+            return lightning_payment_1.default.fromPOD;
+        case 'LightningInvoice':
+            return lightning_invoice_1.default.fromPOD;
+        case 'Hookin':
+            return hookin_1.default.fromPOD;
     }
 }
-exports.claimableToPod = claimableToPod;
+exports.parserFromKind = parserFromKind;
+// export function podToClaimable(obj: any): Claimable | Error {
+//   if (typeof obj !== 'object' || typeof obj.kind !== 'string') {
+//     return new Error('parseTransfer expected an object with a kind to parse');
+//   }
+//   const parser = parsers.get(obj.kind);
+//   if (!parser) {
+//     return new Error('could not parse a: ' + obj.kind);
+//   }
+//   return parser(obj);
+// }
 //# sourceMappingURL=claimable.js.map

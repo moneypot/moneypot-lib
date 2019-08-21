@@ -1,10 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const blinded_signature_1 = require("./blinded-signature");
-const claim_request_1 = require("./claim-request");
-const hash_1 = require("./hash");
+const blinded_signature_1 = require("../blinded-signature");
+const claim_request_1 = require("../claim-request");
+const hash_1 = require("../hash");
 // The response embeds the request, to make it easier to store/verify
-class ClaimResponse {
+class Claimed {
+    constructor(claimRequest, blindedReceipts) {
+        this.claimRequest = claimRequest;
+        this.blindedReceipts = blindedReceipts;
+    }
+    hash() {
+        const h = hash_1.default.newBuilder('ClaimResponse');
+        h.update(this.claimRequest.hash().buffer);
+        for (const blindedReceipt of this.blindedReceipts) {
+            h.update(blindedReceipt.buffer);
+        }
+        return h.digest();
+    }
+    toPOD() {
+        return {
+            ...this.claimRequest.toPOD(),
+            blindedReceipts: this.blindedReceipts.map(x => x.toPOD()),
+        };
+    }
     static fromPOD(data) {
         if (typeof data !== 'object') {
             throw new Error('ClaimResponse must be an object');
@@ -24,26 +42,8 @@ class ClaimResponse {
             }
             blindedReceipts.push(blindedReceipt);
         }
-        return new ClaimResponse(claimRequest, blindedReceipts);
-    }
-    constructor(claimRequest, blindedReceipts) {
-        this.claimRequest = claimRequest;
-        this.blindedReceipts = blindedReceipts;
-    }
-    hash() {
-        const h = hash_1.default.newBuilder('ClaimResponse');
-        h.update(this.claimRequest.hash().buffer);
-        for (const blindedReceipt of this.blindedReceipts) {
-            h.update(blindedReceipt.buffer);
-        }
-        return h.digest();
-    }
-    toPOD() {
-        return {
-            blindedReceipts: this.blindedReceipts.map(x => x.toPOD()),
-            claimRequest: this.claimRequest.toPOD(),
-        };
+        return new Claimed(claimRequest, blindedReceipts);
     }
 }
-exports.default = ClaimResponse;
-//# sourceMappingURL=claim-response.js.map
+exports.default = Claimed;
+//# sourceMappingURL=claimed.js.map

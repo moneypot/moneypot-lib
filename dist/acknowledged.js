@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const signature_1 = require("./signature");
-const claim_response_1 = require("./claim-response");
 const hookout_1 = require("./hookout");
 const fee_bump_1 = require("./fee-bump");
 const lightning_payment_1 = require("./lightning-payment");
 const lightning_invoice_1 = require("./lightning-invoice");
 const hookin_1 = require("./hookin");
+const claimable_1 = require("./claimable");
 const status_1 = require("./status");
 // T is what is acknowledged, a P is the type of a  T.toPOD()
 // type inference of this thing kind of sucks. So it's recommended to use
@@ -49,10 +49,6 @@ class Acknowledged {
     }
 }
 exports.default = Acknowledged;
-function claimResponse(x) {
-    return Acknowledged.fromPOD(claim_response_1.default.fromPOD, x);
-}
-exports.claimResponse = claimResponse;
 function hookinFromPod(x) {
     return Acknowledged.fromPOD(hookin_1.default.fromPOD, x);
 }
@@ -73,6 +69,10 @@ function hookoutFromPod(x) {
     return Acknowledged.fromPOD(hookout_1.default.fromPOD, x);
 }
 exports.hookoutFromPod = hookoutFromPod;
+function claimableFromPOD(x) {
+    return Acknowledged.fromPOD(claimable_1.default.fromPOD, x);
+}
+exports.claimableFromPOD = claimableFromPOD;
 function statusFromPOD(x) {
     return Acknowledged.fromPOD(status_1.default.fromPOD, x);
 }

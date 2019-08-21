@@ -1,0 +1,1 @@
+{"version":3,"file":"abstract-status.js","sourceRoot":"","sources":["../../src/status/abstract-status.ts"],"names":[],"mappings":";;AAEA,MAA8B,cAAc;IAG1C,YAAY,aAAyB;QACnC,IAAI,CAAC,aAAa,GAAG,aAAa,CAAC;IACrC,CAAC;IACD,IAAI,MAAM;QACR,OAAO,IAAI,CAAC,aAAa,CAAC;IAC5B,CAAC;CAGF;AAXD,iCAWC"}

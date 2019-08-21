@@ -6,10 +6,10 @@ const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
 const magnitude_1 = require("./magnitude");
 class ClaimRequest {
-    static newAuthorized(claimHash, coinRequests, claimantPrivateKey) {
-        const hash = ClaimRequest.hashOf(claimHash, coinRequests);
+    static newAuthorized(claimableHash, coinRequests, claimantPrivateKey) {
+        const hash = ClaimRequest.hashOf(claimableHash, coinRequests);
         const authorization = signature_1.default.compute(hash.buffer, claimantPrivateKey);
-        return new ClaimRequest(claimHash, coinRequests, authorization);
+        return new ClaimRequest(claimableHash, coinRequests, authorization);
     }
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -44,14 +44,14 @@ class ClaimRequest {
         }
         return new ClaimRequest(claimHash, coinRequests, authorization);
     }
-    constructor(claimHash, coinRequests, authorization) {
-        this.claimHash = claimHash;
+    constructor(claimableHash, coinRequests, authorization) {
+        this.claimableHash = claimableHash;
         this.coinRequests = coinRequests;
         this.authorization = authorization;
     }
-    static hashOf(claimHash, coinRequests) {
+    static hashOf(claimableHash, coinRequests) {
         const h = hash_1.default.newBuilder('ClaimRequest');
-        h.update(claimHash.buffer);
+        h.update(claimableHash.buffer);
         for (const cc of coinRequests) {
             h.update(cc.blindedOwner.buffer);
             h.update(cc.blindingNonce.buffer);
@@ -60,12 +60,12 @@ class ClaimRequest {
         return h.digest();
     }
     hash() {
-        return ClaimRequest.hashOf(this.claimHash, this.coinRequests);
+        return ClaimRequest.hashOf(this.claimableHash, this.coinRequests);
     }
     toPOD() {
         return {
             authorization: this.authorization.toPOD(),
-            claimHash: this.claimHash.toPOD(),
+            claimableHash: this.claimableHash.toPOD(),
             coinRequests: this.coinRequests.map(cr => ({
                 blindedOwner: cr.blindedOwner.toPOD(),
                 blindingNonce: cr.blindingNonce.toPOD(),

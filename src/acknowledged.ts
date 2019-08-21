@@ -4,12 +4,14 @@ import PrivateKey from './private-key';
 import PublicKey from './public-key';
 import * as POD from './pod';
 
-import _ClaimResponse from './claim-response';
 import _Hookout from './hookout';
 import _FeeBump from './fee-bump';
+
 import _LightningPayment from './lightning-payment';
 import _LightningInvoice from './lightning-invoice';
 import _Hookin from './hookin';
+import _Claimable from './claimable';
+
 import _Status from './status';
 
 // P is used as the POD type that it returns
@@ -73,10 +75,6 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
   }
 }
 
-export type ClaimResponse = Acknowledged<_ClaimResponse, POD.ClaimResponse>;
-export function claimResponse(x: any): ClaimResponse | Error {
-  return Acknowledged.fromPOD(_ClaimResponse.fromPOD, x);
-}
 
 export type Hookin = Acknowledged<_Hookin, POD.Hookin>;
 export function hookinFromPod(x: any): Hookin | Error {
@@ -103,20 +101,28 @@ export function hookoutFromPod(x: any): Hookout | Error {
   return Acknowledged.fromPOD(_Hookout.fromPOD, x);
 }
 
+export type Claimable = Acknowledged<_Claimable, POD.Claimable>;
+export function claimableFromPOD(x: any): Claimable | Error {
+  return Acknowledged.fromPOD(_Claimable.fromPOD, x);
+}
+
+
 export type Status = Acknowledged<_Status, POD.Status>;
 export function statusFromPOD(x: any): Status | Error {
   return Acknowledged.fromPOD(_Status.fromPOD, x);
 }
 
-export function acknowledge(x: _ClaimResponse, acknowledgeKey: PrivateKey): ClaimResponse;
+
 export function acknowledge(x: _Hookin, acknowledgeKey: PrivateKey): Hookin;
 export function acknowledge(x: _Hookout, acknowledgeKey: PrivateKey): Hookout;
 export function acknowledge(x: _LightningPayment, acknowledgeKey: PrivateKey): LightningPayment;
 export function acknowledge(x: _LightningInvoice, acknowledgeKey: PrivateKey): LightningInvoice;
 export function acknowledge(x: _FeeBump, acknowledgeKey: PrivateKey): FeeBump;
 export function acknowledge(x: _Status, acknowledgeKey: PrivateKey): Status;
+export function acknowledge(x: _Claimable, acknowledgeKey: PrivateKey): Claimable;
+export function acknowledge(x: _Status, acknowledgeKey: PrivateKey): Status;
 export function acknowledge(
-  x: _ClaimResponse | _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump | _Status,
+  x:  _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump | _Status | _Claimable,
   acknowledgeKey: PrivateKey
 ) {
   return Acknowledged.acknowledge(x, acknowledgeKey);

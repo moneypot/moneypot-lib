@@ -26,14 +26,11 @@ export type CoinRequest = { blindingNonce: PublicKey; blindedOwner: PublicKey; m
 
 export interface ClaimRequest {
   authorization: Signature;
-  claimHash: Hash;
+  claimableHash: Hash;
   coinRequests: CoinRequest[];
 }
 
-export interface ClaimResponse {
-  claimRequest: ClaimRequest;
-  blindedReceipts: Signature[];
-}
+
 
 export interface Coin {
   receipt: Signature;
@@ -80,39 +77,39 @@ export interface LightningInvoice {
   paymentRequest: string;
 }
 
-export type Claimable = LightningPayment | FeeBump | Hookout | Hookin | LightningInvoice;
+export type Claimable =
+  | ({ kind: 'Hookout' } & Hookout)
+  | ({ kind: 'Hookin' } & Hookin)
+  | ({ kind: 'FeeBump' } & FeeBump)
+  | ({ kind: 'LightningPayment' } & LightningPayment)
+  | ({ kind: 'LightningInvoice' } & LightningInvoice);
 
+export namespace Status {
+  export interface AbstractStatus {
+    claimableHash: string;
+  }
 
+  export interface Claimed extends ClaimRequest, AbstractStatus {
+    blindedReceipts: Signature[];
+  }
 
-export interface StatusInvoiceSettled {
-  kind: 'InvoiceSettled';
-  settlement: {
-    amount: number;
-    rPreimage: string; // hex
-    time: Date;
-  };
+  export interface BitcoinTransactionSent extends AbstractStatus {
+    txid: string;
+    vout: number;
+  }
+
+  export interface Failed extends AbstractStatus {
+    reason: string;
+  }
+
+  export interface InvoiceSettled extends AbstractStatus {
+    amount: Amount;
+    rPreimage: string;
+    time: string;
+  }
 }
 
-export interface StatusLightningPaymentSucceeded {
-  kind: 'LightningPaymentSucceeded';
-  result: {
-    paymentPreimage: string;
-    totalFees: Amount;
-  };
-}
-
-export interface StatusClaimed {
-  kind: 'Claimed';
-  claim: ClaimResponse;
-  amount: Amount;
-}
-
-
-export type Status = { kind: 'LightningPaymentFailed' }
-| StatusLightningPaymentSucceeded
-| { kind: 'FeebumpFailed'; error: string }
-| { kind: 'FeebumpSucceeded'; newTxid: string }
-| { kind: 'HookoutFailed'; error: string }
-| { kind: 'HookoutSucceeded'; txid: string }
-| StatusClaimed
-| StatusInvoiceSettled
+export type Status =
+  | ({ kind: 'BitcoinTransactionSent' } & Status.BitcoinTransactionSent)
+  | ({ kind: 'Failed' } & Status.Failed)
+  | ({ kind: 'InvoiceSettled' } & Status.InvoiceSettled);

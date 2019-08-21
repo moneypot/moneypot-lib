@@ -19,15 +19,21 @@ import FeeBump from './fee-bump';
 export { FeeBump };
 export { default as Magnitude } from './magnitude';
 export { default as AbstractTransfer } from './abstract-transfer';
-export { Claimable, claimableToPod, podToClaimable } from './claimable';
+export { default as Claimable } from './claimable';
+import StatusFailed from './status/failed';
+import StatusBitcoinTransactionSent from './status/bitcoin-transaction-sent';
+import StatusInvoiceSettled from './status/invoice-settled';
+export declare namespace Status {
+    type Failed = StatusFailed;
+    type BitcoinTransactionSent = StatusBitcoinTransactionSent;
+    type InvoiceSettled = StatusInvoiceSettled;
+}
 export { default as Status } from './status';
 export * from './blind';
 export * from './util/coins';
 export * from './bolt11';
 export { default as CoinRequest } from './coin-request';
 export { default as ClaimRequest } from './claim-request';
-import ClaimResponse from './claim-response';
-export { ClaimResponse };
 import * as Acknowledged from './acknowledged';
 export { Acknowledged };
 import LightningInvoice from './lightning-invoice';
