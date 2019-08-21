@@ -20,14 +20,10 @@ export { FeeBump };
 export { default as Magnitude } from './magnitude';
 export { default as AbstractTransfer } from './abstract-transfer';
 export { default as Claimable } from './claimable';
-import StatusFailed from './status/failed';
-import StatusBitcoinTransactionSent from './status/bitcoin-transaction-sent';
-import StatusInvoiceSettled from './status/invoice-settled';
-export declare namespace Status {
-    type Failed = StatusFailed;
-    type BitcoinTransactionSent = StatusBitcoinTransactionSent;
-    type InvoiceSettled = StatusInvoiceSettled;
-}
+export { default as StatusFailed } from './status/failed';
+export { default as StatusBitcoinTransactionSent } from './status/bitcoin-transaction-sent';
+export { default as StatusInvoiceSettled } from './status/invoice-settled';
+export { default as StatusClaimed } from './status/claimed';
 export { default as Status } from './status';
 export * from './blind';
 export * from './util/coins';

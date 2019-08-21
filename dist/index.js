@@ -39,6 +39,14 @@ var abstract_transfer_1 = require("./abstract-transfer");
 exports.AbstractTransfer = abstract_transfer_1.default;
 var claimable_1 = require("./claimable");
 exports.Claimable = claimable_1.default;
+var failed_1 = require("./status/failed");
+exports.StatusFailed = failed_1.default;
+var bitcoin_transaction_sent_1 = require("./status/bitcoin-transaction-sent");
+exports.StatusBitcoinTransactionSent = bitcoin_transaction_sent_1.default;
+var invoice_settled_1 = require("./status/invoice-settled");
+exports.StatusInvoiceSettled = invoice_settled_1.default;
+var claimed_1 = require("./status/claimed");
+exports.StatusClaimed = claimed_1.default;
 var status_1 = require("./status");
 exports.Status = status_1.default;
 // blind functions
