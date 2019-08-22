@@ -1,14 +1,11 @@
+import Claimed from './claimed';
 import Failed from './failed';
 import BitcoinTransactionSent from './bitcoin-transaction-sent';
 import InvoiceSettled from './invoice-settled';
 
 import * as POD from '../pod';
 
-
-
-type StatusType = Failed | BitcoinTransactionSent | InvoiceSettled;
-
-
+type StatusType = Claimed | Failed | BitcoinTransactionSent | InvoiceSettled;
 
 export default class Status {
   s: StatusType;
@@ -52,6 +49,8 @@ function findParser(kind: string) {
       return BitcoinTransactionSent.fromPOD;
     case 'InvoiceSettled':
       return InvoiceSettled.fromPOD;
+    case 'Claimed':
+      return Claimed.fromPOD;
     default:
       return new Error('Unknown status kind: ' + kind);
   }
@@ -64,9 +63,10 @@ function statusToPOD(s: StatusType) {
     return { kind: 'Failed' as 'Failed', ...s.toPOD() };
   } else if (s instanceof InvoiceSettled) {
     return { kind: 'InvoiceSettled' as 'InvoiceSettled', ...s.toPOD() };
+  } else if (s instanceof Claimed) {
+    return { kind: 'Claimed' as 'Claimed', ...s.toPOD() };
   } else {
     const _: never = s;
     throw new Error('uknown status: ' + s);
   }
 }
-

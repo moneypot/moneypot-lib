@@ -95,6 +95,8 @@ export declare namespace Status {
 export declare type Status = ({
     kind: 'BitcoinTransactionSent';
 } & Status.BitcoinTransactionSent) | ({
+    kind: 'Claimed';
+} & Status.Claimed) | ({
     kind: 'Failed';
 } & Status.Failed) | ({
     kind: 'InvoiceSettled';

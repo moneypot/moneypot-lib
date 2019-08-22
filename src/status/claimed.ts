@@ -6,8 +6,6 @@ import * as POD from '../pod';
 // The response embeds the request, to make it easier to store/verify
 
 export default class Claimed {
-
-
   public claimRequest: ClaimRequest;
   public blindedReceipts: BlindedSignature[];
 
@@ -27,7 +25,7 @@ export default class Claimed {
 
   public toPOD(): POD.Status.Claimed {
     return {
-        ...this.claimRequest.toPOD(),
+      ...this.claimRequest.toPOD(),
       blindedReceipts: this.blindedReceipts.map(x => x.toPOD()),
     };
   }

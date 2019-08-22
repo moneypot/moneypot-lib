@@ -39,14 +39,12 @@ export { default as AbstractTransfer } from './abstract-transfer';
 
 export { default as Claimable } from './claimable';
 
-
 export { default as StatusFailed } from './status/failed';
 export { default as StatusBitcoinTransactionSent } from './status/bitcoin-transaction-sent';
 export { default as StatusInvoiceSettled } from './status/invoice-settled';
 export { default as StatusClaimed } from './status/claimed';
 
-
-export { default as Status  } from './status';
+export { default as Status } from './status';
 
 // blind functions
 export * from './blind';
@@ -57,7 +55,6 @@ export * from './bolt11';
 
 export { default as CoinRequest } from './coin-request';
 export { default as ClaimRequest } from './claim-request';
-
 
 import * as Acknowledged from './acknowledged';
 export { Acknowledged };

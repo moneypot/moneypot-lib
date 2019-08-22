@@ -6,11 +6,10 @@ import LightningInvoice from './lightning-invoice';
 import Hookin from './hookin';
 import { POD } from '.';
 
-
 type ClaimableTypes = Hookout | FeeBump | LightningPayment | LightningInvoice | Hookin;
 
 export default class Claimable {
-  c: ClaimableTypes
+  c: ClaimableTypes;
 
   constructor(c: ClaimableTypes) {
     this.c = c;
@@ -22,15 +21,15 @@ export default class Claimable {
 
   toPOD(): POD.Claimable {
     if (this.c instanceof Hookout) {
-      return { kind: 'Hookout' as 'Hookout', ...this.c.toPOD()  }
+      return { kind: 'Hookout' as 'Hookout', ...this.c.toPOD() };
     } else if (this.c instanceof FeeBump) {
-      return { kind: 'FeeBump' as 'FeeBump', ...this.c.toPOD()  }
-    }else if (this.c instanceof LightningPayment) {
-      return { kind: 'LightningPayment' as 'LightningPayment', ...this.c.toPOD()  }
-    }else if (this.c instanceof LightningInvoice) {
-      return { kind: 'LightningInvoice' as 'LightningInvoice', ...this.c.toPOD()  }
-    }else if (this.c instanceof Hookin) {
-      return { kind: 'Hookin' as 'Hookin', ...this.c.toPOD()  }
+      return { kind: 'FeeBump' as 'FeeBump', ...this.c.toPOD() };
+    } else if (this.c instanceof LightningPayment) {
+      return { kind: 'LightningPayment' as 'LightningPayment', ...this.c.toPOD() };
+    } else if (this.c instanceof LightningInvoice) {
+      return { kind: 'LightningInvoice' as 'LightningInvoice', ...this.c.toPOD() };
+    } else if (this.c instanceof Hookin) {
+      return { kind: 'Hookin' as 'Hookin', ...this.c.toPOD() };
     } else {
       const _: never = this.c;
       throw new Error('unknown claimable kind');
@@ -56,7 +55,6 @@ export default class Claimable {
 
     return new Claimable(parseRes);
   }
-
 }
 
 export function parserFromKind(kind: string) {
@@ -74,7 +72,6 @@ export function parserFromKind(kind: string) {
   }
 }
 
-
 // export function podToClaimable(obj: any): Claimable | Error {
 //   if (typeof obj !== 'object' || typeof obj.kind !== 'string') {
 //     return new Error('parseTransfer expected an object with a kind to parse');
@@ -86,5 +83,3 @@ export function parserFromKind(kind: string) {
 
 //   return parser(obj);
 // }
-
-

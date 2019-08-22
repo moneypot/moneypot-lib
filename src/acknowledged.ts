@@ -75,7 +75,6 @@ export default class Acknowledged<T extends Acknowledgable<P>, P> {
   }
 }
 
-
 export type Hookin = Acknowledged<_Hookin, POD.Hookin>;
 export function hookinFromPod(x: any): Hookin | Error {
   return Acknowledged.fromPOD(_Hookin.fromPOD, x);
@@ -106,12 +105,10 @@ export function claimableFromPOD(x: any): Claimable | Error {
   return Acknowledged.fromPOD(_Claimable.fromPOD, x);
 }
 
-
 export type Status = Acknowledged<_Status, POD.Status>;
 export function statusFromPOD(x: any): Status | Error {
   return Acknowledged.fromPOD(_Status.fromPOD, x);
 }
-
 
 export function acknowledge(x: _Hookin, acknowledgeKey: PrivateKey): Hookin;
 export function acknowledge(x: _Hookout, acknowledgeKey: PrivateKey): Hookout;
@@ -122,7 +119,7 @@ export function acknowledge(x: _Status, acknowledgeKey: PrivateKey): Status;
 export function acknowledge(x: _Claimable, acknowledgeKey: PrivateKey): Claimable;
 export function acknowledge(x: _Status, acknowledgeKey: PrivateKey): Status;
 export function acknowledge(
-  x:  _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump | _Status | _Claimable,
+  x: _Hookin | _Hookout | _LightningInvoice | _LightningPayment | _FeeBump | _Status | _Claimable,
   acknowledgeKey: PrivateKey
 ) {
   return Acknowledged.acknowledge(x, acknowledgeKey);

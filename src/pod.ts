@@ -30,8 +30,6 @@ export interface ClaimRequest {
   coinRequests: CoinRequest[];
 }
 
-
-
 export interface Coin {
   receipt: Signature;
   magnitude: Magnitude;
@@ -111,5 +109,6 @@ export namespace Status {
 
 export type Status =
   | ({ kind: 'BitcoinTransactionSent' } & Status.BitcoinTransactionSent)
+  | ({ kind: 'Claimed' } & Status.Claimed)
   | ({ kind: 'Failed' } & Status.Failed)
   | ({ kind: 'InvoiceSettled' } & Status.InvoiceSettled);

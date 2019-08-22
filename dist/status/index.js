@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const claimed_1 = require("./claimed");
 const failed_1 = require("./failed");
 const bitcoin_transaction_sent_1 = require("./bitcoin-transaction-sent");
 const invoice_settled_1 = require("./invoice-settled");
@@ -37,6 +38,8 @@ function findParser(kind) {
             return bitcoin_transaction_sent_1.default.fromPOD;
         case 'InvoiceSettled':
             return invoice_settled_1.default.fromPOD;
+        case 'Claimed':
+            return claimed_1.default.fromPOD;
         default:
             return new Error('Unknown status kind: ' + kind);
     }
@@ -50,6 +53,9 @@ function statusToPOD(s) {
     }
     else if (s instanceof invoice_settled_1.default) {
         return { kind: 'InvoiceSettled', ...s.toPOD() };
+    }
+    else if (s instanceof claimed_1.default) {
+        return { kind: 'Claimed', ...s.toPOD() };
     }
     else {
         const _ = s;
