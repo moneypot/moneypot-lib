@@ -1,13 +1,13 @@
 import AbstractStatus from './abstract-status';
 import Hash from '../hash';
 import * as buffutils from '../util/buffutils';
-import { POD } from '..';
+import * as POD from '../pod';
 
 export default class BitcoinTransactionSent extends AbstractStatus {
   txid: Uint8Array;
   vout: number;
 
-  constructor(claimableHash: Uint8Array, txid: Uint8Array, vout: number) {
+  constructor(claimableHash: Hash, txid: Uint8Array, vout: number) {
     super(claimableHash);
     this.txid = txid;
     this.vout = vout;
@@ -19,7 +19,7 @@ export default class BitcoinTransactionSent extends AbstractStatus {
 
   toPOD(): POD.Status.BitcoinTransactionSent {
     return {
-      claimableHash: buffutils.toHex(this.claimableHash),
+      claimableHash: this.claimableHash.toPOD(),
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
     };
@@ -30,7 +30,7 @@ export default class BitcoinTransactionSent extends AbstractStatus {
       return new Error('BitcoinTransactionSent.fromPOD expected an object');
     }
 
-    const claimableHash = buffutils.fromHex(obj.claimableHash, 32);
+    const claimableHash = Hash.fromPOD(obj.claimableHash);
     if (claimableHash instanceof Error) {
       return claimableHash;
     }

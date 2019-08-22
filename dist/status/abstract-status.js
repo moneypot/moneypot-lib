@@ -5,7 +5,7 @@ class AbstractStatus {
         this.claimableHash = claimableHash;
     }
     get buffer() {
-        return this.claimableHash;
+        return this.claimableHash.buffer;
     }
 }
 exports.default = AbstractStatus;

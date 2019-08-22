@@ -2,14 +2,14 @@ import AbstractStatus from './abstract-status';
 
 import Hash from '../hash';
 import * as buffutils from '../util/buffutils';
-import { POD } from '..';
+import * as POD from '../pod';
 
 export default class InvoiceSettled extends AbstractStatus {
   amount: number; // settlement amount
   rPreimage: Uint8Array; // hex
   time: Date; // settlement time
 
-  constructor(claimableHash: Uint8Array, amount: number, rPreimage: Uint8Array, time: Date) {
+  constructor(claimableHash: Hash, amount: number, rPreimage: Uint8Array, time: Date) {
     super(claimableHash);
     this.amount = amount;
     this.rPreimage = rPreimage;
@@ -28,7 +28,7 @@ export default class InvoiceSettled extends AbstractStatus {
 
   toPOD(): POD.Status.InvoiceSettled {
     return {
-      claimableHash: buffutils.toHex(this.claimableHash),
+      claimableHash: this.claimableHash.toPOD(),
       amount: this.amount,
       rPreimage: buffutils.toHex(this.rPreimage),
       time: this.time.toISOString(),
@@ -40,7 +40,7 @@ export default class InvoiceSettled extends AbstractStatus {
       return new Error('BitcoinTransactionSent.fromPOD expected an object');
     }
 
-    const claimableHash = buffutils.fromHex(obj.claimableHash, 32);
+    const claimableHash = Hash.fromPOD(obj.claimableHash);
     if (claimableHash instanceof Error) {
       return claimableHash;
     }

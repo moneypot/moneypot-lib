@@ -14,7 +14,7 @@ class BitcoinTransactionSent extends abstract_status_1.default {
     }
     toPOD() {
         return {
-            claimableHash: buffutils.toHex(this.claimableHash),
+            claimableHash: this.claimableHash.toPOD(),
             txid: buffutils.toHex(this.txid),
             vout: this.vout,
         };
@@ -23,7 +23,7 @@ class BitcoinTransactionSent extends abstract_status_1.default {
         if (typeof obj !== 'object') {
             return new Error('BitcoinTransactionSent.fromPOD expected an object');
         }
-        const claimableHash = buffutils.fromHex(obj.claimableHash, 32);
+        const claimableHash = hash_1.default.fromPOD(obj.claimableHash);
         if (claimableHash instanceof Error) {
             return claimableHash;
         }

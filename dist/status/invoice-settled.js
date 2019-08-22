@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_status_1 = require("./abstract-status");
 const hash_1 = require("../hash");
 const buffutils = require("../util/buffutils");
-const __1 = require("..");
+const POD = require("../pod");
 class InvoiceSettled extends abstract_status_1.default {
     constructor(claimableHash, amount, rPreimage, time) {
         super(claimableHash);
@@ -16,7 +16,7 @@ class InvoiceSettled extends abstract_status_1.default {
     }
     toPOD() {
         return {
-            claimableHash: buffutils.toHex(this.claimableHash),
+            claimableHash: this.claimableHash.toPOD(),
             amount: this.amount,
             rPreimage: buffutils.toHex(this.rPreimage),
             time: this.time.toISOString(),
@@ -26,12 +26,12 @@ class InvoiceSettled extends abstract_status_1.default {
         if (typeof obj !== 'object') {
             return new Error('BitcoinTransactionSent.fromPOD expected an object');
         }
-        const claimableHash = buffutils.fromHex(obj.claimableHash, 32);
+        const claimableHash = hash_1.default.fromPOD(obj.claimableHash);
         if (claimableHash instanceof Error) {
             return claimableHash;
         }
         const amount = obj.amount;
-        if (!__1.POD.isAmount(amount)) {
+        if (!POD.isAmount(amount)) {
             return new Error('InvoiceSettled.fromPOD expected a valid amount');
         }
         const rPreimage = buffutils.fromHex(obj.rPreimage, 32);

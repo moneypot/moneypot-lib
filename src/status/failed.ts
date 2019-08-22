@@ -7,7 +7,7 @@ export default class Failed extends AbstractStatus {
   reason: string;
   rebate: number;
 
-  constructor(claimableHash: Uint8Array, reason: string, rebate: number) {
+  constructor(claimableHash: Hash, reason: string, rebate: number) {
     super(claimableHash);
 
     this.reason = reason;
@@ -25,7 +25,7 @@ export default class Failed extends AbstractStatus {
 
   toPOD(): POD.Status.Failed {
     return {
-      claimableHash: buffutils.toHex(this.claimableHash),
+      claimableHash: this.claimableHash.toPOD(),
       reason: this.reason,
     };
   }
@@ -35,7 +35,7 @@ export default class Failed extends AbstractStatus {
       return new Error('Failed.fromPOD expected an object');
     }
 
-    const claimableHash = buffutils.fromHex(obj.claimableHash, 32);
+    const claimableHash = Hash.fromPOD(obj.claimableHash);
     if (claimableHash instanceof Error) {
       return claimableHash;
     }

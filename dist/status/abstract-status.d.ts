@@ -1,7 +1,7 @@
 import Hash from '../hash';
 export default abstract class AbstractStatus {
-    claimableHash: Uint8Array;
-    constructor(claimableHash: Uint8Array);
+    claimableHash: Hash;
+    constructor(claimableHash: Hash);
     readonly buffer: Uint8Array;
     abstract hash(): Hash;
     abstract toPOD(): {

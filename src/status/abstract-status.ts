@@ -1,13 +1,13 @@
 import Hash from '../hash';
 
 export default abstract class AbstractStatus {
-  claimableHash: Uint8Array;
+  claimableHash: Hash;
 
-  constructor(claimableHash: Uint8Array) {
+  constructor(claimableHash: Hash) {
     this.claimableHash = claimableHash;
   }
-  get buffer() {
-    return this.claimableHash;
+  get buffer(): Uint8Array {
+    return this.claimableHash.buffer;
   }
   abstract hash(): Hash; // Make sure to include  super.buffer !
   abstract toPOD(): { claimableHash: string };
