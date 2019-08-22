@@ -39,6 +39,10 @@ export default class Status {
   hash() {
     return this.s.hash();
   }
+
+  claimableHash() {
+    return this.s.claimableHash;
+  }
 }
 
 function findParser(kind: string) {

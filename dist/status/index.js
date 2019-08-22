@@ -28,6 +28,9 @@ class Status {
     hash() {
         return this.s.hash();
     }
+    claimableHash() {
+        return this.s.claimableHash;
+    }
 }
 exports.default = Status;
 function findParser(kind) {

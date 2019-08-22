@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const abstract_status_1 = require("./abstract-status");
 const blinded_signature_1 = require("../blinded-signature");
 const claim_request_1 = require("../claim-request");
 const hash_1 = require("../hash");
 // The response embeds the request, to make it easier to store/verify
-class Claimed {
+class Claimed extends abstract_status_1.default {
     constructor(claimRequest, blindedReceipts) {
+        super(claimRequest.claimableHash);
         this.claimRequest = claimRequest;
         this.blindedReceipts = blindedReceipts;
     }
@@ -27,7 +29,7 @@ class Claimed {
         if (typeof data !== 'object') {
             throw new Error('ClaimResponse must be an object');
         }
-        const claimRequest = claim_request_1.default.fromPOD(data.claimRequest);
+        const claimRequest = claim_request_1.default.fromPOD(data);
         if (claimRequest instanceof Error) {
             return claimRequest;
         }

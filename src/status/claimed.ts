@@ -1,3 +1,4 @@
+import AbstractStatus from './abstract-status';
 import BlindedSignature from '../blinded-signature';
 import ClaimRequest from '../claim-request';
 import Hash from '../hash';
@@ -5,14 +6,16 @@ import * as POD from '../pod';
 
 // The response embeds the request, to make it easier to store/verify
 
-export default class Claimed {
+export default class Claimed extends AbstractStatus {
   public claimRequest: ClaimRequest;
   public blindedReceipts: BlindedSignature[];
 
   constructor(claimRequest: ClaimRequest, blindedReceipts: BlindedSignature[]) {
+    super(claimRequest.claimableHash);
     this.claimRequest = claimRequest;
     this.blindedReceipts = blindedReceipts;
   }
+
 
   public hash() {
     const h = Hash.newBuilder('ClaimResponse');
@@ -35,7 +38,7 @@ export default class Claimed {
       throw new Error('ClaimResponse must be an object');
     }
 
-    const claimRequest = ClaimRequest.fromPOD(data.claimRequest);
+    const claimRequest = ClaimRequest.fromPOD(data);
     if (claimRequest instanceof Error) {
       return claimRequest;
     }
