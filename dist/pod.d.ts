@@ -81,7 +81,6 @@ export declare namespace Status {
     }
     interface BitcoinTransactionSent extends AbstractStatus {
         txid: string;
-        vout: number;
     }
     interface Failed extends AbstractStatus {
         reason: string;
@@ -90,6 +89,10 @@ export declare namespace Status {
         amount: Amount;
         rPreimage: string;
         time: string;
+    }
+    interface LightningPaymentSent extends AbstractStatus {
+        paymentPreimage: string;
+        totalFees: Amount;
     }
 }
 export declare type Status = ({
@@ -100,4 +103,6 @@ export declare type Status = ({
     kind: 'Failed';
 } & Status.Failed) | ({
     kind: 'InvoiceSettled';
-} & Status.InvoiceSettled);
+} & Status.InvoiceSettled) | ({
+    kind: 'LightningPaymentSent';
+} & Status.LightningPaymentSent);

@@ -4,6 +4,7 @@ const claimed_1 = require("./claimed");
 const failed_1 = require("./failed");
 const bitcoin_transaction_sent_1 = require("./bitcoin-transaction-sent");
 const invoice_settled_1 = require("./invoice-settled");
+const lightning_payment_sent_1 = require("./lightning-payment-sent");
 class Status {
     constructor(s) {
         this.s = s;
@@ -43,6 +44,8 @@ function findParser(kind) {
             return invoice_settled_1.default.fromPOD;
         case 'Claimed':
             return claimed_1.default.fromPOD;
+        case 'LightningPaymentSent':
+            return lightning_payment_sent_1.default.fromPOD;
         default:
             return new Error('Unknown status kind: ' + kind);
     }
@@ -59,6 +62,9 @@ function statusToPOD(s) {
     }
     else if (s instanceof claimed_1.default) {
         return { kind: 'Claimed', ...s.toPOD() };
+    }
+    else if (s instanceof lightning_payment_sent_1.default) {
+        return { kind: 'LightningPaymentSent', ...s.toPOD() };
     }
     else {
         const _ = s;

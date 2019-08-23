@@ -47,6 +47,8 @@ var invoice_settled_1 = require("./status/invoice-settled");
 exports.StatusInvoiceSettled = invoice_settled_1.default;
 var claimed_1 = require("./status/claimed");
 exports.StatusClaimed = claimed_1.default;
+var lightning_payment_sent_1 = require("./status/lightning-payment-sent");
+exports.StatusLightningPaymentSent = lightning_payment_sent_1.default;
 var status_1 = require("./status");
 exports.Status = status_1.default;
 // blind functions

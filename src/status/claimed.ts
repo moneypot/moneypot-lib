@@ -16,7 +16,6 @@ export default class Claimed extends AbstractStatus {
     this.blindedReceipts = blindedReceipts;
   }
 
-
   public hash() {
     const h = Hash.newBuilder('ClaimResponse');
     h.update(this.claimRequest.hash().buffer);

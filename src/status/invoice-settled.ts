@@ -37,7 +37,7 @@ export default class InvoiceSettled extends AbstractStatus {
 
   static fromPOD(obj: any): InvoiceSettled | Error {
     if (typeof obj !== 'object') {
-      return new Error('BitcoinTransactionSent.fromPOD expected an object');
+      return new Error('InvoiceSettled.fromPOD expected an object');
     }
 
     const claimableHash = Hash.fromPOD(obj.claimableHash);

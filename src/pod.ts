@@ -93,7 +93,6 @@ export namespace Status {
 
   export interface BitcoinTransactionSent extends AbstractStatus {
     txid: string;
-    vout: number;
   }
 
   export interface Failed extends AbstractStatus {
@@ -105,10 +104,16 @@ export namespace Status {
     rPreimage: string;
     time: string;
   }
+
+  export interface LightningPaymentSent extends AbstractStatus {
+    paymentPreimage: string;
+    totalFees: Amount;
+  }
 }
 
 export type Status =
   | ({ kind: 'BitcoinTransactionSent' } & Status.BitcoinTransactionSent)
   | ({ kind: 'Claimed' } & Status.Claimed)
   | ({ kind: 'Failed' } & Status.Failed)
-  | ({ kind: 'InvoiceSettled' } & Status.InvoiceSettled);
+  | ({ kind: 'InvoiceSettled' } & Status.InvoiceSettled)
+  | ({ kind: 'LightningPaymentSent' } & Status.LightningPaymentSent);

@@ -5,23 +5,20 @@ import * as POD from '../pod';
 
 export default class BitcoinTransactionSent extends AbstractStatus {
   txid: Uint8Array;
-  vout: number;
 
-  constructor(claimableHash: Hash, txid: Uint8Array, vout: number) {
+  constructor(claimableHash: Hash, txid: Uint8Array) {
     super(claimableHash);
     this.txid = txid;
-    this.vout = vout;
   }
 
   hash() {
-    return Hash.fromMessage('BitcoinTransactionSent', this.buffer, this.txid, buffutils.fromUint32(this.vout));
+    return Hash.fromMessage('BitcoinTransactionSent', this.buffer, this.txid);
   }
 
   toPOD(): POD.Status.BitcoinTransactionSent {
     return {
       claimableHash: this.claimableHash.toPOD(),
       txid: buffutils.toHex(this.txid),
-      vout: this.vout,
     };
   }
 
@@ -40,11 +37,6 @@ export default class BitcoinTransactionSent extends AbstractStatus {
       return txid;
     }
 
-    const vout = obj.vout;
-    if (!Number.isSafeInteger(vout) || vout < 0 || vout > 65536) {
-      return new Error('BitcoinTransactionSent.fromPOD requires a valid vout');
-    }
-
-    return new BitcoinTransactionSent(claimableHash, txid, vout);
+    return new BitcoinTransactionSent(claimableHash, txid);
   }
 }
