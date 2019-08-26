@@ -12,5 +12,5 @@ export default class Claimable {
     toPOD(): POD.Claimable;
     static fromPOD(obj: any): Claimable | Error;
 }
-export declare function parserFromKind(kind: string): typeof Hookin.fromPOD | typeof FeeBump.fromPOD | typeof LightningInvoice.fromPOD | typeof Hookout.fromPOD | undefined;
+export declare function parserFromKind(kind: string): typeof Hookin.fromPOD | typeof FeeBump.fromPOD | typeof LightningPayment.fromPOD | typeof LightningInvoice.fromPOD | typeof Hookout.fromPOD | undefined;
 export {};

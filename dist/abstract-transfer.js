@@ -8,7 +8,7 @@ const coin_1 = require("./coin");
 const ecc_1 = require("./util/ecc");
 const public_key_1 = require("./public-key");
 const buffutils = require("./util/buffutils");
-class Abstract {
+class AbstractTransfer {
     constructor({ amount, authorization, claimant, fee, inputs }) {
         this.amount = amount;
         this.authorization = authorization;
@@ -52,7 +52,7 @@ class Abstract {
         return this.authorization.verify(this.hash().buffer, pubkey);
     }
 }
-exports.default = Abstract;
+exports.default = AbstractTransfer;
 function parseTransferData(data) {
     if (typeof data !== 'object') {
         return new Error('expected an object to deserialize a Transfer');

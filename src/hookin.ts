@@ -5,8 +5,9 @@ import PublicKey from './public-key';
 import * as POD from './pod';
 
 import * as buffutils from './util/buffutils';
+import AbstractClaimable from './abstract-claimable';
 
-export default class Hookin {
+export default class Hookin implements AbstractClaimable {
   public static fromPOD(data: any): Hookin | Error {
     if (typeof data !== 'object') {
       return new Error('hookin expected an object');
@@ -26,19 +27,25 @@ export default class Hookin {
       return new Error('invalid amount for hookin');
     }
 
+    const fee = data.fee;
+    if (!POD.isAmount(fee)) {
+      return new Error('invalid fee for hookin');
+    }
+
     const claimant = PublicKey.fromPOD(data.claimant);
     if (claimant instanceof Error) {
       return claimant;
     }
 
-    return new Hookin(txid, vout, amount, claimant);
+    return new Hookin(txid, vout, amount, fee, claimant);
   }
 
-  public static hashOf(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey) {
+  public static hashOf(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey) {
     const b = Hash.newBuilder('Hookin');
     b.update(txid);
     b.update(buffutils.fromUint32(vout));
     b.update(buffutils.fromUint64(amount));
+    b.update(buffutils.fromUint32(fee));
     b.update(claimant.buffer);
     return b.digest();
   }
@@ -46,17 +53,23 @@ export default class Hookin {
   public txid: Uint8Array;
   public vout: number;
   public amount: number;
+  public fee: number;
   public claimant: PublicKey;
 
-  constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey) {
+  constructor(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey) {
     this.txid = txid;
     this.vout = vout;
     this.amount = amount;
+    this.fee = fee;
     this.claimant = claimant;
   }
 
   public hash(): Hash {
-    return Hookin.hashOf(this.txid, this.vout, this.amount, this.claimant);
+    return Hookin.hashOf(this.txid, this.vout, this.amount, this.fee, this.claimant);
+  }
+
+  get kind(): 'Hookin' {
+    return 'Hookin';
   }
 
   getTweak(): PrivateKey {
@@ -73,6 +86,7 @@ export default class Hookin {
     return {
       amount: this.amount,
       claimant: this.claimant.toPOD(),
+      fee: this.fee,
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
     };

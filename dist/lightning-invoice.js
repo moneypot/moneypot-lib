@@ -17,6 +17,15 @@ class LightningInvoice {
             paymentRequest: this.paymentRequest,
         };
     }
+    get fee() {
+        return 0;
+    }
+    get amount() {
+        return 0;
+    } // This is from abstractclaimable. By itself an a lightninginvoice has nothing claimable, until it's paid
+    get kind() {
+        return 'LightningInvoice';
+    }
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('LightningInvoice.fromPOD expected an object');

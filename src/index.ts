@@ -47,6 +47,8 @@ export { default as StatusLightningPaymentSent } from './status/lightning-paymen
 
 export { default as Status } from './status';
 
+export { default as computeClaimableRemaining } from './status/compute-claimable-remaining';
+
 // blind functions
 export * from './blind';
 

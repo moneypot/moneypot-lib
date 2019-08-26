@@ -2,8 +2,9 @@ import PublicKey from './public-key';
 import Hash from './hash';
 import * as buffutils from './util/buffutils';
 import * as POD from './pod';
+import AbstractClaimable from './abstract-claimable';
 
-export default class LightningInvoice {
+export default class LightningInvoice implements AbstractClaimable {
   claimant: PublicKey;
   paymentRequest: string;
 
@@ -21,6 +22,16 @@ export default class LightningInvoice {
       claimant: this.claimant.toPOD(),
       paymentRequest: this.paymentRequest,
     };
+  }
+
+  get fee() {
+    return 0;
+  }
+  get amount() {
+    return 0;
+  } // This is from abstractclaimable. By itself an a lightninginvoice has nothing claimable, until it's paid
+  get kind(): 'LightningInvoice' {
+    return 'LightningInvoice';
   }
 
   static fromPOD(data: any) {

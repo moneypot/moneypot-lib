@@ -3,7 +3,8 @@ import Signature from './signature';
 import * as POD from './pod';
 import Coin from './coin';
 import PublicKey from './public-key';
-export default abstract class Abstract {
+import AbstractClaimable from './abstract-claimable';
+export default abstract class AbstractTransfer implements AbstractClaimable {
     amount: number;
     inputs: Coin[];
     claimant: PublicKey;

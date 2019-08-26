@@ -1,8 +1,8 @@
 import * as POD from './pod';
 import Hash from './hash';
-import Abstract, { TransferData } from './abstract-transfer';
+import AbstractTransfer, { TransferData } from './abstract-transfer';
 export declare type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
-export default class Hookout extends Abstract {
+export default class Hookout extends AbstractTransfer {
     static fromPOD(data: any): Hookout | Error;
     bitcoinAddress: string;
     priority: Priority;

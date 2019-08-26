@@ -34,6 +34,7 @@ export interface Hookin {
     txid: string;
     vout: number;
     amount: number;
+    fee: number;
     claimant: string;
 }
 export interface AbstractTransfer {

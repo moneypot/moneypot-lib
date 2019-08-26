@@ -2,11 +2,11 @@ import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
 
 import Hash from './hash';
-import Abstract, { TransferData, parseTransferData } from './abstract-transfer';
+import AbstractTransfer, { TransferData, parseTransferData } from './abstract-transfer';
 
 export type Priority = 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
 
-export default class Hookout extends Abstract {
+export default class Hookout extends AbstractTransfer {
   public static fromPOD(data: any): Hookout | Error {
     const transferData = parseTransferData(data);
     if (transferData instanceof Error) {

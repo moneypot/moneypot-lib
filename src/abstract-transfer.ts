@@ -6,8 +6,9 @@ import Coin from './coin';
 import { muSig } from './util/ecc';
 import PublicKey from './public-key';
 import * as buffutils from './util/buffutils';
+import AbstractClaimable from './abstract-claimable';
 
-export default abstract class Abstract {
+export default abstract class AbstractTransfer implements AbstractClaimable {
   amount: number;
   inputs: Coin[];
   claimant: PublicKey;

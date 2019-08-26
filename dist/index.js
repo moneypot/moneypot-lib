@@ -51,6 +51,8 @@ var lightning_payment_sent_1 = require("./status/lightning-payment-sent");
 exports.StatusLightningPaymentSent = lightning_payment_sent_1.default;
 var status_1 = require("./status");
 exports.Status = status_1.default;
+var compute_claimable_remaining_1 = require("./status/compute-claimable-remaining");
+exports.computeClaimableRemaining = compute_claimable_remaining_1.default;
 // blind functions
 __export(require("./blind"));
 // helper coin function
