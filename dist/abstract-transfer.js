@@ -29,6 +29,7 @@ class AbstractTransfer {
     }
     toPOD() {
         return {
+            hash: this.hash().toPOD(),
             amount: this.amount,
             authorization: this.authorization ? this.authorization.toPOD() : null,
             claimant: this.claimant.toPOD(),

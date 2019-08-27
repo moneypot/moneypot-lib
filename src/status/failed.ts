@@ -25,6 +25,7 @@ export default class Failed extends AbstractStatus {
 
   toPOD(): POD.Status.Failed {
     return {
+      hash: this.hash().toPOD(),
       claimableHash: this.claimableHash.toPOD(),
       reason: this.reason,
     };

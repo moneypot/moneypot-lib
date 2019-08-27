@@ -4,9 +4,9 @@ import * as Buffutils from './util/buffutils';
 import Hash from './hash';
 import * as assert from './util/assert';
 
-import Abstract, { parseTransferData, TransferData } from './abstract-transfer';
+import AbstractTransfer, { parseTransferData, TransferData } from './abstract-transfer';
 
-export default class FeeBump extends Abstract {
+export default class FeeBump extends AbstractTransfer {
   public static fromPOD(data: any): FeeBump | Error {
     const transferData = parseTransferData(data);
     if (transferData instanceof Error) {

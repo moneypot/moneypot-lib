@@ -64,6 +64,7 @@ class Hookin {
     }
     toPOD() {
         return {
+            hash: this.hash().toPOD(),
             amount: this.amount,
             claimant: this.claimant.toPOD(),
             fee: this.fee,

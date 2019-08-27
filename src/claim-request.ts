@@ -84,6 +84,7 @@ export default class ClaimRequest {
 
   public toPOD(): POD.ClaimRequest {
     return {
+      hash: this.hash().toPOD(),
       authorization: this.authorization.toPOD(),
       claimableHash: this.claimableHash.toPOD(),
       coinRequests: this.coinRequests.map(cr => ({

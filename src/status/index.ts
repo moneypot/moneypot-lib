@@ -30,7 +30,13 @@ export default class Status {
       return parseResult;
     }
 
-    return new Status(parseResult);
+    const s = new Status(parseResult);
+
+    if (s.hash().toPOD() !== obj.hash) {
+      return new Error('status had mismatching hash');
+    }
+
+    return s;
   }
 
   toPOD(): POD.Status {

@@ -84,6 +84,7 @@ export default class Hookin implements AbstractClaimable {
 
   public toPOD(): POD.Hookin {
     return {
+      hash: this.hash().toPOD(),
       amount: this.amount,
       claimant: this.claimant.toPOD(),
       fee: this.fee,

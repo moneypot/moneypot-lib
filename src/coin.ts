@@ -22,7 +22,13 @@ export default class Coin {
       return receipt;
     }
 
-    return new Coin(owner, magnitude, receipt);
+    const c = new Coin(owner, magnitude, receipt);
+
+    if (c.hash().toPOD() !== data.hash) {
+      return new Error('hash did not match');
+    }
+
+    return c;
   }
 
   public owner: PublicKey;
@@ -45,6 +51,7 @@ export default class Coin {
 
   public toPOD(): POD.Coin {
     return {
+      hash: this.hash().toPOD(),
       receipt: this.receipt.toPOD(),
       magnitude: this.magnitude.toPOD(),
       owner: this.owner.toPOD(),

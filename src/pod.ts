@@ -25,12 +25,14 @@ export interface CustodianInfo {
 export type CoinRequest = { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude };
 
 export interface ClaimRequest {
+  hash: string;
   authorization: Signature;
   claimableHash: Hash;
   coinRequests: CoinRequest[];
 }
 
 export interface Coin {
+  hash: string;
   receipt: Signature;
   magnitude: Magnitude;
   owner: string;
@@ -38,6 +40,7 @@ export interface Coin {
 export type CoinSet = Coin[];
 
 export interface Hookin {
+  hash: string;
   txid: string;
   vout: number;
   amount: number;
@@ -46,6 +49,7 @@ export interface Hookin {
 }
 
 export interface AbstractTransfer {
+  hash: string;
   amount: Amount;
   authorization: string | null; // bech32 pubkey
   claimant: PublicKey;
@@ -67,11 +71,8 @@ export interface Hookout extends AbstractTransfer {
   fee: Amount;
 }
 
-export interface TransferHash {
-  transferHash: string;
-}
-
 export interface LightningInvoice {
+  hash: string;
   claimant: PublicKey;
   paymentRequest: string;
 }
@@ -85,6 +86,7 @@ export type Claimable =
 
 export namespace Status {
   export interface AbstractStatus {
+    hash: string;
     claimableHash: string;
   }
 

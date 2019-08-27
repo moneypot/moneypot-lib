@@ -21,7 +21,11 @@ class Status {
         if (parseResult instanceof Error) {
             return parseResult;
         }
-        return new Status(parseResult);
+        const s = new Status(parseResult);
+        if (s.hash().toPOD() !== obj.hash) {
+            return new Error('status had mismatching hash');
+        }
+        return s;
     }
     toPOD() {
         return statusToPOD(this.s);

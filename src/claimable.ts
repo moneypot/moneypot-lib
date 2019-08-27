@@ -53,7 +53,12 @@ export default class Claimable {
       return parseRes;
     }
 
-    return new Claimable(parseRes);
+    const c = new Claimable(parseRes)
+
+    if (c.hash().toPOD() !== obj.hash) {
+      return new Error('hash did not match');
+    }
+    return c;
   }
 }
 

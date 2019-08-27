@@ -13,6 +13,7 @@ class LightningInvoice {
     }
     toPOD() {
         return {
+            hash: this.hash().toPOD(),
             claimant: this.claimant.toPOD(),
             paymentRequest: this.paymentRequest,
         };

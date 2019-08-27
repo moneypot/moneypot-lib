@@ -17,6 +17,7 @@ export default class BitcoinTransactionSent extends AbstractStatus {
 
   toPOD(): POD.Status.BitcoinTransactionSent {
     return {
+      hash: this.hash().toPOD(),
       claimableHash: this.claimableHash.toPOD(),
       txid: buffutils.toHex(this.txid),
     };

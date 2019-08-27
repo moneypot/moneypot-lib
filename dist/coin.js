@@ -19,7 +19,11 @@ class Coin {
         if (receipt instanceof Error) {
             return receipt;
         }
-        return new Coin(owner, magnitude, receipt);
+        const c = new Coin(owner, magnitude, receipt);
+        if (c.hash().toPOD() !== data.hash) {
+            return new Error('hash did not match');
+        }
+        return c;
     }
     constructor(owner, magnitude, receipt) {
         this.owner = owner;
@@ -34,6 +38,7 @@ class Coin {
     }
     toPOD() {
         return {
+            hash: this.hash().toPOD(),
             receipt: this.receipt.toPOD(),
             magnitude: this.magnitude.toPOD(),
             owner: this.owner.toPOD(),

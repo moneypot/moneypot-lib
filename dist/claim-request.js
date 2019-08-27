@@ -64,6 +64,7 @@ class ClaimRequest {
     }
     toPOD() {
         return {
+            hash: this.hash().toPOD(),
             authorization: this.authorization.toPOD(),
             claimableHash: this.claimableHash.toPOD(),
             coinRequests: this.coinRequests.map(cr => ({

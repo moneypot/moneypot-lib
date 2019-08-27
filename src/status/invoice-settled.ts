@@ -28,6 +28,7 @@ export default class InvoiceSettled extends AbstractStatus {
 
   toPOD(): POD.Status.InvoiceSettled {
     return {
+      hash: this.hash().toPOD(),
       claimableHash: this.claimableHash.toPOD(),
       amount: this.amount,
       rPreimage: buffutils.toHex(this.rPreimage),

@@ -16,6 +16,7 @@ class InvoiceSettled extends abstract_status_1.default {
     }
     toPOD() {
         return {
+            hash: this.hash().toPOD(),
             claimableHash: this.claimableHash.toPOD(),
             amount: this.amount,
             rPreimage: buffutils.toHex(this.rPreimage),

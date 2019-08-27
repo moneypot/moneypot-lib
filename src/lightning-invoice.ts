@@ -19,6 +19,7 @@ export default class LightningInvoice implements AbstractClaimable {
 
   toPOD(): POD.LightningInvoice {
     return {
+      hash: this.hash().toPOD(),
       claimant: this.claimant.toPOD(),
       paymentRequest: this.paymentRequest,
     };

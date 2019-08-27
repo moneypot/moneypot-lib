@@ -26,6 +26,7 @@ export default class LightningPaymentSent extends AbstractStatus {
 
   toPOD(): POD.Status.LightningPaymentSent {
     return {
+      hash: this.hash().toPOD(),
       claimableHash: this.claimableHash.toPOD(),
       paymentPreimage: buffutils.toHex(this.paymentPreimage),
       totalFees: this.totalFees,

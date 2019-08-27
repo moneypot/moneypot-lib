@@ -52,6 +52,7 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
 
   toPOD(): POD.AbstractTransfer {
     return {
+      hash: this.hash().toPOD(),
       amount: this.amount,
       authorization: this.authorization ? this.authorization.toPOD() : null,
       claimant: this.claimant.toPOD(),

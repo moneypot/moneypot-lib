@@ -20,17 +20,20 @@ export declare type CoinRequest = {
     magnitude: Magnitude;
 };
 export interface ClaimRequest {
+    hash: string;
     authorization: Signature;
     claimableHash: Hash;
     coinRequests: CoinRequest[];
 }
 export interface Coin {
+    hash: string;
     receipt: Signature;
     magnitude: Magnitude;
     owner: string;
 }
 export declare type CoinSet = Coin[];
 export interface Hookin {
+    hash: string;
     txid: string;
     vout: number;
     amount: number;
@@ -38,6 +41,7 @@ export interface Hookin {
     claimant: string;
 }
 export interface AbstractTransfer {
+    hash: string;
     amount: Amount;
     authorization: string | null;
     claimant: PublicKey;
@@ -55,10 +59,8 @@ export interface Hookout extends AbstractTransfer {
     priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
     fee: Amount;
 }
-export interface TransferHash {
-    transferHash: string;
-}
 export interface LightningInvoice {
+    hash: string;
     claimant: PublicKey;
     paymentRequest: string;
 }
@@ -75,6 +77,7 @@ export declare type Claimable = ({
 } & LightningInvoice);
 export declare namespace Status {
     interface AbstractStatus {
+        hash: string;
         claimableHash: string;
     }
     interface Claimed extends ClaimRequest, AbstractStatus {

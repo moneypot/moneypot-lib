@@ -13,6 +13,7 @@ class BitcoinTransactionSent extends abstract_status_1.default {
     }
     toPOD() {
         return {
+            hash: this.hash().toPOD(),
             claimableHash: this.claimableHash.toPOD(),
             txid: buffutils.toHex(this.txid),
         };
