@@ -9,10 +9,9 @@ const ecc_1 = require("./util/ecc");
 const public_key_1 = require("./public-key");
 const buffutils = require("./util/buffutils");
 class AbstractTransfer {
-    constructor({ amount, authorization, claimant, fee, inputs }) {
+    constructor({ amount, authorization, fee, inputs }) {
         this.amount = amount;
         this.authorization = authorization;
-        this.claimant = claimant;
         this.fee = fee;
         assert_1.default(isHashSorted(inputs));
         this.inputs = inputs;
@@ -44,13 +43,16 @@ class AbstractTransfer {
         }
         return amount;
     }
+    get claimant() {
+        const p = ecc_1.muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
+        return new public_key_1.default(p.x, p.y);
+    }
     isAuthorized() {
         if (!this.authorization) {
             return false;
         }
-        const p = ecc_1.muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
-        const pubkey = new public_key_1.default(p.x, p.y);
-        return this.authorization.verify(this.hash().buffer, pubkey);
+        const msg = hash_1.default.fromMessage('authorized', this.hash().buffer).buffer;
+        return this.authorization.verify(msg, this.claimant);
     }
 }
 exports.default = AbstractTransfer;
@@ -65,10 +67,6 @@ function parseTransferData(data) {
     const authorization = data.authorization !== null ? signature_1.default.fromPOD(data.authorization) : undefined;
     if (authorization instanceof Error) {
         return authorization;
-    }
-    const claimant = public_key_1.default.fromPOD(data.claimant);
-    if (claimant instanceof Error) {
-        return claimant;
     }
     const fee = data.fee;
     if (!POD.isAmount(fee)) {
@@ -90,7 +88,7 @@ function parseTransferData(data) {
     if (inputAmount < amount + fee) {
         return new Error('not sourcing enough input for amount and fee');
     }
-    return { amount, authorization, claimant, fee, inputs };
+    return { amount, authorization, fee, inputs };
 }
 exports.parseTransferData = parseTransferData;
 function isHashSorted(ts) {

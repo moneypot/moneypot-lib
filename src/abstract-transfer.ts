@@ -11,17 +11,15 @@ import AbstractClaimable from './abstract-claimable';
 export default abstract class AbstractTransfer implements AbstractClaimable {
   amount: number;
   inputs: Coin[];
-  claimant: PublicKey;
   fee: number;
 
   authorization?: Signature;
 
   abstract kind: 'LightningPayment' | 'FeeBump' | 'Hookout';
 
-  constructor({ amount, authorization, claimant, fee, inputs }: TransferData) {
+  constructor({ amount, authorization, fee, inputs }: TransferData) {
     this.amount = amount;
     this.authorization = authorization;
-    this.claimant = claimant;
     this.fee = fee;
 
     assert(isHashSorted(inputs));
@@ -69,14 +67,18 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
     return amount;
   }
 
+  get claimant() {
+    const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
+    return new PublicKey(p.x, p.y);
+  }
+
   isAuthorized(): boolean {
     if (!this.authorization) {
       return false;
     }
-    const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
-    const pubkey = new PublicKey(p.x, p.y);
 
-    return this.authorization.verify(this.hash().buffer, pubkey);
+    const msg = Hash.fromMessage('authorized', this.hash().buffer).buffer;
+    return this.authorization.verify(msg, this.claimant);
   }
 }
 
@@ -93,11 +95,6 @@ export function parseTransferData(data: any): TransferData | Error {
   const authorization = data.authorization !== null ? Signature.fromPOD(data.authorization) : undefined;
   if (authorization instanceof Error) {
     return authorization;
-  }
-
-  const claimant = PublicKey.fromPOD(data.claimant);
-  if (claimant instanceof Error) {
-    return claimant;
   }
 
   const fee = data.fee;
@@ -123,13 +120,12 @@ export function parseTransferData(data: any): TransferData | Error {
     return new Error('not sourcing enough input for amount and fee');
   }
 
-  return { amount, authorization, claimant, fee, inputs };
+  return { amount, authorization, fee, inputs };
 }
 
 export interface TransferData {
   amount: number;
   authorization?: Signature;
-  claimant: PublicKey;
   fee: number;
   inputs: Coin[];
 }

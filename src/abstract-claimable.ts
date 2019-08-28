@@ -7,8 +7,6 @@ export default interface AbstractClaimable {
   claimant: PublicKey;
   fee: number;
 
-  authorization?: Signature;
-
   kind: 'LightningPayment' | 'FeeBump' | 'Hookout' | 'LightningInvoice' | 'Hookin';
 
   hash(): Hash;

@@ -7,11 +7,10 @@ import AbstractClaimable from './abstract-claimable';
 export default abstract class AbstractTransfer implements AbstractClaimable {
     amount: number;
     inputs: Coin[];
-    claimant: PublicKey;
     fee: number;
     authorization?: Signature;
     abstract kind: 'LightningPayment' | 'FeeBump' | 'Hookout';
-    constructor({ amount, authorization, claimant, fee, inputs }: TransferData);
+    constructor({ amount, authorization, fee, inputs }: TransferData);
     static sort(hashable: {
         hash(): Hash;
     }[]): void;
@@ -20,13 +19,13 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
     abstract hash(): Hash;
     toPOD(): POD.AbstractTransfer;
     inputAmount(): number;
+    readonly claimant: PublicKey;
     isAuthorized(): boolean;
 }
 export declare function parseTransferData(data: any): TransferData | Error;
 export interface TransferData {
     amount: number;
     authorization?: Signature;
-    claimant: PublicKey;
     fee: number;
     inputs: Coin[];
 }
