@@ -46,6 +46,7 @@ export interface Hookin {
   amount: number;
   fee: number;
   claimant: string;
+  bitcoinAddress: string;
 }
 
 export interface AbstractTransfer {

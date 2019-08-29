@@ -37,16 +37,22 @@ export default class Hookin implements AbstractClaimable {
       return claimant;
     }
 
-    return new Hookin(txid, vout, amount, fee, claimant);
+    const bitcoinAddress = data.bitcoinAddress;
+    if (typeof bitcoinAddress !== 'string') {
+      return new Error('hookin expected a bitcoin address');
+    }
+
+    return new Hookin(txid, vout, amount, fee, claimant, bitcoinAddress);
   }
 
-  public static hashOf(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey) {
+  public static hashOf(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey, bitcoinAddress: string) {
     const b = Hash.newBuilder('Hookin');
     b.update(txid);
     b.update(buffutils.fromUint32(vout));
     b.update(buffutils.fromUint64(amount));
     b.update(buffutils.fromUint32(fee));
     b.update(claimant.buffer);
+    b.update(buffutils.fromString(bitcoinAddress));
     return b.digest();
   }
 
@@ -55,17 +61,19 @@ export default class Hookin implements AbstractClaimable {
   public amount: number;
   public fee: number;
   public claimant: PublicKey;
+  public bitcoinAddress: string;
 
-  constructor(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey) {
+  constructor(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey, bitcoinAddress: string) {
     this.txid = txid;
     this.vout = vout;
     this.amount = amount;
     this.fee = fee;
     this.claimant = claimant;
+    this.bitcoinAddress = bitcoinAddress;
   }
 
   public hash(): Hash {
-    return Hookin.hashOf(this.txid, this.vout, this.amount, this.fee, this.claimant);
+    return Hookin.hashOf(this.txid, this.vout, this.amount, this.fee, this.claimant, this.bitcoinAddress);
   }
 
   get kind(): 'Hookin' {
@@ -90,6 +98,7 @@ export default class Hookin implements AbstractClaimable {
       fee: this.fee,
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
+      bitcoinAddress: this.bitcoinAddress
     };
   }
 }

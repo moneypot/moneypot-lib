@@ -5,13 +5,14 @@ import * as POD from './pod';
 import AbstractClaimable from './abstract-claimable';
 export default class Hookin implements AbstractClaimable {
     static fromPOD(data: any): Hookin | Error;
-    static hashOf(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey): Hash;
+    static hashOf(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey, bitcoinAddress: string): Hash;
     txid: Uint8Array;
     vout: number;
     amount: number;
     fee: number;
     claimant: PublicKey;
-    constructor(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey);
+    bitcoinAddress: string;
+    constructor(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey, bitcoinAddress: string);
     hash(): Hash;
     readonly kind: 'Hookin';
     getTweak(): PrivateKey;

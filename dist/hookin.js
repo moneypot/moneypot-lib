@@ -30,26 +30,32 @@ class Hookin {
         if (claimant instanceof Error) {
             return claimant;
         }
-        return new Hookin(txid, vout, amount, fee, claimant);
+        const bitcoinAddress = data.bitcoinAddress;
+        if (typeof bitcoinAddress !== 'string') {
+            return new Error('hookin expected a bitcoin address');
+        }
+        return new Hookin(txid, vout, amount, fee, claimant, bitcoinAddress);
     }
-    static hashOf(txid, vout, amount, fee, claimant) {
+    static hashOf(txid, vout, amount, fee, claimant, bitcoinAddress) {
         const b = hash_1.default.newBuilder('Hookin');
         b.update(txid);
         b.update(buffutils.fromUint32(vout));
         b.update(buffutils.fromUint64(amount));
         b.update(buffutils.fromUint32(fee));
         b.update(claimant.buffer);
+        b.update(buffutils.fromString(bitcoinAddress));
         return b.digest();
     }
-    constructor(txid, vout, amount, fee, claimant) {
+    constructor(txid, vout, amount, fee, claimant, bitcoinAddress) {
         this.txid = txid;
         this.vout = vout;
         this.amount = amount;
         this.fee = fee;
         this.claimant = claimant;
+        this.bitcoinAddress = bitcoinAddress;
     }
     hash() {
-        return Hookin.hashOf(this.txid, this.vout, this.amount, this.fee, this.claimant);
+        return Hookin.hashOf(this.txid, this.vout, this.amount, this.fee, this.claimant, this.bitcoinAddress);
     }
     get kind() {
         return 'Hookin';
@@ -70,6 +76,7 @@ class Hookin {
             fee: this.fee,
             txid: buffutils.toHex(this.txid),
             vout: this.vout,
+            bitcoinAddress: this.bitcoinAddress
         };
     }
 }
