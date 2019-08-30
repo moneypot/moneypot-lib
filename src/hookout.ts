@@ -47,18 +47,15 @@ export default class Hookout extends AbstractTransfer {
   }
 
   static hashOf(transferDataHash: Hash, bitcoinAddress: string, priority: Priority) {
-    return Hash.fromMessage('Hookout',
+    return Hash.fromMessage(
+      'Hookout',
       transferDataHash.buffer,
       Buffutils.fromString(bitcoinAddress),
-      Buffutils.fromString(priority[0]), // first letter must be unique
-    )
+      Buffutils.fromString(priority[0]) // first letter must be unique
+    );
   }
 
   public hash() {
-    return Hookout.hashOf(
-      AbstractTransfer.transferHash(this),
-      this.bitcoinAddress,
-      this.priority
-    );
+    return Hookout.hashOf(AbstractTransfer.transferHash(this), this.bitcoinAddress, this.priority);
   }
 }

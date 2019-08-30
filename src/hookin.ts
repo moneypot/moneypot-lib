@@ -45,7 +45,14 @@ export default class Hookin implements AbstractClaimable {
     return new Hookin(txid, vout, amount, fee, claimant, bitcoinAddress);
   }
 
-  public static hashOf(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey, bitcoinAddress: string) {
+  public static hashOf(
+    txid: Uint8Array,
+    vout: number,
+    amount: number,
+    fee: number,
+    claimant: PublicKey,
+    bitcoinAddress: string
+  ) {
     const b = Hash.newBuilder('Hookin');
     b.update(txid);
     b.update(buffutils.fromUint32(vout));
@@ -63,7 +70,14 @@ export default class Hookin implements AbstractClaimable {
   public claimant: PublicKey;
   public bitcoinAddress: string;
 
-  constructor(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey, bitcoinAddress: string) {
+  constructor(
+    txid: Uint8Array,
+    vout: number,
+    amount: number,
+    fee: number,
+    claimant: PublicKey,
+    bitcoinAddress: string
+  ) {
     this.txid = txid;
     this.vout = vout;
     this.amount = amount;
@@ -98,7 +112,7 @@ export default class Hookin implements AbstractClaimable {
       fee: this.fee,
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
-      bitcoinAddress: this.bitcoinAddress
+      bitcoinAddress: this.bitcoinAddress,
     };
   }
 }

@@ -76,7 +76,7 @@ class Hookin {
             fee: this.fee,
             txid: buffutils.toHex(this.txid),
             vout: this.vout,
-            bitcoinAddress: this.bitcoinAddress
+            bitcoinAddress: this.bitcoinAddress,
         };
     }
 }

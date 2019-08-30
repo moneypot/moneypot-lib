@@ -50,8 +50,11 @@ class AbstractTransfer {
         if (!this.authorization) {
             return false;
         }
-        const msg = hash_1.default.fromMessage('authorized', this.hash().buffer).buffer;
+        const msg = hash_1.default.fromMessage('authorization', this.hash().buffer).buffer;
         return this.authorization.verify(msg, this.claimant);
+    }
+    authorize(inputPrivateKeys) {
+        this.authorization = signature_1.default.computeMu(hash_1.default.fromMessage('authorization', this.hash().buffer).buffer, inputPrivateKeys);
     }
 }
 exports.default = AbstractTransfer;

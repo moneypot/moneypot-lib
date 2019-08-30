@@ -7,6 +7,7 @@ import { muSig } from './util/ecc';
 import PublicKey from './public-key';
 import * as buffutils from './util/buffutils';
 import AbstractClaimable from './abstract-claimable';
+import PrivateKey from './private-key';
 
 export default abstract class AbstractTransfer implements AbstractClaimable {
   amount: number;
@@ -33,7 +34,6 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
   public static sortHashes(hashes: Hash[]) {
     hashes.sort((a: Hash, b: Hash) => buffutils.compare(a.buffer, b.buffer));
   }
-
 
   static transferHash(td: TransferData): Hash {
     return Hash.fromMessage(
@@ -76,8 +76,15 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
       return false;
     }
 
-    const msg = Hash.fromMessage('authorized', this.hash().buffer).buffer;
+    const msg = Hash.fromMessage('authorization', this.hash().buffer).buffer;
     return this.authorization.verify(msg, this.claimant);
+  }
+
+  authorize(inputPrivateKeys: PrivateKey[]) {
+    this.authorization = Signature.computeMu(
+      Hash.fromMessage('authorization', this.hash().buffer).buffer,
+      inputPrivateKeys
+    );
   }
 }
 
