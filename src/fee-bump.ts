@@ -7,7 +7,7 @@ import * as assert from './util/assert';
 import AbstractTransfer, { parseTransferData, TransferData } from './abstract-transfer';
 
 export default class FeeBump extends AbstractTransfer {
-  public static fromPOD(data: any): FeeBump | Error {
+  static fromPOD(data: any): FeeBump | Error {
     const transferData = parseTransferData(data);
     if (transferData instanceof Error) {
       throw transferData;
@@ -21,8 +21,8 @@ export default class FeeBump extends AbstractTransfer {
     return new FeeBump(transferData, txid);
   }
 
-  public txid: Uint8Array;
-  public get kind(): 'FeeBump' {
+  txid: Uint8Array;
+  get kind(): 'FeeBump' {
     return 'FeeBump';
   }
 
@@ -34,14 +34,18 @@ export default class FeeBump extends AbstractTransfer {
     this.txid = txid;
   }
 
-  public toPOD(): POD.FeeBump {
+  toPOD(): POD.FeeBump {
     return {
       ...super.toPOD(),
       txid: Buffutils.toHex(this.txid),
     };
   }
 
-  public hash() {
-    return Hash.fromMessage('FeeBump', super.transferHash().buffer, this.txid);
+  static hashOf(transferHash: Hash, txid: Uint8Array) {
+    return Hash.fromMessage('FeeBump', transferHash.buffer, txid);
+  }
+
+  hash() {
+    return FeeBump.hashOf(AbstractTransfer.transferHash(this), this.txid);
   }
 }

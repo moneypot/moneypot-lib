@@ -7,5 +7,6 @@ export default class FeeBump extends AbstractTransfer {
     readonly kind: 'FeeBump';
     constructor(transferData: TransferData, txid: Uint8Array);
     toPOD(): POD.FeeBump;
+    static hashOf(transferHash: Hash, txid: Uint8Array): Hash;
     hash(): Hash;
 }

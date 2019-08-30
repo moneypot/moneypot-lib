@@ -15,7 +15,7 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
         hash(): Hash;
     }[]): void;
     static sortHashes(hashes: Hash[]): void;
-    transferHash(): Hash;
+    static transferHash(td: TransferData): Hash;
     abstract hash(): Hash;
     toPOD(): POD.AbstractTransfer;
     inputAmount(): number;

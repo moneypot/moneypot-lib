@@ -34,15 +34,14 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
     hashes.sort((a: Hash, b: Hash) => buffutils.compare(a.buffer, b.buffer));
   }
 
-  // doesn't include authorization, used for hashing
-  public transferHash(): Hash {
+
+  static transferHash(td: TransferData): Hash {
     return Hash.fromMessage(
       'Transfer',
-      buffutils.fromUint64(this.amount),
-      this.claimant.buffer,
-      buffutils.fromUint64(this.fee),
-      buffutils.fromUint64(this.inputs.length),
-      ...this.inputs.map(i => i.buffer)
+      buffutils.fromUint64(td.amount),
+      buffutils.fromUint64(td.fee),
+      buffutils.fromUint64(td.inputs.length),
+      ...td.inputs.map(i => i.buffer)
     );
   }
 

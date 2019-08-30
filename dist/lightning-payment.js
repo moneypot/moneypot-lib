@@ -36,11 +36,11 @@ class LightningPayment extends abstract_transfer_1.default {
             paymentRequest: this.paymentRequest,
         };
     }
+    static hashOf(transferDataHash, paymentRequest) {
+        return hash_1.default.fromMessage('LightningPayment', transferDataHash.buffer, Buffutils.fromString(paymentRequest));
+    }
     hash() {
-        const h = hash_1.default.newBuilder('LightningPayment');
-        h.update(this.transferHash().buffer);
-        h.update(Buffutils.fromString(this.paymentRequest));
-        return h.digest();
+        return LightningPayment.hashOf(abstract_transfer_1.default.transferHash(this), this.paymentRequest);
     }
 }
 exports.default = LightningPayment;

@@ -7,5 +7,6 @@ export default class LightningPayment extends AbstractTransfer {
     readonly kind: 'LightningPayment';
     constructor(transferData: TransferData, paymentRequest: string);
     toPOD(): POD.LightningPayment;
+    static hashOf(transferDataHash: Hash, paymentRequest: string): Hash;
     hash(): Hash;
 }

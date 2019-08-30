@@ -22,9 +22,8 @@ class AbstractTransfer {
     static sortHashes(hashes) {
         hashes.sort((a, b) => buffutils.compare(a.buffer, b.buffer));
     }
-    // doesn't include authorization, used for hashing
-    transferHash() {
-        return hash_1.default.fromMessage('Transfer', buffutils.fromUint64(this.amount), this.claimant.buffer, buffutils.fromUint64(this.fee), buffutils.fromUint64(this.inputs.length), ...this.inputs.map(i => i.buffer));
+    static transferHash(td) {
+        return hash_1.default.fromMessage('Transfer', buffutils.fromUint64(td.amount), buffutils.fromUint64(td.fee), buffutils.fromUint64(td.inputs.length), ...td.inputs.map(i => i.buffer));
     }
     toPOD() {
         return {
