@@ -6,6 +6,11 @@ const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
 const magnitude_1 = require("./magnitude");
 class ClaimRequest {
+    constructor(claimableHash, coinRequests, authorization) {
+        this.claimableHash = claimableHash;
+        this.coinRequests = coinRequests;
+        this.authorization = authorization;
+    }
     static newAuthorized(claimableHash, coinRequests, claimantPrivateKey) {
         const hash = ClaimRequest.hashOf(claimableHash, coinRequests);
         const authorization = signature_1.default.compute(hash.buffer, claimantPrivateKey);
@@ -15,9 +20,9 @@ class ClaimRequest {
         if (typeof data !== 'object') {
             return new Error('ClaimRequest.fromPOD expected an object');
         }
-        const claimHash = hash_1.default.fromPOD(data.claimHash);
-        if (claimHash instanceof Error) {
-            return claimHash;
+        const claimableHash = hash_1.default.fromPOD(data.claimableHash);
+        if (claimableHash instanceof Error) {
+            return claimableHash;
         }
         if (!Array.isArray(data.coinRequests)) {
             return new Error('ClaimRequest.fromPOD expected an array for coinRequests');
@@ -42,12 +47,7 @@ class ClaimRequest {
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new ClaimRequest(claimHash, coinRequests, authorization);
-    }
-    constructor(claimableHash, coinRequests, authorization) {
-        this.claimableHash = claimableHash;
-        this.coinRequests = coinRequests;
-        this.authorization = authorization;
+        return new ClaimRequest(claimableHash, coinRequests, authorization);
     }
     static hashOf(claimableHash, coinRequests) {
         const h = hash_1.default.newBuilder('ClaimRequest');

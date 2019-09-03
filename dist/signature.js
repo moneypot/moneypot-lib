@@ -6,6 +6,10 @@ const Buffutils = require("./util/buffutils");
 const ecc = require("./util/ecc");
 const serializedPrefix = 'sighi'; // signature hookedin
 class Signature {
+    constructor(r, s) {
+        this.r = r;
+        this.s = s;
+    }
     // actually creates a schnorr sig. This takes a message, not a hash to prevent existential forgeries
     static compute(message, privkey) {
         const sig = ecc.sign(message, privkey.scalar);
@@ -36,10 +40,6 @@ class Signature {
             return s;
         }
         return new Signature(r, s);
-    }
-    constructor(r, s) {
-        this.r = r;
-        this.s = s;
     }
     get buffer() {
         return Buffutils.concat(ecc.Scalar.toBytes(this.r), ecc.Scalar.toBytes(this.s));

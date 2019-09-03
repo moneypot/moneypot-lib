@@ -20,9 +20,9 @@ export default class ClaimRequest {
       return new Error('ClaimRequest.fromPOD expected an object');
     }
 
-    const claimHash = Hash.fromPOD(data.claimHash);
-    if (claimHash instanceof Error) {
-      return claimHash;
+    const claimableHash = Hash.fromPOD(data.claimableHash);
+    if (claimableHash instanceof Error) {
+      return claimableHash;
     }
 
     if (!Array.isArray(data.coinRequests)) {
@@ -54,7 +54,7 @@ export default class ClaimRequest {
       return authorization;
     }
 
-    return new ClaimRequest(claimHash, coinRequests, authorization);
+    return new ClaimRequest(claimableHash, coinRequests, authorization);
   }
 
   public claimableHash: Hash;

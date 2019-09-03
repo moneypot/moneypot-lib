@@ -11,6 +11,6 @@ export default class Status {
     static fromPOD(obj: any): Status | Error;
     toPOD(): POD.Status;
     hash(): import("..").Hash;
-    claimableHash(): import("..").Hash;
+    readonly claimableHash: import("..").Hash;
 }
 export {};

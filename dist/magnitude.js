@@ -23,6 +23,6 @@ class Magnitude {
         return this.n;
     }
 }
-Magnitude.MaxMagnitude = 30;
 exports.default = Magnitude;
+Magnitude.MaxMagnitude = 30;
 //# sourceMappingURL=magnitude.js.map

@@ -5,6 +5,12 @@ const hash_1 = require("./hash");
 const assert = require("./util/assert");
 const abstract_transfer_1 = require("./abstract-transfer");
 class FeeBump extends abstract_transfer_1.default {
+    constructor(transferData, txid) {
+        super(transferData);
+        this.txid = txid;
+        assert.equal(txid.length, 32);
+        this.txid = txid;
+    }
     static fromPOD(data) {
         const transferData = abstract_transfer_1.parseTransferData(data);
         if (transferData instanceof Error) {
@@ -18,12 +24,6 @@ class FeeBump extends abstract_transfer_1.default {
     }
     get kind() {
         return 'FeeBump';
-    }
-    constructor(transferData, txid) {
-        super(transferData);
-        this.txid = txid;
-        assert.equal(txid.length, 32);
-        this.txid = txid;
     }
     toPOD() {
         return {

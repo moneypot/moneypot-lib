@@ -9,6 +9,11 @@ const buffutils = require("./util/buffutils");
 const _1 = require(".");
 const serializedPrefix = 'pubhi'; // public key hookedin
 class PublicKey {
+    // dont directly use...
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
     static fromPOD(data) {
         if (typeof data !== 'string') {
             return new Error('PublicKey.fromPOD expected a string');
@@ -28,11 +33,6 @@ class PublicKey {
     }
     get buffer() {
         return ecc.Point.toBytes(this);
-    }
-    // dont directly use...
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
     }
     toPOD() {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));

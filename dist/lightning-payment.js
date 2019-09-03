@@ -5,6 +5,10 @@ const hash_1 = require("./hash");
 const bolt11 = require("./bolt11");
 const abstract_transfer_1 = require("./abstract-transfer");
 class LightningPayment extends abstract_transfer_1.default {
+    constructor(transferData, paymentRequest) {
+        super(transferData);
+        this.paymentRequest = paymentRequest;
+    }
     static fromPOD(data) {
         const transferData = abstract_transfer_1.parseTransferData(data);
         if (transferData instanceof Error) {
@@ -25,10 +29,6 @@ class LightningPayment extends abstract_transfer_1.default {
     }
     get kind() {
         return 'LightningPayment';
-    }
-    constructor(transferData, paymentRequest) {
-        super(transferData);
-        this.paymentRequest = paymentRequest;
     }
     toPOD() {
         return {

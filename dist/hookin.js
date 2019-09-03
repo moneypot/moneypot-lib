@@ -6,6 +6,14 @@ const public_key_1 = require("./public-key");
 const POD = require("./pod");
 const buffutils = require("./util/buffutils");
 class Hookin {
+    constructor(txid, vout, amount, fee, claimant, bitcoinAddress) {
+        this.txid = txid;
+        this.vout = vout;
+        this.amount = amount;
+        this.fee = fee;
+        this.claimant = claimant;
+        this.bitcoinAddress = bitcoinAddress;
+    }
     static fromPOD(data) {
         if (typeof data !== 'object') {
             return new Error('hookin expected an object');
@@ -45,14 +53,6 @@ class Hookin {
         b.update(claimant.buffer);
         b.update(buffutils.fromString(bitcoinAddress));
         return b.digest();
-    }
-    constructor(txid, vout, amount, fee, claimant, bitcoinAddress) {
-        this.txid = txid;
-        this.vout = vout;
-        this.amount = amount;
-        this.fee = fee;
-        this.claimant = claimant;
-        this.bitcoinAddress = bitcoinAddress;
     }
     hash() {
         return Hookin.hashOf(this.txid, this.vout, this.amount, this.fee, this.claimant, this.bitcoinAddress);

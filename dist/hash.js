@@ -6,6 +6,10 @@ const sha256_1 = require("./util/bcrypto/sha256");
 const Buffutil = require("./util/buffutils");
 const serializedPrefix = 'hshi'; // hash hookedin
 class Hash {
+    constructor(buff) {
+        assert.equal(buff.length, 32);
+        this.buffer = buff;
+    }
     // actually hashes a message(s)
     static fromMessage(prefix, ...message) {
         const buff = sha256_1.default.mac(Buffutil.fromString(prefix), Buffutil.concat(...message));
@@ -33,10 +37,6 @@ class Hash {
         }
         const bytes = bech32.fromWords(words);
         return new Hash(bytes);
-    }
-    constructor(buff) {
-        assert.equal(buff.length, 32);
-        this.buffer = buff;
     }
     toPOD() {
         const words = bech32.toWords(this.buffer);

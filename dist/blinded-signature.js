@@ -5,6 +5,9 @@ const ecc = require("./util/ecc");
 const bech32 = require("./util/bech32");
 const serializedPrefix = 'bshi'; // blinded signature hookedin
 class BlindedSignature {
+    constructor(s) {
+        this.s = s;
+    }
     static fromPOD(data) {
         if (typeof data !== 'string') {
             return new Error('BlindedSignature.fromPOD expected a string');
@@ -22,9 +25,6 @@ class BlindedSignature {
             return s;
         }
         return new BlindedSignature(s);
-    }
-    constructor(s) {
-        this.s = s;
     }
     get buffer() {
         return ecc.Scalar.toBytes(this.s);

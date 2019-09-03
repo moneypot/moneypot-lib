@@ -9,6 +9,9 @@ const random_1 = require("./util/random");
 const Buffutils = require("./util/buffutils");
 const serializedPrefix = 'privhi'; // private key hookedin
 class PrivateKey {
+    constructor(scalar) {
+        this.scalar = scalar;
+    }
     static fromPOD(data) {
         if (typeof data !== 'string') {
             return new Error('PrivateKey.fromPOD expected a string');
@@ -33,9 +36,6 @@ class PrivateKey {
             throw s; // should never really happen..
         }
         return new PrivateKey(s);
-    }
-    constructor(scalar) {
-        this.scalar = scalar;
     }
     get buffer() {
         return ecc.Scalar.toBytes(this.scalar);

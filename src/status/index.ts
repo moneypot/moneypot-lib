@@ -47,7 +47,7 @@ export default class Status {
     return this.s.hash();
   }
 
-  claimableHash() {
+  get claimableHash() {
     return this.s.claimableHash;
   }
 }

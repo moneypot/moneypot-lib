@@ -4,6 +4,9 @@ const bech32 = require("./util/bech32");
 const ecc = require("./util/ecc/index");
 const serializedPrefix = 'bmhi'; // blinded message hookedin
 class BlindedMessage {
+    constructor(challenge) {
+        this.c = challenge;
+    }
     static fromPOD(data) {
         if (typeof data !== 'string') {
             return new Error('BlindedMessage.fromPOD expected a string');
@@ -20,9 +23,6 @@ class BlindedMessage {
             return c;
         }
         return new BlindedMessage(c);
-    }
-    constructor(challenge) {
-        this.c = challenge;
     }
     get buffer() {
         return ecc.Scalar.toBytes(this.c);

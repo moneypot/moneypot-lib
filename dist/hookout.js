@@ -4,6 +4,11 @@ const Buffutils = require("./util/buffutils");
 const hash_1 = require("./hash");
 const abstract_transfer_1 = require("./abstract-transfer");
 class Hookout extends abstract_transfer_1.default {
+    constructor(td, bitcoinAddress, priority) {
+        super(td);
+        this.bitcoinAddress = bitcoinAddress;
+        this.priority = priority;
+    }
     static fromPOD(data) {
         const transferData = abstract_transfer_1.parseTransferData(data);
         if (transferData instanceof Error) {
@@ -21,11 +26,6 @@ class Hookout extends abstract_transfer_1.default {
     }
     get kind() {
         return 'Hookout';
-    }
-    constructor(td, bitcoinAddress, priority) {
-        super(td);
-        this.bitcoinAddress = bitcoinAddress;
-        this.priority = priority;
     }
     toPOD() {
         return {

@@ -6,6 +6,11 @@ const signature_1 = require("./signature");
 const magnitude_1 = require("./magnitude");
 const Buffutils = require("./util/buffutils");
 class Coin {
+    constructor(owner, magnitude, receipt) {
+        this.owner = owner;
+        this.magnitude = magnitude;
+        this.receipt = receipt;
+    }
     static fromPOD(data) {
         const owner = public_key_1.default.fromPOD(data.owner);
         if (owner instanceof Error) {
@@ -24,11 +29,6 @@ class Coin {
             return new Error('hash did not match');
         }
         return c;
-    }
-    constructor(owner, magnitude, receipt) {
-        this.owner = owner;
-        this.magnitude = magnitude;
-        this.receipt = receipt;
     }
     get buffer() {
         return Buffutils.concat(this.owner.buffer, this.magnitude.buffer, this.receipt.buffer);
