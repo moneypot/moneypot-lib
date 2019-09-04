@@ -19,7 +19,7 @@ import FeeBump from './fee-bump';
 export { FeeBump };
 export { default as Magnitude } from './magnitude';
 export { default as AbstractTransfer } from './abstract-transfer';
-export { default as Claimable } from './claimable';
+export * from './claimable';
 export { default as StatusFailed } from './status/failed';
 export { default as StatusBitcoinTransactionSent } from './status/bitcoin-transaction-sent';
 export { default as StatusInvoiceSettled } from './status/invoice-settled';

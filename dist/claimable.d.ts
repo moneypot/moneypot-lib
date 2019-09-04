@@ -4,13 +4,7 @@ import LightningPayment from './lightning-payment';
 import LightningInvoice from './lightning-invoice';
 import Hookin from './hookin';
 import { POD } from '.';
-declare type ClaimableTypes = Hookout | FeeBump | LightningPayment | LightningInvoice | Hookin;
-export default class Claimable {
-    c: ClaimableTypes;
-    constructor(c: ClaimableTypes);
-    hash(): import("./hash").default;
-    toPOD(): POD.Claimable;
-    static fromPOD(obj: any): Claimable | Error;
-}
-export declare function parserFromKind(kind: string): typeof Hookin.fromPOD | typeof FeeBump.fromPOD | typeof LightningPayment.fromPOD | typeof LightningInvoice.fromPOD | typeof Hookout.fromPOD | undefined;
-export {};
+export declare type Claimable = Hookout | FeeBump | LightningPayment | LightningInvoice | Hookin;
+export declare function claimableToPOD(c: Claimable): POD.Claimable;
+export declare function claimableFromPOD(obj: any): Claimable | Error;
+export declare function parserFromKind(kind: string): typeof Hookout.fromPOD | typeof FeeBump.fromPOD | typeof LightningPayment.fromPOD | typeof LightningInvoice.fromPOD | typeof Hookin.fromPOD | undefined;
