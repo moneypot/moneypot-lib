@@ -22,23 +22,23 @@ interface Acknowledgable {
 // T is what is acknowledged, a P is the type of a  T.toPOD()
 // type inference of this thing kind of sucks. So it's recommended to use
 // x: AcknowledgedX = hi.Acknowledged(....)  to guide it
-export default class Acknowledged<T extends Acknowledgable> {
+export default class Acknowledged<T extends Acknowledgable, P> {
   public acknowledgement: Signature;
   public contents: T;
-  public toPOD: () => object;
+  public toPOD: () => P;
 
-  public static acknowledge<T extends Acknowledgable>(contents: T, acknowledgeKey: PrivateKey, toPOD: (x: T) => object) {
+  public static acknowledge<T extends Acknowledgable, P>(contents: T, acknowledgeKey: PrivateKey, toPOD: (x: T) => P) {
     const hash = contents.hash();
     const acknowledgement = Signature.compute(hash.buffer, acknowledgeKey);
-    return new Acknowledged<T>(contents, acknowledgement, toPOD);
+    return new Acknowledged<T, P>(contents, acknowledgement, toPOD);
   }
 
   // Need to check .verify()
-  public static fromPOD<T extends Acknowledgable>(
+  public static fromPOD<T extends Acknowledgable, P>(
     creator: (data: any) => T | Error,
-    toPOD: (x: T) => object,
+    toPOD: (x: T) => P,
     data: any
-  ): Acknowledged<T> | Error {
+  ): Acknowledged<T, P> | Error {
     const contents = creator(data);
     if (contents instanceof Error) {
       throw contents;
@@ -49,7 +49,7 @@ export default class Acknowledged<T extends Acknowledgable> {
       return acknowledgement;
     }
 
-    return new Acknowledged<T>(contents, acknowledgement, toPOD);
+    return new Acknowledged<T, P>(contents, acknowledgement, toPOD);
   }
 
   public verify(acknowledgementPublicKey: PublicKey) {
@@ -63,7 +63,7 @@ export default class Acknowledged<T extends Acknowledgable> {
   }
 
   // Warning: The constructor does not validate the signature
-  public constructor(contents: T, acknowledgement: Signature, toPOD: (x: T) => object, ) {
+  public constructor(contents: T, acknowledgement: Signature, toPOD: (x: T) => P, ) {
     this.acknowledgement = acknowledgement;
     this.contents = contents;
     this.toPOD = () => ({
@@ -73,37 +73,37 @@ export default class Acknowledged<T extends Acknowledgable> {
   }
 }
 
-export type Hookin = Acknowledged<_Hookin>;
+export type Hookin = Acknowledged<_Hookin, POD.Hookin>;
 export function hookinFromPod(x: any): Hookin | Error {
   return Acknowledged.fromPOD(_Hookin.fromPOD, (d: _Hookin) => d.toPOD(),  x);
 }
 
-export type FeeBump = Acknowledged<_FeeBump>;
+export type FeeBump = Acknowledged<_FeeBump, POD.FeeBump>;
 export function feeBumpFromPod(x: any): FeeBump | Error {
   return Acknowledged.fromPOD(_FeeBump.fromPOD, (d: _FeeBump) => d.toPOD(), x);
 }
 
-export type LightningPayment = Acknowledged<_LightningPayment>;
+export type LightningPayment = Acknowledged<_LightningPayment, POD.LightningPayment>;
 export function lightningPaymentFromPod(x: any): LightningPayment | Error {
   return Acknowledged.fromPOD(_LightningPayment.fromPOD, (d: _LightningPayment) => d.toPOD(), x);
 }
 
-export type LightningInvoice = Acknowledged<_LightningInvoice>;
+export type LightningInvoice = Acknowledged<_LightningInvoice, POD.LightningInvoice>;
 export function lightningInvoiceFromPod(x: any): LightningInvoice | Error {
   return Acknowledged.fromPOD(_LightningInvoice.fromPOD, (d: _LightningInvoice) => d.toPOD(), x);
 }
 
-export type Hookout = Acknowledged<_Hookout>;
+export type Hookout = Acknowledged<_Hookout, POD.Hookout>;
 export function hookoutFromPod(x: any): Hookout | Error {
   return Acknowledged.fromPOD(_Hookout.fromPOD, (d: _Hookout) => d.toPOD(), x);
 }
 
-export type Claimable = Acknowledged<_Claimable>;
+export type Claimable = Acknowledged<_Claimable, POD.Claimable>;
 export function claimableFromPOD(x: any): Claimable | Error {
-  return Acknowledged.fromPOD(_claimableFromPOD, (d: _Claimable) => d.toPOD(), x);
+  return Acknowledged.fromPOD(_claimableFromPOD, claimableToPOD, x);
 }
 
-export type Status = Acknowledged<_Status>;
+export type Status = Acknowledged<_Status, POD.Status>;
 export function statusFromPOD(x: any): Status | Error {
   return Acknowledged.fromPOD(_Status.fromPOD, (d: _Status) => d.toPOD(), x);
 }

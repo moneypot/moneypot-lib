@@ -68,7 +68,7 @@ function hookoutFromPod(x) {
 }
 exports.hookoutFromPod = hookoutFromPod;
 function claimableFromPOD(x) {
-    return Acknowledged.fromPOD(claimable_1.claimableFromPOD, (d) => d.toPOD(), x);
+    return Acknowledged.fromPOD(claimable_1.claimableFromPOD, claimable_1.claimableToPOD, x);
 }
 exports.claimableFromPOD = claimableFromPOD;
 function statusFromPOD(x) {
