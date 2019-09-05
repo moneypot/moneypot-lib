@@ -11,19 +11,16 @@ import { Claimable as _Claimable } from './claimable';
 import _Status from './status';
 interface Acknowledgable {
     hash(): Hash;
-    toPOD(): object;
 }
 export default class Acknowledged<T extends Acknowledgable> {
     acknowledgement: Signature;
     contents: T;
-    static acknowledge<T extends Acknowledgable>(contents: T, acknowledgeKey: PrivateKey): Acknowledged<T>;
-    static fromPOD<T extends Acknowledgable>(creator: (data: any) => T | Error, data: any): Acknowledged<T> | Error;
+    toPOD: () => object;
+    static acknowledge<T extends Acknowledgable>(contents: T, acknowledgeKey: PrivateKey, toPOD: (x: T) => object): Acknowledged<T>;
+    static fromPOD<T extends Acknowledgable>(creator: (data: any) => T | Error, toPOD: (x: T) => object, data: any): Acknowledged<T> | Error;
     verify(acknowledgementPublicKey: PublicKey): boolean;
     hash(): Hash;
-    constructor(contents: T, acknowledgement: Signature);
-    toPOD(): {
-        acknowledgement: string;
-    };
+    constructor(contents: T, acknowledgement: Signature, toPOD: (x: T) => object);
 }
 export declare type Hookin = Acknowledged<_Hookin>;
 export declare function hookinFromPod(x: any): Hookin | Error;

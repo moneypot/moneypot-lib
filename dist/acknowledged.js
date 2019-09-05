@@ -13,17 +13,21 @@ const status_1 = require("./status");
 // x: AcknowledgedX = hi.Acknowledged(....)  to guide it
 class Acknowledged {
     // Warning: The constructor does not validate the signature
-    constructor(contents, acknowledgement) {
+    constructor(contents, acknowledgement, toPOD) {
         this.acknowledgement = acknowledgement;
         this.contents = contents;
+        this.toPOD = () => ({
+            acknowledgement: this.acknowledgement.toPOD(),
+            ...toPOD(this.contents),
+        });
     }
-    static acknowledge(contents, acknowledgeKey) {
+    static acknowledge(contents, acknowledgeKey, toPOD) {
         const hash = contents.hash();
         const acknowledgement = signature_1.default.compute(hash.buffer, acknowledgeKey);
-        return new Acknowledged(contents, acknowledgement);
+        return new Acknowledged(contents, acknowledgement, toPOD);
     }
     // Need to check .verify()
-    static fromPOD(creator, data) {
+    static fromPOD(creator, toPOD, data) {
         const contents = creator(data);
         if (contents instanceof Error) {
             throw contents;
@@ -32,7 +36,7 @@ class Acknowledged {
         if (acknowledgement instanceof Error) {
             return acknowledgement;
         }
-        return new Acknowledged(contents, acknowledgement);
+        return new Acknowledged(contents, acknowledgement, toPOD);
     }
     verify(acknowledgementPublicKey) {
         const hash = this.contents.hash();
@@ -41,44 +45,47 @@ class Acknowledged {
     hash() {
         return this.contents.hash();
     }
-    toPOD() {
-        return {
-            acknowledgement: this.acknowledgement.toPOD(),
-            ...this.contents.toPOD(),
-        };
-    }
 }
 exports.default = Acknowledged;
 function hookinFromPod(x) {
-    return Acknowledged.fromPOD(hookin_1.default.fromPOD, x);
+    return Acknowledged.fromPOD(hookin_1.default.fromPOD, (d) => d.toPOD(), x);
 }
 exports.hookinFromPod = hookinFromPod;
 function feeBumpFromPod(x) {
-    return Acknowledged.fromPOD(fee_bump_1.default.fromPOD, x);
+    return Acknowledged.fromPOD(fee_bump_1.default.fromPOD, (d) => d.toPOD(), x);
 }
 exports.feeBumpFromPod = feeBumpFromPod;
 function lightningPaymentFromPod(x) {
-    return Acknowledged.fromPOD(lightning_payment_1.default.fromPOD, x);
+    return Acknowledged.fromPOD(lightning_payment_1.default.fromPOD, (d) => d.toPOD(), x);
 }
 exports.lightningPaymentFromPod = lightningPaymentFromPod;
 function lightningInvoiceFromPod(x) {
-    return Acknowledged.fromPOD(lightning_invoice_1.default.fromPOD, x);
+    return Acknowledged.fromPOD(lightning_invoice_1.default.fromPOD, (d) => d.toPOD(), x);
 }
 exports.lightningInvoiceFromPod = lightningInvoiceFromPod;
 function hookoutFromPod(x) {
-    return Acknowledged.fromPOD(hookout_1.default.fromPOD, x);
+    return Acknowledged.fromPOD(hookout_1.default.fromPOD, (d) => d.toPOD(), x);
 }
 exports.hookoutFromPod = hookoutFromPod;
 function claimableFromPOD(x) {
-    return Acknowledged.fromPOD(claimable_1.claimableFromPOD, x);
+    return Acknowledged.fromPOD(claimable_1.claimableFromPOD, (d) => d.toPOD(), x);
 }
 exports.claimableFromPOD = claimableFromPOD;
 function statusFromPOD(x) {
-    return Acknowledged.fromPOD(status_1.default.fromPOD, x);
+    return Acknowledged.fromPOD(status_1.default.fromPOD, (d) => d.toPOD(), x);
 }
 exports.statusFromPOD = statusFromPOD;
 function acknowledge(x, acknowledgeKey) {
-    return Acknowledged.acknowledge(x, acknowledgeKey);
+    if (x instanceof hookout_1.default ||
+        x instanceof fee_bump_1.default ||
+        x instanceof lightning_payment_1.default ||
+        x instanceof lightning_invoice_1.default ||
+        x instanceof hookin_1.default) {
+        return Acknowledged.acknowledge(x, acknowledgeKey, claimable_1.claimableToPOD);
+    }
+    else {
+        return Acknowledged.acknowledge(x, acknowledgeKey, (z) => z.toPOD());
+    }
 }
 exports.acknowledge = acknowledge;
 //# sourceMappingURL=acknowledged.js.map

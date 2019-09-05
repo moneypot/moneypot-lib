@@ -10,14 +10,13 @@ import _FeeBump from './fee-bump';
 import _LightningPayment from './lightning-payment';
 import _LightningInvoice from './lightning-invoice';
 import _Hookin from './hookin';
-import { Claimable as _Claimable, claimableFromPOD as _claimableFromPOD }from './claimable';
+import { Claimable as _Claimable, claimableFromPOD as _claimableFromPOD, claimableToPOD }from './claimable';
 
 import _Status from './status';
 
 // P is used as the POD type that it returns
 interface Acknowledgable {
   hash(): Hash;
-  toPOD(): object;
 }
 
 // T is what is acknowledged, a P is the type of a  T.toPOD()
@@ -26,16 +25,18 @@ interface Acknowledgable {
 export default class Acknowledged<T extends Acknowledgable> {
   public acknowledgement: Signature;
   public contents: T;
+  public toPOD: () => object;
 
-  public static acknowledge<T extends Acknowledgable>(contents: T, acknowledgeKey: PrivateKey) {
+  public static acknowledge<T extends Acknowledgable>(contents: T, acknowledgeKey: PrivateKey, toPOD: (x: T) => object) {
     const hash = contents.hash();
     const acknowledgement = Signature.compute(hash.buffer, acknowledgeKey);
-    return new Acknowledged<T>(contents, acknowledgement);
+    return new Acknowledged<T>(contents, acknowledgement, toPOD);
   }
 
   // Need to check .verify()
   public static fromPOD<T extends Acknowledgable>(
     creator: (data: any) => T | Error,
+    toPOD: (x: T) => object,
     data: any
   ): Acknowledged<T> | Error {
     const contents = creator(data);
@@ -48,7 +49,7 @@ export default class Acknowledged<T extends Acknowledgable> {
       return acknowledgement;
     }
 
-    return new Acknowledged<T>(contents, acknowledgement);
+    return new Acknowledged<T>(contents, acknowledgement, toPOD);
   }
 
   public verify(acknowledgementPublicKey: PublicKey) {
@@ -62,52 +63,49 @@ export default class Acknowledged<T extends Acknowledgable> {
   }
 
   // Warning: The constructor does not validate the signature
-  public constructor(contents: T, acknowledgement: Signature) {
+  public constructor(contents: T, acknowledgement: Signature, toPOD: (x: T) => object, ) {
     this.acknowledgement = acknowledgement;
     this.contents = contents;
-  }
-
-  public toPOD() {
-    return {
+    this.toPOD = () => ({
       acknowledgement: this.acknowledgement.toPOD(),
-      ...this.contents.toPOD(),
-    };
+      ...toPOD(this.contents),
+    });
   }
 }
 
 export type Hookin = Acknowledged<_Hookin>;
 export function hookinFromPod(x: any): Hookin | Error {
-  return Acknowledged.fromPOD(_Hookin.fromPOD, x);
+  return Acknowledged.fromPOD(_Hookin.fromPOD, (d: _Hookin) => d.toPOD(),  x);
 }
 
 export type FeeBump = Acknowledged<_FeeBump>;
 export function feeBumpFromPod(x: any): FeeBump | Error {
-  return Acknowledged.fromPOD(_FeeBump.fromPOD, x);
+  return Acknowledged.fromPOD(_FeeBump.fromPOD, (d: _FeeBump) => d.toPOD(), x);
 }
 
 export type LightningPayment = Acknowledged<_LightningPayment>;
 export function lightningPaymentFromPod(x: any): LightningPayment | Error {
-  return Acknowledged.fromPOD(_LightningPayment.fromPOD, x);
+  return Acknowledged.fromPOD(_LightningPayment.fromPOD, (d: _LightningPayment) => d.toPOD(), x);
 }
 
 export type LightningInvoice = Acknowledged<_LightningInvoice>;
 export function lightningInvoiceFromPod(x: any): LightningInvoice | Error {
-  return Acknowledged.fromPOD(_LightningInvoice.fromPOD, x);
+  return Acknowledged.fromPOD(_LightningInvoice.fromPOD, (d: _LightningInvoice) => d.toPOD(), x);
 }
 
 export type Hookout = Acknowledged<_Hookout>;
 export function hookoutFromPod(x: any): Hookout | Error {
-  return Acknowledged.fromPOD(_Hookout.fromPOD, x);
+  return Acknowledged.fromPOD(_Hookout.fromPOD, (d: _Hookout) => d.toPOD(), x);
 }
 
 export type Claimable = Acknowledged<_Claimable>;
 export function claimableFromPOD(x: any): Claimable | Error {
-  return Acknowledged.fromPOD(_claimableFromPOD, x);
+  return Acknowledged.fromPOD(_claimableFromPOD, (d: _Claimable) => d.toPOD(), x);
 }
 
 export type Status = Acknowledged<_Status>;
 export function statusFromPOD(x: any): Status | Error {
-  return Acknowledged.fromPOD(_Status.fromPOD, x);
+  return Acknowledged.fromPOD(_Status.fromPOD, (d: _Status) => d.toPOD(), x);
 }
 
 
@@ -117,5 +115,14 @@ export function acknowledge(
   x: _Status | _Claimable,
   acknowledgeKey: PrivateKey
 ) {
-  return Acknowledged.acknowledge(x, acknowledgeKey);
+
+  if (x instanceof _Hookout ||
+    x instanceof _FeeBump ||
+    x instanceof _LightningPayment ||
+    x instanceof _LightningInvoice ||
+    x instanceof _Hookin) {
+      return Acknowledged.acknowledge(x, acknowledgeKey, claimableToPOD);
+    } else {
+      return Acknowledged.acknowledge(x, acknowledgeKey, (z: _Status) => z.toPOD());
+    }
 }
