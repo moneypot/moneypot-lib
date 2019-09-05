@@ -25,7 +25,7 @@ interface Acknowledgable {
 export default class Acknowledged<T extends Acknowledgable, P> {
   public acknowledgement: Signature;
   public contents: T;
-  public toPOD: () => P;
+  public toPOD: () => P & POD.Acknowledged;
 
   public static acknowledge<T extends Acknowledgable, P>(contents: T, acknowledgeKey: PrivateKey, toPOD: (x: T) => P) {
     const hash = contents.hash();

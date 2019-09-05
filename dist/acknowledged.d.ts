@@ -16,7 +16,7 @@ interface Acknowledgable {
 export default class Acknowledged<T extends Acknowledgable, P> {
     acknowledgement: Signature;
     contents: T;
-    toPOD: () => P;
+    toPOD: () => P & POD.Acknowledged;
     static acknowledge<T extends Acknowledgable, P>(contents: T, acknowledgeKey: PrivateKey, toPOD: (x: T) => P): Acknowledged<T, P>;
     static fromPOD<T extends Acknowledgable, P>(creator: (data: any) => T | Error, toPOD: (x: T) => P, data: any): Acknowledged<T, P> | Error;
     verify(acknowledgementPublicKey: PublicKey): boolean;
