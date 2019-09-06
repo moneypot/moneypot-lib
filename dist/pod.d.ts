@@ -81,7 +81,8 @@ export declare namespace Status {
         hash: string;
         claimableHash: string;
     }
-    interface Claimed extends ClaimRequest, AbstractStatus {
+    interface Claimed extends AbstractStatus {
+        claimRequest: ClaimRequest;
         blindedReceipts: Signature[];
     }
     interface BitcoinTransactionSent extends AbstractStatus {

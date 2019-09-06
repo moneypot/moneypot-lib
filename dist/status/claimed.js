@@ -21,7 +21,9 @@ class Claimed extends abstract_status_1.default {
     }
     toPOD() {
         return {
-            ...this.claimRequest.toPOD(),
+            hash: this.hash().toPOD(),
+            claimableHash: this.claimRequest.claimableHash.toPOD(),
+            claimRequest: this.claimRequest.toPOD(),
             blindedReceipts: this.blindedReceipts.map(x => x.toPOD()),
         };
     }
@@ -32,6 +34,9 @@ class Claimed extends abstract_status_1.default {
         const claimRequest = claim_request_1.default.fromPOD(data);
         if (claimRequest instanceof Error) {
             return claimRequest;
+        }
+        if (data.claimableHash != claimRequest.claimableHash.toPOD()) {
+            return new Error('claimRequest claimableHash doesnt claimed statuses');
         }
         if (!Array.isArray(data.blindedReceipts)) {
             return new Error('expected blindedReceipts in ClaimResponse to be an array');

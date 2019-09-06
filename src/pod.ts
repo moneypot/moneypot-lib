@@ -91,7 +91,8 @@ export namespace Status {
     claimableHash: string;
   }
 
-  export interface Claimed extends ClaimRequest, AbstractStatus {
+  export interface Claimed extends AbstractStatus {
+    claimRequest: ClaimRequest;
     blindedReceipts: Signature[];
   }
 

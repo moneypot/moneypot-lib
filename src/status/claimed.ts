@@ -27,7 +27,9 @@ export default class Claimed extends AbstractStatus {
 
   public toPOD(): POD.Status.Claimed {
     return {
-      ...this.claimRequest.toPOD(),
+      hash: this.hash().toPOD(),
+      claimableHash: this.claimRequest.claimableHash.toPOD(),
+      claimRequest: this.claimRequest.toPOD(),
       blindedReceipts: this.blindedReceipts.map(x => x.toPOD()),
     };
   }
@@ -40,6 +42,10 @@ export default class Claimed extends AbstractStatus {
     const claimRequest = ClaimRequest.fromPOD(data);
     if (claimRequest instanceof Error) {
       return claimRequest;
+    }
+
+    if (data.claimableHash != claimRequest.claimableHash.toPOD()) {
+      return new Error('claimRequest claimableHash doesnt claimed statuses');
     }
 
     if (!Array.isArray(data.blindedReceipts)) {
