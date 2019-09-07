@@ -39,7 +39,6 @@ export { default as AbstractTransfer } from './abstract-transfer';
 
 export * from './claimable';
 
-
 export { default as StatusFailed } from './status/failed';
 export { default as StatusBitcoinTransactionSent } from './status/bitcoin-transaction-sent';
 export { default as StatusInvoiceSettled } from './status/invoice-settled';
@@ -49,7 +48,6 @@ export { default as StatusLightningPaymentSent } from './status/lightning-paymen
 export { default as Status } from './status';
 
 export { default as computeClaimableRemaining } from './status/compute-claimable-remaining';
-
 
 // blind functions
 export * from './blind';

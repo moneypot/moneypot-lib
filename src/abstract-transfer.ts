@@ -58,6 +58,10 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
     };
   }
 
+  get claimableAmount() {
+    return this.amount - this.fee;
+  }
+
   inputAmount(): number {
     let amount = 0;
     for (const coin of this.inputs) {

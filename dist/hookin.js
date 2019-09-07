@@ -60,6 +60,10 @@ class Hookin {
     get kind() {
         return 'Hookin';
     }
+    get claimableAmount() {
+        // a hookin by itself has no claimable value, it's only after we have some status updates for it being sufficiently confirmed
+        return 0;
+    }
     getTweak() {
         const bytes = hash_1.default.fromMessage('tweak', this.claimant.buffer).buffer;
         const pk = private_key_1.default.fromBytes(bytes);

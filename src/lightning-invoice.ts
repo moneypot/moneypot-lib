@@ -28,9 +28,15 @@ export default class LightningInvoice implements AbstractClaimable {
   get fee() {
     return 0;
   }
+
   get amount() {
     return 0;
-  } // This is from abstractclaimable. By itself an a lightninginvoice has nothing claimable, until it's paid
+  }
+
+  get claimableAmount() {
+    return 0;
+  }
+
   get kind(): 'LightningInvoice' {
     return 'LightningInvoice';
   }

@@ -35,6 +35,9 @@ class AbstractTransfer {
             inputs: this.inputs.map(i => i.toPOD()),
         };
     }
+    get claimableAmount() {
+        return this.amount - this.fee;
+    }
     inputAmount() {
         let amount = 0;
         for (const coin of this.inputs) {

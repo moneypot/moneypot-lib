@@ -94,6 +94,11 @@ export default class Hookin implements AbstractClaimable {
     return 'Hookin';
   }
 
+  get claimableAmount() {
+    // a hookin by itself has no claimable value, it's only after we have some status updates for it being sufficiently confirmed
+    return 0;
+  }
+
   getTweak(): PrivateKey {
     const bytes = Hash.fromMessage('tweak', this.claimant.buffer).buffer;
     const pk = PrivateKey.fromBytes(bytes);

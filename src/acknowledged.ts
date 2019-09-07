@@ -10,7 +10,7 @@ import _FeeBump from './fee-bump';
 import _LightningPayment from './lightning-payment';
 import _LightningInvoice from './lightning-invoice';
 import _Hookin from './hookin';
-import { Claimable as _Claimable, claimableFromPOD as _claimableFromPOD, claimableToPOD }from './claimable';
+import { Claimable as _Claimable, claimableFromPOD as _claimableFromPOD, claimableToPOD } from './claimable';
 
 import _Status from './status';
 
@@ -63,7 +63,7 @@ export default class Acknowledged<T extends Acknowledgable, P> {
   }
 
   // Warning: The constructor does not validate the signature
-  public constructor(contents: T, acknowledgement: Signature, toPOD: (x: T) => P, ) {
+  public constructor(contents: T, acknowledgement: Signature, toPOD: (x: T) => P) {
     this.acknowledgement = acknowledgement;
     this.contents = contents;
     this.toPOD = () => ({
@@ -75,7 +75,7 @@ export default class Acknowledged<T extends Acknowledgable, P> {
 
 export type Hookin = Acknowledged<_Hookin, POD.Hookin>;
 export function hookinFromPod(x: any): Hookin | Error {
-  return Acknowledged.fromPOD(_Hookin.fromPOD, (d: _Hookin) => d.toPOD(),  x);
+  return Acknowledged.fromPOD(_Hookin.fromPOD, (d: _Hookin) => d.toPOD(), x);
 }
 
 export type FeeBump = Acknowledged<_FeeBump, POD.FeeBump>;
@@ -108,21 +108,18 @@ export function statusFromPOD(x: any): Status | Error {
   return Acknowledged.fromPOD(_Status.fromPOD, (d: _Status) => d.toPOD(), x);
 }
 
-
 export function acknowledge(x: _Status, acknowledgeKey: PrivateKey): Status;
 export function acknowledge(x: _Claimable, acknowledgeKey: PrivateKey): Claimable;
-export function acknowledge(
-  x: _Status | _Claimable,
-  acknowledgeKey: PrivateKey
-) {
-
-  if (x instanceof _Hookout ||
+export function acknowledge(x: _Status | _Claimable, acknowledgeKey: PrivateKey) {
+  if (
+    x instanceof _Hookout ||
     x instanceof _FeeBump ||
     x instanceof _LightningPayment ||
     x instanceof _LightningInvoice ||
-    x instanceof _Hookin) {
-      return Acknowledged.acknowledge(x, acknowledgeKey, claimableToPOD);
-    } else {
-      return Acknowledged.acknowledge(x, acknowledgeKey, (z: _Status) => z.toPOD());
-    }
+    x instanceof _Hookin
+  ) {
+    return Acknowledged.acknowledge(x, acknowledgeKey, claimableToPOD);
+  } else {
+    return Acknowledged.acknowledge(x, acknowledgeKey, (z: _Status) => z.toPOD());
+  }
 }

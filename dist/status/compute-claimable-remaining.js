@@ -4,7 +4,7 @@ const failed_1 = require("./failed");
 const claimed_1 = require("./claimed");
 const lightning_payment_sent_1 = require("./lightning-payment-sent");
 function computeClaimableRemaining(c, statuses) {
-    let remaining = c.amount;
+    let remaining = c.claimableAmount;
     for (const { s } of statuses) {
         if (s instanceof failed_1.default) {
             remaining += s.rebate;

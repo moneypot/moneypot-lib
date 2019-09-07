@@ -10,6 +10,7 @@ export default class LightningInvoice implements AbstractClaimable {
     toPOD(): POD.LightningInvoice;
     readonly fee: number;
     readonly amount: number;
+    readonly claimableAmount: number;
     readonly kind: 'LightningInvoice';
     static fromPOD(data: any): Error | LightningInvoice;
 }

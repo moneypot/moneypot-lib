@@ -15,6 +15,7 @@ export default class Hookin implements AbstractClaimable {
     constructor(txid: Uint8Array, vout: number, amount: number, fee: number, claimant: PublicKey, bitcoinAddress: string);
     hash(): Hash;
     readonly kind: 'Hookin';
+    readonly claimableAmount: number;
     getTweak(): PrivateKey;
     toPOD(): POD.Hookin;
 }

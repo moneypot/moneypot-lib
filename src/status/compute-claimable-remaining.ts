@@ -5,8 +5,7 @@ import Claimed from './claimed';
 import LightningPaymentSent from './lightning-payment-sent';
 
 export default function computeClaimableRemaining(c: Claimable, statuses: Status[]) {
-
-  let remaining = c.amount;
+  let remaining = c.claimableAmount;
 
   for (const { s } of statuses) {
     if (s instanceof Failed) {
