@@ -9,7 +9,7 @@ import _LightningPayment from './lightning-payment';
 import _LightningInvoice from './lightning-invoice';
 import _Hookin from './hookin';
 import { Claimable as _Claimable } from './claimable';
-import _Status from './status';
+import { Status as _Status } from './status';
 interface Acknowledgable {
     hash(): Hash;
 }

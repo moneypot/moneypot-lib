@@ -85,6 +85,9 @@ export declare namespace Status {
         claimRequest: ClaimRequest;
         blindedReceipts: Signature[];
     }
+    interface HookinAccepted extends AbstractStatus {
+        consolidationFee: number;
+    }
     interface BitcoinTransactionSent extends AbstractStatus {
         txid: string;
     }
@@ -106,6 +109,8 @@ export declare type Status = ({
 } & Status.BitcoinTransactionSent) | ({
     kind: 'Claimed';
 } & Status.Claimed) | ({
+    kind: 'HookinAccepted';
+} & Status.HookinAccepted) | ({
     kind: 'Failed';
 } & Status.Failed) | ({
     kind: 'InvoiceSettled';

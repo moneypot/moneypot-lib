@@ -12,7 +12,8 @@ import _LightningInvoice from './lightning-invoice';
 import _Hookin from './hookin';
 import { Claimable as _Claimable, claimableFromPOD as _claimableFromPOD, claimableToPOD } from './claimable';
 
-import _Status from './status';
+import { Status as _Status, statusFromPOD as _statusFromPOD, statusToPOD } from './status';
+import AbstractStatus from './status/abstract-status';
 
 // P is used as the POD type that it returns
 interface Acknowledgable {
@@ -105,7 +106,7 @@ export function claimableFromPOD(x: any): Claimable | Error {
 
 export type Status = Acknowledged<_Status, POD.Status>;
 export function statusFromPOD(x: any): Status | Error {
-  return Acknowledged.fromPOD(_Status.fromPOD, (d: _Status) => d.toPOD(), x);
+  return Acknowledged.fromPOD(_statusFromPOD, statusToPOD, x);
 }
 
 export function acknowledge(x: _Status, acknowledgeKey: PrivateKey): Status;
@@ -119,6 +120,8 @@ export function acknowledge(x: _Status | _Claimable, acknowledgeKey: PrivateKey)
     x instanceof _Hookin
   ) {
     return Acknowledged.acknowledge(x, acknowledgeKey, claimableToPOD);
+  } else if (x instanceof AbstractStatus) {
+    return Acknowledged.acknowledge(x, acknowledgeKey, statusToPOD);
   } else {
     return Acknowledged.acknowledge(x, acknowledgeKey, (z: _Status) => z.toPOD());
   }

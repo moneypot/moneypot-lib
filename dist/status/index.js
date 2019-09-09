@@ -5,39 +5,25 @@ const failed_1 = require("./failed");
 const bitcoin_transaction_sent_1 = require("./bitcoin-transaction-sent");
 const invoice_settled_1 = require("./invoice-settled");
 const lightning_payment_sent_1 = require("./lightning-payment-sent");
-class Status {
-    constructor(s) {
-        this.s = s;
+const hookin_accepted_1 = require("./hookin-accepted");
+function statusFromPOD(obj) {
+    if (typeof obj !== 'object' || typeof obj.kind !== 'string') {
+        return new Error('parseTransfer expected an object with a kind to parse');
     }
-    static fromPOD(obj) {
-        if (typeof obj !== 'object' || typeof obj.kind !== 'string') {
-            return new Error('parseTransfer expected an object with a kind to parse');
-        }
-        const parser = findParser(obj.kind);
-        if (parser instanceof Error) {
-            return parser;
-        }
-        const parseResult = parser(obj);
-        if (parseResult instanceof Error) {
-            return parseResult;
-        }
-        const s = new Status(parseResult);
-        if (s.hash().toPOD() !== obj.hash) {
-            return new Error('status had mismatching hash');
-        }
-        return s;
+    const parser = findParser(obj.kind);
+    if (parser instanceof Error) {
+        return parser;
     }
-    toPOD() {
-        return statusToPOD(this.s);
+    const parseResult = parser(obj);
+    if (parseResult instanceof Error) {
+        return parseResult;
     }
-    hash() {
-        return this.s.hash();
+    if (parseResult.hash().toPOD() !== obj.hash) {
+        return new Error('status had mismatching hash');
     }
-    get claimableHash() {
-        return this.s.claimableHash;
-    }
+    return parseResult;
 }
-exports.default = Status;
+exports.statusFromPOD = statusFromPOD;
 function findParser(kind) {
     switch (kind) {
         case 'Failed':
@@ -50,6 +36,8 @@ function findParser(kind) {
             return claimed_1.default.fromPOD;
         case 'LightningPaymentSent':
             return lightning_payment_sent_1.default.fromPOD;
+        case 'HookinAccepted':
+            return hookin_accepted_1.default.fromPOD;
         default:
             return new Error('Unknown status kind: ' + kind);
     }
@@ -70,9 +58,13 @@ function statusToPOD(s) {
     else if (s instanceof lightning_payment_sent_1.default) {
         return { kind: 'LightningPaymentSent', ...s.toPOD() };
     }
+    else if (s instanceof hookin_accepted_1.default) {
+        return { kind: 'HookinAccepted', ...s.toPOD() };
+    }
     else {
         const _ = s;
         throw new Error('uknown status: ' + s);
     }
 }
+exports.statusToPOD = statusToPOD;
 //# sourceMappingURL=index.js.map

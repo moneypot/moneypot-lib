@@ -96,6 +96,10 @@ export namespace Status {
     blindedReceipts: Signature[];
   }
 
+  export interface HookinAccepted extends AbstractStatus {
+    consolidationFee: number;
+  }
+
   export interface BitcoinTransactionSent extends AbstractStatus {
     txid: string;
   }
@@ -119,6 +123,7 @@ export namespace Status {
 export type Status =
   | ({ kind: 'BitcoinTransactionSent' } & Status.BitcoinTransactionSent)
   | ({ kind: 'Claimed' } & Status.Claimed)
+  | ({ kind: 'HookinAccepted' } & Status.HookinAccepted)
   | ({ kind: 'Failed' } & Status.Failed)
   | ({ kind: 'InvoiceSettled' } & Status.InvoiceSettled)
   | ({ kind: 'LightningPaymentSent' } & Status.LightningPaymentSent);
