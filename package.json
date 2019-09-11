@@ -20,7 +20,7 @@
     "tape": "^4.11.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.19.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.3"
   },
   "browser": {
     "./dist/util/random.js": "./dist/util/random-browser.js"
