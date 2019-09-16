@@ -19,7 +19,7 @@ class HookinAccepted extends abstract_status_1.default {
         return {
             hash: this.hash().toPOD(),
             claimableHash: this.claimableHash.toPOD(),
-            consolidationFee: this.consolidationFee
+            consolidationFee: this.consolidationFee,
         };
     }
     static fromPOD(data) {
