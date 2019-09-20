@@ -358,7 +358,7 @@ function satToHrp(satoshis) {
         throw new Error('satoshis must be an integer');
     }
     let millisatoshisBN = BigInt(satoshis);
-    return millisatToHrp(millisatoshisBN * BigInt(1000n));
+    return millisatToHrp(millisatoshisBN * BigInt(1000));
 }
 function millisatToHrp(millisatoshis) {
     if (!millisatoshis.toString().match(/^\d+$/)) {
