@@ -31,7 +31,7 @@ class Claimed extends abstract_status_1.default {
         if (typeof data !== 'object') {
             throw new Error('ClaimResponse must be an object');
         }
-        const claimRequest = claim_request_1.default.fromPOD(data);
+        const claimRequest = claim_request_1.default.fromPOD(data.claimRequest);
         if (claimRequest instanceof Error) {
             return claimRequest;
         }

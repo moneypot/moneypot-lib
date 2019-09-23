@@ -39,7 +39,7 @@ export default class Claimed extends AbstractStatus {
       throw new Error('ClaimResponse must be an object');
     }
 
-    const claimRequest = ClaimRequest.fromPOD(data);
+    const claimRequest = ClaimRequest.fromPOD(data.claimRequest);
     if (claimRequest instanceof Error) {
       return claimRequest;
     }
