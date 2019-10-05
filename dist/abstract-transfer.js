@@ -5,7 +5,6 @@ const hash_1 = require("./hash");
 const signature_1 = require("./signature");
 const POD = require("./pod");
 const coin_1 = require("./coin");
-const ecc_1 = require("./util/ecc");
 const public_key_1 = require("./public-key");
 const buffutils = require("./util/buffutils");
 class AbstractTransfer {
@@ -46,8 +45,7 @@ class AbstractTransfer {
         return amount;
     }
     get claimant() {
-        const p = ecc_1.muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
-        return new public_key_1.default(p.x, p.y);
+        return public_key_1.default.combine(this.inputs.map(coin => coin.owner));
     }
     isAuthorized() {
         if (!this.authorization) {
@@ -56,8 +54,8 @@ class AbstractTransfer {
         const msg = hash_1.default.fromMessage('authorization', this.hash().buffer).buffer;
         return this.authorization.verify(msg, this.claimant);
     }
-    authorize(inputPrivateKeys) {
-        this.authorization = signature_1.default.computeMu(hash_1.default.fromMessage('authorization', this.hash().buffer).buffer, inputPrivateKeys);
+    authorize(combinedInputPrivkey) {
+        this.authorization = signature_1.default.compute(hash_1.default.fromMessage('authorization', this.hash().buffer).buffer, combinedInputPrivkey);
     }
 }
 exports.default = AbstractTransfer;

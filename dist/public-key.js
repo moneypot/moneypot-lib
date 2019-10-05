@@ -7,6 +7,7 @@ const ripemd160_1 = require("./util/bcrypto/ripemd160");
 const sha256_1 = require("./util/bcrypto/sha256");
 const buffutils = require("./util/buffutils");
 const _1 = require(".");
+const mu_sig_1 = require("./util/ecc/mu-sig");
 const serializedPrefix = 'pubhi'; // public key hookedin
 class PublicKey {
     // dont directly use...
@@ -30,6 +31,10 @@ class PublicKey {
             return point;
         }
         return new PublicKey(point.x, point.y);
+    }
+    static combine(pubkeys) {
+        const t = mu_sig_1.pubkeyCombine(pubkeys);
+        return new PublicKey(t.x, t.y);
     }
     get buffer() {
         return ecc.Point.toBytes(this);

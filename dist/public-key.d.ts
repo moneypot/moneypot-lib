@@ -3,6 +3,7 @@ import * as ecc from './util/ecc/elliptic';
 export default class PublicKey {
     static fromPOD(data: any): PublicKey | Error;
     static fromBytes(serialized: Uint8Array): PublicKey | Error;
+    static combine(pubkeys: PublicKey[]): PublicKey;
     x: ecc.Scalar;
     y: ecc.Scalar;
     readonly buffer: Uint8Array;

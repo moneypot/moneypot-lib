@@ -3,7 +3,6 @@ import Hash from './hash';
 import Signature from './signature';
 import * as POD from './pod';
 import Coin from './coin';
-import { muSig } from './util/ecc';
 import PublicKey from './public-key';
 import * as buffutils from './util/buffutils';
 import AbstractClaimable from './abstract-claimable';
@@ -71,8 +70,7 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
   }
 
   get claimant() {
-    const p = muSig.pubkeyCombine(this.inputs.map(coin => coin.owner));
-    return new PublicKey(p.x, p.y);
+    return PublicKey.combine(this.inputs.map(coin => coin.owner));
   }
 
   isAuthorized(): boolean {
@@ -84,10 +82,10 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
     return this.authorization.verify(msg, this.claimant);
   }
 
-  authorize(inputPrivateKeys: PrivateKey[]) {
-    this.authorization = Signature.computeMu(
+  authorize(combinedInputPrivkey: PrivateKey) {
+    this.authorization = Signature.compute(
       Hash.fromMessage('authorization', this.hash().buffer).buffer,
-      inputPrivateKeys
+      combinedInputPrivkey
     );
   }
 }

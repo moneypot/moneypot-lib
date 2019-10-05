@@ -3,6 +3,7 @@ import { INFINITE_POINT, Point, pointAdd, pointMultiply, Scalar, Signature } fro
 import * as check from './check';
 import sha256 from '../bcrypto/sha256';
 import { bufferToBigInt, concatBuffers, curve, getE, getK, getK0, pointToBuffer, utf8ToBuffer } from './util';
+import { scalarMultiply, scalarAdd } from './elliptic';
 
 // https://blockstream.com/2018/01/23/musig-key-aggregation-schnorr-signatures/
 
@@ -28,6 +29,40 @@ export function pubkeyCombine(pubkeys: Point[]): Point {
 
   return X;
 }
+
+
+export function privkeyCombine(privkeys: Scalar[]): Scalar {
+  assert.equal(privkeys.length > 0, true);
+  check.privkeysAreUnique(privkeys);
+
+  const Xs = [];
+  let R = INFINITE_POINT;
+  for (const privateKey of privkeys) {
+    const Xi = Point.fromPrivKey(privateKey);
+    Xs.push(Xi);
+    if (R === INFINITE_POINT) {
+      R = Xi;
+    } else {
+      R = pointAdd(R, Xi);
+    }
+  }
+
+  const L = sha256.digest(concatBuffers(...Xs.map(pointToBuffer)));
+  let X = BigInt(0);
+  for (let i = 0; i < privkeys.length; i++) {
+    const Xi = privkeys[i];
+    const coefficient = calculateCoefficient(L, i);
+    const summand = scalarMultiply(Xi, coefficient);
+    if (X === BigInt(0)) {
+      X = summand;
+    } else {
+      X = scalarAdd(X, summand);
+    }
+  }
+
+  return X;
+}
+
 
 const MUSIG_TAG = sha256.digest(utf8ToBuffer('MuSig coefficient'));
 

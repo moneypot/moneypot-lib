@@ -8,6 +8,7 @@ import SHA256 from './util/bcrypto/sha256';
 
 import * as buffutils from './util/buffutils';
 import { Buffutils } from '.';
+import { pubkeyCombine } from './util/ecc/mu-sig';
 
 const serializedPrefix = 'pubhi'; // public key hookedin
 
@@ -32,6 +33,11 @@ export default class PublicKey {
       return point;
     }
     return new PublicKey(point.x, point.y);
+  }
+
+  static combine(pubkeys: PublicKey[]) {
+    const t = pubkeyCombine(pubkeys);
+    return new PublicKey(t.x, t.y);
   }
 
   x: ecc.Scalar;

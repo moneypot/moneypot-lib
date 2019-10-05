@@ -23,7 +23,7 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
     inputAmount(): number;
     readonly claimant: PublicKey;
     isAuthorized(): boolean;
-    authorize(inputPrivateKeys: PrivateKey[]): void;
+    authorize(combinedInputPrivkey: PrivateKey): void;
 }
 export declare function parseTransferData(data: any): TransferData | Error;
 export interface TransferData {

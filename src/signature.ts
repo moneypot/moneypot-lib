@@ -15,11 +15,6 @@ export default class Signature {
     return new Signature(sig.r, sig.s);
   }
 
-  public static computeMu(message: Uint8Array, privkeys: PrivateKey[]) {
-    const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message);
-    return new Signature(sig.r, sig.s);
-  }
-
   public static fromPOD(data: any): Signature | Error {
     if (typeof data !== 'string') {
       return new Error('Signature.fromPOD expected string');

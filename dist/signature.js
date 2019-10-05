@@ -15,10 +15,6 @@ class Signature {
         const sig = ecc.sign(message, privkey.scalar);
         return new Signature(sig.r, sig.s);
     }
-    static computeMu(message, privkeys) {
-        const sig = ecc.muSig.signNoninteractively(privkeys.map(p => p.scalar), message);
-        return new Signature(sig.r, sig.s);
-    }
     static fromPOD(data) {
         if (typeof data !== 'string') {
             return new Error('Signature.fromPOD expected string');

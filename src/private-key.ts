@@ -6,6 +6,7 @@ import * as bech32 from './util/bech32';
 import * as wif from './util/wif';
 import random from './util/random';
 import * as Buffutils from './util/buffutils';
+import { privkeyCombine } from './util/ecc/mu-sig';
 
 const serializedPrefix = 'privhi'; // private key hookedin
 
@@ -41,9 +42,13 @@ export default class PrivateKey {
     return new PrivateKey(s);
   }
 
+  static combine(privkeys: PrivateKey[]) {
+    return new PrivateKey(privkeyCombine(privkeys.map(p => p.scalar)))
+  }
+
   public scalar: ecc.Scalar;
 
-  private constructor(scalar: ecc.Scalar) {
+  constructor(scalar: ecc.Scalar) {
     this.scalar = scalar;
   }
 

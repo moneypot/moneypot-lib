@@ -7,6 +7,7 @@ const bech32 = require("./util/bech32");
 const wif = require("./util/wif");
 const random_1 = require("./util/random");
 const Buffutils = require("./util/buffutils");
+const mu_sig_1 = require("./util/ecc/mu-sig");
 const serializedPrefix = 'privhi'; // private key hookedin
 class PrivateKey {
     constructor(scalar) {
@@ -36,6 +37,9 @@ class PrivateKey {
             throw s; // should never really happen..
         }
         return new PrivateKey(s);
+    }
+    static combine(privkeys) {
+        return new PrivateKey(mu_sig_1.privkeyCombine(privkeys.map(p => p.scalar)));
     }
     get buffer() {
         return ecc.Scalar.toBytes(this.scalar);

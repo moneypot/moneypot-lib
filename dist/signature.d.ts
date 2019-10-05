@@ -3,7 +3,6 @@ import PrivateKey from './private-key';
 import PublicKey from './public-key';
 export default class Signature {
     static compute(message: Uint8Array, privkey: PrivateKey): Signature;
-    static computeMu(message: Uint8Array, privkeys: PrivateKey[]): Signature;
     static fromPOD(data: any): Signature | Error;
     static fromBytes(bytes: Uint8Array): Signature | Error;
     r: ecc.Scalar;

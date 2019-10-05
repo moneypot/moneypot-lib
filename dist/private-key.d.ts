@@ -4,8 +4,9 @@ export default class PrivateKey {
     static fromPOD(data: any): PrivateKey | Error;
     static fromBytes(bytes: Uint8Array): PrivateKey | Error;
     static fromRand(): PrivateKey;
+    static combine(privkeys: PrivateKey[]): PrivateKey;
     scalar: ecc.Scalar;
-    private constructor();
+    constructor(scalar: ecc.Scalar);
     readonly buffer: Uint8Array;
     toPOD(): string;
     toPublicKey(): PublicKey;
