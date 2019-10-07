@@ -27,11 +27,6 @@ export default class Hookin implements AbstractClaimable {
       return new Error('invalid amount for hookin');
     }
 
-    const fee = data.fee;
-    if (!POD.isAmount(fee)) {
-      return new Error('invalid fee for hookin');
-    }
-
     const claimant = PublicKey.fromPOD(data.claimant);
     if (claimant instanceof Error) {
       return claimant;
@@ -42,22 +37,14 @@ export default class Hookin implements AbstractClaimable {
       return new Error('hookin expected a bitcoin address');
     }
 
-    return new Hookin(txid, vout, amount, fee, claimant, bitcoinAddress);
+    return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
   }
 
-  public static hashOf(
-    txid: Uint8Array,
-    vout: number,
-    amount: number,
-    fee: number,
-    claimant: PublicKey,
-    bitcoinAddress: string
-  ) {
+  public static hashOf(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
     const b = Hash.newBuilder('Hookin');
     b.update(txid);
     b.update(buffutils.fromUint32(vout));
     b.update(buffutils.fromUint64(amount));
-    b.update(buffutils.fromUint32(fee));
     b.update(claimant.buffer);
     b.update(buffutils.fromString(bitcoinAddress));
     return b.digest();
@@ -66,28 +53,19 @@ export default class Hookin implements AbstractClaimable {
   public txid: Uint8Array;
   public vout: number;
   public amount: number;
-  public fee: number;
   public claimant: PublicKey;
   public bitcoinAddress: string;
 
-  constructor(
-    txid: Uint8Array,
-    vout: number,
-    amount: number,
-    fee: number,
-    claimant: PublicKey,
-    bitcoinAddress: string
-  ) {
+  constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
     this.txid = txid;
     this.vout = vout;
     this.amount = amount;
-    this.fee = fee;
     this.claimant = claimant;
     this.bitcoinAddress = bitcoinAddress;
   }
 
   public hash(): Hash {
-    return Hookin.hashOf(this.txid, this.vout, this.amount, this.fee, this.claimant, this.bitcoinAddress);
+    return Hookin.hashOf(this.txid, this.vout, this.amount, this.claimant, this.bitcoinAddress);
   }
 
   get kind(): 'Hookin' {
@@ -114,7 +92,6 @@ export default class Hookin implements AbstractClaimable {
       hash: this.hash().toPOD(),
       amount: this.amount,
       claimant: this.claimant.toPOD(),
-      fee: this.fee,
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
       bitcoinAddress: this.bitcoinAddress,

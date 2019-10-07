@@ -6,11 +6,10 @@ const public_key_1 = require("./public-key");
 const POD = require("./pod");
 const buffutils = require("./util/buffutils");
 class Hookin {
-    constructor(txid, vout, amount, fee, claimant, bitcoinAddress) {
+    constructor(txid, vout, amount, claimant, bitcoinAddress) {
         this.txid = txid;
         this.vout = vout;
         this.amount = amount;
-        this.fee = fee;
         this.claimant = claimant;
         this.bitcoinAddress = bitcoinAddress;
     }
@@ -30,10 +29,6 @@ class Hookin {
         if (!POD.isAmount(amount)) {
             return new Error('invalid amount for hookin');
         }
-        const fee = data.fee;
-        if (!POD.isAmount(fee)) {
-            return new Error('invalid fee for hookin');
-        }
         const claimant = public_key_1.default.fromPOD(data.claimant);
         if (claimant instanceof Error) {
             return claimant;
@@ -42,20 +37,19 @@ class Hookin {
         if (typeof bitcoinAddress !== 'string') {
             return new Error('hookin expected a bitcoin address');
         }
-        return new Hookin(txid, vout, amount, fee, claimant, bitcoinAddress);
+        return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
     }
-    static hashOf(txid, vout, amount, fee, claimant, bitcoinAddress) {
+    static hashOf(txid, vout, amount, claimant, bitcoinAddress) {
         const b = hash_1.default.newBuilder('Hookin');
         b.update(txid);
         b.update(buffutils.fromUint32(vout));
         b.update(buffutils.fromUint64(amount));
-        b.update(buffutils.fromUint32(fee));
         b.update(claimant.buffer);
         b.update(buffutils.fromString(bitcoinAddress));
         return b.digest();
     }
     hash() {
-        return Hookin.hashOf(this.txid, this.vout, this.amount, this.fee, this.claimant, this.bitcoinAddress);
+        return Hookin.hashOf(this.txid, this.vout, this.amount, this.claimant, this.bitcoinAddress);
     }
     get kind() {
         return 'Hookin';
@@ -77,7 +71,6 @@ class Hookin {
             hash: this.hash().toPOD(),
             amount: this.amount,
             claimant: this.claimant.toPOD(),
-            fee: this.fee,
             txid: buffutils.toHex(this.txid),
             vout: this.vout,
             bitcoinAddress: this.bitcoinAddress,

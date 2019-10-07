@@ -1,7 +1,7 @@
 import { strictEqual } from 'assert';
 import PrivateKey from '../src/private-key';
 import Signature from '../src/signature';
-import PublicKey from '../src/public-key'
+import PublicKey from '../src/public-key';
 
 describe('signature', () => {
   it('should work', () => {
@@ -24,7 +24,6 @@ describe('signature', () => {
   });
 
   it('should handle aggregation', () => {
-
     const priv1 = PrivateKey.fromRand();
     const priv2 = PrivateKey.fromRand();
 
@@ -39,7 +38,5 @@ describe('signature', () => {
     strictEqual(sig.verify(message, pub), true);
 
     strictEqual(priv.toPublicKey().toPOD(), pub.toPOD());
-
-
-  })
+  });
 });

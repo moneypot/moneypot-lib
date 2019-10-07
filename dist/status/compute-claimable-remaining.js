@@ -7,6 +7,7 @@ const bitcoin_transaction_sent_1 = require("./bitcoin-transaction-sent");
 const invoice_settled_1 = require("./invoice-settled");
 const hookin_accepted_1 = require("./hookin-accepted");
 const hookin_1 = require("../hookin");
+const lightning_payment_1 = require("../lightning-payment");
 function computeClaimableRemaining(c, statuses) {
     let remaining = c.claimableAmount;
     for (const s of statuses) {
@@ -17,6 +18,9 @@ function computeClaimableRemaining(c, statuses) {
             remaining -= s.claimRequest.amount();
         }
         else if (s instanceof lightning_payment_sent_1.default) {
+            if (!(c instanceof lightning_payment_1.default)) {
+                throw new Error('got lighting payment sent status for a non lightning payment?');
+            }
             const overpaid = c.fee - s.totalFees;
             if (overpaid <= 0) {
                 throw new Error('assertion failed, actual lightning fees higher than paid: ' + c.hash());

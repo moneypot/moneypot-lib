@@ -44,7 +44,6 @@ export interface Hookin {
   txid: string;
   vout: number;
   amount: number;
-  fee: number;
   claimant: string;
   bitcoinAddress: string;
 }

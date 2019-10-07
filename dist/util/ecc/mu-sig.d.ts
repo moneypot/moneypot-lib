@@ -1,4 +1,3 @@
-import { Point, Scalar, Signature } from '.';
+import { Point, Scalar } from '.';
 export declare function pubkeyCombine(pubkeys: Point[]): Point;
 export declare function privkeyCombine(privkeys: Scalar[]): Scalar;
-export declare function signNoninteractively(privkeys: Scalar[], message: Uint8Array): Signature;

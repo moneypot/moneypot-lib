@@ -43,7 +43,7 @@ export default class PrivateKey {
   }
 
   static combine(privkeys: PrivateKey[]) {
-    return new PrivateKey(privkeyCombine(privkeys.map(p => p.scalar)))
+    return new PrivateKey(privkeyCombine(privkeys.map(p => p.scalar)));
   }
 
   public scalar: ecc.Scalar;

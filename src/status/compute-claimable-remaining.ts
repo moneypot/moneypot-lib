@@ -7,6 +7,7 @@ import BitcoinTransactionSent from './bitcoin-transaction-sent';
 import InvoiceSettled from './invoice-settled';
 import HookinAccepted from './hookin-accepted';
 import Hookin from '../hookin';
+import LightningPayment from '../lightning-payment';
 
 export default function computeClaimableRemaining(c: Claimable, statuses: Status[]) {
   let remaining = c.claimableAmount;
@@ -17,6 +18,9 @@ export default function computeClaimableRemaining(c: Claimable, statuses: Status
     } else if (s instanceof Claimed) {
       remaining -= s.claimRequest.amount();
     } else if (s instanceof LightningPaymentSent) {
+      if (!(c instanceof LightningPayment)) {
+        throw new Error('got lighting payment sent status for a non lightning payment?');
+      }
       const overpaid = c.fee - s.totalFees;
       if (overpaid <= 0) {
         throw new Error('assertion failed, actual lightning fees higher than paid: ' + c.hash());
