@@ -58,7 +58,7 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
   }
 
   get claimableAmount() {
-    return this.amount - this.fee;
+    return this.inputAmount() - this.amount - this.fee;
   }
 
   inputAmount(): number {

@@ -35,7 +35,7 @@ class AbstractTransfer {
         };
     }
     get claimableAmount() {
-        return this.amount - this.fee;
+        return this.inputAmount() - this.amount - this.fee;
     }
     inputAmount() {
         let amount = 0;

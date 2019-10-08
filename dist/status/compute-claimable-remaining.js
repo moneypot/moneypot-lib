@@ -45,7 +45,7 @@ function computeClaimableRemaining(c, statuses) {
         }
     }
     if (remaining < 0) {
-        throw new Error('assertion failed, claimable remaining is less than 0: ' + c.hash());
+        throw new Error('assertion failed, claimable remaining is less than 0: ' + c.hash().toPOD());
     }
     return remaining;
 }
