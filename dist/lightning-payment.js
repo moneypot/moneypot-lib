@@ -8,24 +8,22 @@ class LightningPayment extends abstract_transfer_1.default {
     constructor(transferData, paymentRequest) {
         super(transferData);
         this.paymentRequest = paymentRequest;
+        let pro = bolt11.decodeBolt11(paymentRequest);
+        if (pro.satoshis && pro.satoshis !== transferData.amount) {
+            throw 'amount does not match invoice amount';
+        }
     }
     static fromPOD(data) {
         const transferData = abstract_transfer_1.parseTransferData(data);
         if (transferData instanceof Error) {
-            throw transferData;
+            return transferData;
         }
-        let pro;
         try {
-            pro = bolt11.decodeBolt11(data.paymentRequest);
+            return new LightningPayment(transferData, data.paymentRequest);
         }
         catch (err) {
-            console.warn('warn: bolt11 decode error: ', err);
-            return err;
+            return new Error(err);
         }
-        if (pro.satoshis && pro.satoshis !== transferData.amount) {
-            return new Error('amount does not match invoice amount');
-        }
-        return new LightningPayment(transferData, data.paymentRequest);
     }
     get kind() {
         return 'LightningPayment';

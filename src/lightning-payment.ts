@@ -12,22 +12,14 @@ export default class LightningPayment extends AbstractTransfer {
   public static fromPOD(data: any): LightningPayment | Error {
     const transferData = parseTransferData(data);
     if (transferData instanceof Error) {
-      throw transferData;
+      return transferData;
     }
 
-    let pro;
     try {
-      pro = bolt11.decodeBolt11(data.paymentRequest);
+      return new LightningPayment(transferData, data.paymentRequest);
     } catch (err) {
-      console.warn('warn: bolt11 decode error: ', err);
-      return err;
+      return new Error(err);
     }
-
-    if (pro.satoshis && pro.satoshis !== transferData.amount) {
-      return new Error('amount does not match invoice amount');
-    }
-
-    return new LightningPayment(transferData, data.paymentRequest);
   }
 
   paymentRequest: string;
@@ -38,6 +30,12 @@ export default class LightningPayment extends AbstractTransfer {
   constructor(transferData: TransferData, paymentRequest: string) {
     super(transferData);
     this.paymentRequest = paymentRequest;
+
+    let pro = bolt11.decodeBolt11(paymentRequest);
+
+    if (pro.satoshis && pro.satoshis !== transferData.amount) {
+      throw 'amount does not match invoice amount';
+    }
   }
 
   public toPOD(): POD.LightningPayment {
