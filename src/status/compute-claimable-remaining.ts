@@ -22,8 +22,8 @@ export default function computeClaimableRemaining(c: Claimable, statuses: Status
         throw new Error('got lighting payment sent status for a non lightning payment?');
       }
       const overpaid = c.fee - s.totalFees;
-      if (overpaid <= 0) {
-        throw new Error('assertion failed, actual lightning fees higher than paid: ' + c.hash());
+      if (overpaid < 0) {
+        throw new Error('assertion failed, actual lightning fees higher than paid: ' + c.hash().toPOD());
       }
       remaining += overpaid;
     } else if (s instanceof InvoiceSettled) {
