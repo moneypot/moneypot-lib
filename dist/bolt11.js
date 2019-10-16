@@ -230,8 +230,9 @@ function isDefined(t) {
     return t;
 }
 function decodeBolt11(paymentRequest) {
-    if (paymentRequest.slice(0, 2).toLowerCase() !== 'ln')
-        throw new Error('Not a proper lightning payment request');
+    if (paymentRequest.slice(0, 2).toLowerCase() !== 'ln') {
+        return new Error('Not a proper lightning payment request');
+    }
     let decoded = bech32.decode(paymentRequest);
     let words = Uint8Array.from(decoded.words);
     paymentRequest = paymentRequest.toLowerCase();
@@ -243,7 +244,7 @@ function decodeBolt11(paymentRequest) {
     let recoveryFlag = sigBuffer.slice(-1)[0];
     sigBuffer = sigBuffer.slice(0, -1);
     if (!(recoveryFlag in [0, 1, 2, 3]) || sigBuffer.length !== 64) {
-        throw new Error('Signature is missing or incorrect');
+        return new Error('Signature is missing or incorrect');
     }
     // Without reverse lookups, can't say that the multipier at the end must
     // have a number before it, so instead we parse, and if the second group
@@ -254,7 +255,7 @@ function decodeBolt11(paymentRequest) {
     if (prefixMatches && !prefixMatches[2])
         prefixMatches = decoded.prefix.match(/^ln(\S+)$/);
     if (!prefixMatches) {
-        throw new Error('Not a proper lightning payment request');
+        return new Error('Not a proper lightning payment request');
     }
     let coinType;
     let coinNetwork;
@@ -268,7 +269,7 @@ function decodeBolt11(paymentRequest) {
         coinNetwork = testnetInfo;
     }
     else {
-        throw new Error('Unknown coin bech32 prefix: ' + p1);
+        return new Error('Unknown coin bech32 prefix: ' + p1);
     }
     let value = prefixMatches[2];
     let satoshis, millisatoshis;
@@ -315,13 +316,13 @@ function decodeBolt11(paymentRequest) {
     let payReqHash = sha256_1.default.digest(toSign);
     let sig = signature_2.default.fromBytes(sigBuffer);
     if (sig instanceof Error) {
-        throw sig;
+        return sig;
     }
     let sigPubkeyPoint = signature_1.ecdsaRecover(payReqHash, sig, recoveryFlag);
     let payeeNodeKey = buffutils.toHex(new public_key_1.default(sigPubkeyPoint.x, sigPubkeyPoint.y).buffer);
     const payee = tagsItems(tags, isDefined(TAGNAMES.get(19)));
     if (payee && payee !== payeeNodeKey) {
-        throw new Error('Lightning Payment Request signature pubkey does not match payee pubkey');
+        return new Error('Lightning Payment Request signature pubkey does not match payee pubkey');
     }
     let finalResult = {
         paymentRequest,

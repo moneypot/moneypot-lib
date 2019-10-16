@@ -33,6 +33,10 @@ export default class LightningPayment extends AbstractTransfer {
 
     let pro = bolt11.decodeBolt11(paymentRequest);
 
+    if (pro instanceof Error) {
+      throw 'invalid bolt11 invoice: ' + pro.message;
+    }
+
     if (pro.satoshis && pro.satoshis !== transferData.amount) {
       throw 'amount does not match invoice amount';
     }

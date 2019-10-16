@@ -30,6 +30,6 @@ export declare type PaymentRequestObject = {
         data: TagData;
     }>;
 };
-export declare function decodeBolt11(paymentRequest: string): PaymentRequestObject;
+export declare function decodeBolt11(paymentRequest: string): PaymentRequestObject | Error;
 export declare function encodeBolt11(paymentRequest: PaymentRequestObject): string;
 export {};

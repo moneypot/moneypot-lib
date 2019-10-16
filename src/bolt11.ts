@@ -297,8 +297,10 @@ function isDefined<T>(t: T | undefined): T {
   return t;
 }
 
-export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
-  if (paymentRequest.slice(0, 2).toLowerCase() !== 'ln') throw new Error('Not a proper lightning payment request');
+export function decodeBolt11(paymentRequest: string): PaymentRequestObject | Error {
+  if (paymentRequest.slice(0, 2).toLowerCase() !== 'ln') {
+    return new Error('Not a proper lightning payment request');
+  }
 
   let decoded = bech32.decode(paymentRequest);
   let words = Uint8Array.from(decoded.words);
@@ -314,7 +316,7 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
   sigBuffer = sigBuffer.slice(0, -1);
 
   if (!(recoveryFlag in [0, 1, 2, 3]) || sigBuffer.length !== 64) {
-    throw new Error('Signature is missing or incorrect');
+    return new Error('Signature is missing or incorrect');
   }
 
   // Without reverse lookups, can't say that the multipier at the end must
@@ -325,7 +327,7 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
   let prefixMatches = decoded.prefix.match(/^ln(\S+?)(\d*)([a-zA-Z]?)$/);
   if (prefixMatches && !prefixMatches[2]) prefixMatches = decoded.prefix.match(/^ln(\S+)$/);
   if (!prefixMatches) {
-    throw new Error('Not a proper lightning payment request');
+    return new Error('Not a proper lightning payment request');
   }
 
   let coinType;
@@ -339,7 +341,7 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
     coinType = 'testnet';
     coinNetwork = testnetInfo;
   } else {
-    throw new Error('Unknown coin bech32 prefix: ' + p1);
+    return new Error('Unknown coin bech32 prefix: ' + p1);
   }
 
   let value = prefixMatches[2];
@@ -395,7 +397,7 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
 
   let sig = Signature.fromBytes(sigBuffer);
   if (sig instanceof Error) {
-    throw sig;
+    return sig;
   }
 
   let sigPubkeyPoint = ecdsaRecover(payReqHash, sig, recoveryFlag);
@@ -403,7 +405,7 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject {
 
   const payee = tagsItems(tags, isDefined(TAGNAMES.get(19)));
   if (payee && payee !== payeeNodeKey) {
-    throw new Error('Lightning Payment Request signature pubkey does not match payee pubkey');
+    return new Error('Lightning Payment Request signature pubkey does not match payee pubkey');
   }
 
   let finalResult = {
