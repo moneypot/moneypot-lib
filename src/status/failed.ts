@@ -42,7 +42,7 @@ export default class Failed extends AbstractStatus {
     }
 
     const reason = obj.reason;
-    if (!(typeof reason !== 'string')) {
+    if (typeof reason !== 'string') {
       return new Error('Failed.fromPOD expected a string reason');
     }
     const rebate = obj.rebate;

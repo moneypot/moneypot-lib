@@ -29,7 +29,7 @@ class Failed extends abstract_status_1.default {
             return claimableHash;
         }
         const reason = obj.reason;
-        if (!(typeof reason !== 'string')) {
+        if (typeof reason !== 'string') {
             return new Error('Failed.fromPOD expected a string reason');
         }
         const rebate = obj.rebate;
