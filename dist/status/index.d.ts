@@ -13,6 +13,7 @@ export declare function statusToPOD(s: Status): {
     kind: "BitcoinTransactionSent";
 } | {
     reason: string;
+    rebate: number;
     hash: string;
     claimableHash: string;
     kind: "Failed";

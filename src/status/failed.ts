@@ -28,6 +28,7 @@ export default class Failed extends AbstractStatus {
       hash: this.hash().toPOD(),
       claimableHash: this.claimableHash.toPOD(),
       reason: this.reason,
+      rebate: this.rebate,
     };
   }
 

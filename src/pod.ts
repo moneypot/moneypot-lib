@@ -105,6 +105,7 @@ export namespace Status {
 
   export interface Failed extends AbstractStatus {
     reason: string;
+    rebate: Amount;
   }
 
   export interface InvoiceSettled extends AbstractStatus {

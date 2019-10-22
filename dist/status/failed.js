@@ -18,6 +18,7 @@ class Failed extends abstract_status_1.default {
             hash: this.hash().toPOD(),
             claimableHash: this.claimableHash.toPOD(),
             reason: this.reason,
+            rebate: this.rebate,
         };
     }
     static fromPOD(obj) {
