@@ -52,7 +52,5 @@ describe('LightningInvoice', () => {
     };
 
     const res = bolt11.encodeBolt11(obj);
-
-    console.log('encoded object: ', res);
   });
 });

@@ -46,6 +46,7 @@ __export(require("./blind"));
 // helper coin function
 __export(require("./util/coins"));
 __export(require("./bolt11"));
+__export(require("./util/bitcoin-address"));
 var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
 const Acknowledged = require("./acknowledged");
