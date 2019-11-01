@@ -301,8 +301,16 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject | Err
   if (paymentRequest.slice(0, 2).toLowerCase() !== 'ln') {
     return new Error('Not a proper lightning payment request');
   }
+  let decoded;
+  try {
+    decoded = bech32.decode(paymentRequest);
+  } catch (err) {
+    if (!(err instanceof Error)) {
+      err = new Error(err);
+    }
+    return err;
+  }
 
-  let decoded = bech32.decode(paymentRequest);
   let words = Uint8Array.from(decoded.words);
   paymentRequest = paymentRequest.toLowerCase();
 
