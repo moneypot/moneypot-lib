@@ -20,8 +20,8 @@ export declare type PaymentRequestObject = {
     millisatoshis?: bigint;
     timestamp: number;
     timestampString: string;
-    timeExpireDate?: number;
-    timeExpireDateString?: string;
+    timeExpireDate: number;
+    timeExpireDateString: string;
     payeeNodeKey: string;
     signature: string;
     recoveryFlag: number;
@@ -30,6 +30,10 @@ export declare type PaymentRequestObject = {
         data: TagData;
     }>;
 };
+export declare function hrpToMillisat(hrpString: string): bigint;
+export declare function hrpToSat(hrpString: string): bigint;
 export declare function decodeBolt11(paymentRequest: string): PaymentRequestObject | Error;
+export declare function satToHrp(satoshis: bigint): string;
+export declare function millisatToHrp(millisatoshis: bigint): string;
 export declare function encodeBolt11(paymentRequest: PaymentRequestObject): string;
 export {};

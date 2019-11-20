@@ -56,6 +56,7 @@ function hrpToMillisat(hrpString) {
     }
     return millisatoshisBN;
 }
+exports.hrpToMillisat = hrpToMillisat;
 function hrpToSat(hrpString) {
     let millisatoshisBN = hrpToMillisat(hrpString);
     if (millisatoshisBN % BigInt(1000) !== BigInt(0)) {
@@ -63,6 +64,7 @@ function hrpToSat(hrpString) {
     }
     return millisatoshisBN / BigInt(1000);
 }
+exports.hrpToSat = hrpToSat;
 function wordsToIntBE(words) {
     let total = 0;
     for (const [index, item] of words.reverse().entries()) {
@@ -284,7 +286,10 @@ function decodeBolt11(paymentRequest) {
     let satoshis, millisatoshis;
     if (value) {
         let divisor = prefixMatches[3];
-        satoshis = Number(hrpToSat(value + divisor));
+        try {
+            satoshis = Number(hrpToSat(value + divisor));
+        }
+        catch { }
         millisatoshis = hrpToMillisat(value + divisor);
     }
     else {
@@ -317,10 +322,12 @@ function decodeBolt11(paymentRequest) {
     let timeExpireDate, timeExpireDateString;
     // be kind and provide an absolute expiration date.
     // good for logs
+    let expirySeconds = 3600; // 1 hour
     if (tagsContainItem(tags, isDefined(TAGNAMES.get(6)))) {
-        timeExpireDate = (timestamp + isDefined(tagsItems(tags, isDefined(TAGNAMES.get(6)))));
-        timeExpireDateString = new Date(timeExpireDate * 1000).toISOString();
+        expirySeconds = isDefined(tagsItems(tags, isDefined(TAGNAMES.get(6))));
     }
+    timeExpireDate = timestamp + expirySeconds;
+    timeExpireDateString = new Date(timeExpireDate * 1000).toISOString();
     let toSign = buffutils.concat(buffutils.fromString(decoded.prefix), bech32.convert(wordsNoSig, 5, 8, true));
     let payReqHash = sha256_1.default.digest(toSign);
     let sig = signature_2.default.fromBytes(sigBuffer);
@@ -343,14 +350,13 @@ function decodeBolt11(paymentRequest) {
         millisatoshis,
         timestamp,
         timestampString,
+        timeExpireDate,
+        timeExpireDateString,
         payeeNodeKey,
         signature: buffutils.toHex(sigBuffer),
         recoveryFlag,
         tags,
     };
-    if (timeExpireDate) {
-        finalResult = Object.assign(finalResult, { timeExpireDate, timeExpireDateString });
-    }
     return orderKeys(finalResult);
 }
 exports.decodeBolt11 = decodeBolt11;
@@ -370,6 +376,7 @@ function satToHrp(satoshis) {
     let millisatoshisBN = BigInt(satoshis);
     return millisatToHrp(millisatoshisBN * BigInt(1000));
 }
+exports.satToHrp = satToHrp;
 function millisatToHrp(millisatoshis) {
     if (!millisatoshis.toString().match(/^\d+$/)) {
         throw new Error('millisatoshis must be an integer');
@@ -399,6 +406,7 @@ function millisatToHrp(millisatoshis) {
     }
     return valueString + divisorString;
 }
+exports.millisatToHrp = millisatToHrp;
 function unknownEncoder(data) {
     data.words = bech32.decode(data.words).words;
     return data;

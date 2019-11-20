@@ -32,8 +32,8 @@ export declare type PaymentRequestObject = {
   millisatoshis?: bigint;
   timestamp: number;
   timestampString: string;
-  timeExpireDate?: number;
-  timeExpireDateString?: string;
+  timeExpireDate: number;
+  timeExpireDateString: string;
   payeeNodeKey: string;
   signature: string;
   recoveryFlag: number;
@@ -73,7 +73,7 @@ function DIVISORS(l: string) {
   }
 }
 
-function hrpToMillisat(hrpString: string) {
+export function hrpToMillisat(hrpString: string) {
   let divisor, value;
   if (hrpString.slice(-1).match(/^[munp]$/)) {
     divisor = hrpString.slice(-1);
@@ -97,7 +97,7 @@ function hrpToMillisat(hrpString: string) {
   return millisatoshisBN;
 }
 
-function hrpToSat(hrpString: string): bigint {
+export function hrpToSat(hrpString: string): bigint {
   let millisatoshisBN = hrpToMillisat(hrpString);
 
   if (millisatoshisBN % BigInt(1000) !== BigInt(0)) {
@@ -356,7 +356,9 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject | Err
   let satoshis, millisatoshis;
   if (value) {
     let divisor = prefixMatches[3];
-    satoshis = Number(hrpToSat(value + divisor));
+    try {
+      satoshis = Number(hrpToSat(value + divisor));
+    } catch { }
     millisatoshis = hrpToMillisat(value + divisor);
   } else {
     satoshis = undefined;
@@ -394,10 +396,15 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject | Err
   let timeExpireDate, timeExpireDateString;
   // be kind and provide an absolute expiration date.
   // good for logs
+  let expirySeconds = 3600; // 1 hour
   if (tagsContainItem(tags, isDefined(TAGNAMES.get(6)))) {
-    timeExpireDate = (timestamp + isDefined(tagsItems(tags, isDefined(TAGNAMES.get(6))))) as number;
-    timeExpireDateString = new Date(timeExpireDate * 1000).toISOString();
+    expirySeconds = isDefined(tagsItems(tags, isDefined(TAGNAMES.get(6)))) as number;
   }
+  timeExpireDate = timestamp + expirySeconds;
+
+  timeExpireDateString = new Date(timeExpireDate * 1000).toISOString();
+
+
 
   let toSign = buffutils.concat(buffutils.fromString(decoded.prefix), bech32.convert(wordsNoSig, 5, 8, true));
 
@@ -426,15 +433,13 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject | Err
     millisatoshis,
     timestamp,
     timestampString,
+    timeExpireDate,
+    timeExpireDateString,
     payeeNodeKey,
     signature: buffutils.toHex(sigBuffer),
     recoveryFlag,
     tags,
   };
-
-  if (timeExpireDate) {
-    finalResult = Object.assign(finalResult, { timeExpireDate, timeExpireDateString });
-  }
 
   return orderKeys(finalResult);
 }
@@ -449,7 +454,7 @@ function orderKeys<T extends any>(unorderedObj: T): T {
   return orderedObj;
 }
 
-function satToHrp(satoshis: bigint): string {
+export function satToHrp(satoshis: bigint): string {
   if (!satoshis.toString().match(/^\d+$/)) {
     throw new Error('satoshis must be an integer');
   }
@@ -457,7 +462,7 @@ function satToHrp(satoshis: bigint): string {
   return millisatToHrp(millisatoshisBN * BigInt(1000));
 }
 
-function millisatToHrp(millisatoshis: bigint): string {
+export function millisatToHrp(millisatoshis: bigint): string {
   if (!millisatoshis.toString().match(/^\d+$/)) {
     throw new Error('millisatoshis must be an integer');
   }

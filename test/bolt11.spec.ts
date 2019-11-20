@@ -1,7 +1,8 @@
-import { strictEqual } from 'assert';
+import { strictEqual, deepEqual, deepStrictEqual } from 'assert';
 import 'mocha';
 
 import * as bolt11 from '../src/bolt11';
+import fixtures from './bolt11_fixures';
 
 describe('LightningInvoice', () => {
   it('should decode', () => {
@@ -53,4 +54,118 @@ describe('LightningInvoice', () => {
 
     const res = bolt11.encodeBolt11(obj);
   });
+
+  it('satToHrp matches the fixtures', () => {
+    for (const { input, output } of fixtures.satToHrp.valid) {
+      strictEqual(bolt11.satToHrp(BigInt(input)), output);
+    }
+
+    // Not checking the invalid, as they're just type errors
+  });
+
+  it('millisatToHrp matches the fixtures test', () => {
+    for (const { input, output } of fixtures.millisatToHrp.valid) {
+      strictEqual(bolt11.millisatToHrp(BigInt(input)), output);
+    }
+
+    // Not checking the invalid, as they're just type errors
+  });
+
+  it('hrpToMillisat matches the fixtures test', () => {
+
+    for (const { input, output } of fixtures.hrpToMillisat.valid) {
+
+
+      strictEqual(`${bolt11.hrpToMillisat(input)}`, output);
+    }
+  }) 
+
+
+
+  it('hrpToSat matches the fixtures test', () => {
+
+    for (const { input, output } of fixtures.hrpToSat.valid) {
+
+
+      strictEqual(bolt11.hrpToSat(input).toString(), output);
+    }
+  }) 
+
+
+  it('decodes matches the fixtures', () => {
+
+    for (const f of fixtures.decode.valid) {
+
+      let decoded: any = bolt11.decodeBolt11(f.paymentRequest);
+      
+      if (decoded.millisatoshis == undefined) {
+        decoded.millisatoshis = null;
+      } else {
+        decoded.millisatoshis = decoded.millisatoshis.toString();
+      }
+
+
+      if (decoded.satoshis === undefined) {
+        delete decoded.satoshis;
+      }
+
+
+      deepStrictEqual(decoded, f);
+
+
+
+    }
+
+
+  })
+
+  it('decode works for invalid fixtures testx', () => {
+
+    for (const { paymentRequest, error } of fixtures.decode.invalid) {
+
+      if (typeof paymentRequest !== 'string') {
+        continue;
+      }
+
+
+      const decoded = bolt11.decodeBolt11(paymentRequest);
+      if (!(decoded instanceof Error)) {
+        throw new Error('decoded should have failed for payment request ' + paymentRequest);
+      }
+
+      strictEqual(decoded.message, error);
+
+
+    }
+
+
+  });
+
+
+
 });
+
+
+function doesThrow(f: () => any, message: string) {
+
+  let ran = false;
+  try {
+    f();
+    ran = true;
+  } catch (err) {
+    console.log('caught error: ', err, ran);
+    if (!(err instanceof Error)) {
+      throw new Error('doesThrow function threw a non-error');
+    }
+    if (err.message !== message) {
+      console.error(err);
+      strictEqual(err.message, message);
+    }
+  }
+
+  if (ran) {
+    throw new Error('doesThrow function ran without throwing');
+  }
+
+
+}
