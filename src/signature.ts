@@ -6,7 +6,7 @@ import * as ecc from './util/ecc';
 import PrivateKey from './private-key';
 import PublicKey from './public-key';
 
-const serializedPrefix = 'sighi'; // signature hookedin
+const serializedPrefix = 'sigmp'; // signature moneypot
 
 export default class Signature {
   // actually creates a schnorr sig. This takes a message, not a hash to prevent existential forgeries

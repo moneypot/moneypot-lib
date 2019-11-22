@@ -7,7 +7,7 @@ export default class PrivateKey {
     static combine(privkeys: PrivateKey[]): PrivateKey;
     scalar: ecc.Scalar;
     constructor(scalar: ecc.Scalar);
-    readonly buffer: Uint8Array;
+    get buffer(): Uint8Array;
     toPOD(): string;
     toPublicKey(): PublicKey;
     tweak(n: PrivateKey): PrivateKey;

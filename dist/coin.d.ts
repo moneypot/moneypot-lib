@@ -9,8 +9,8 @@ export default class Coin {
     magnitude: Magnitude;
     receipt: Signature;
     constructor(owner: PublicKey, magnitude: Magnitude, receipt: Signature);
-    readonly buffer: Uint8Array;
+    get buffer(): Uint8Array;
     hash(): Hash;
     toPOD(): POD.Coin;
-    readonly amount: number;
+    get amount(): number;
 }

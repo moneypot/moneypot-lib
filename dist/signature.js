@@ -4,7 +4,7 @@ const assert = require("./util/assert");
 const bech32 = require("./util/bech32");
 const Buffutils = require("./util/buffutils");
 const ecc = require("./util/ecc");
-const serializedPrefix = 'sighi'; // signature hookedin
+const serializedPrefix = 'sigmp'; // signature moneypot
 class Signature {
     constructor(r, s) {
         this.r = r;

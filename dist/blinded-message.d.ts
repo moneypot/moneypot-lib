@@ -4,6 +4,6 @@ export default class BlindedMessage {
     static fromBytes(bytes: Uint8Array): BlindedMessage | Error;
     c: ecc.Scalar;
     constructor(challenge: ecc.Scalar);
-    readonly buffer: Uint8Array;
+    get buffer(): Uint8Array;
     toPOD(): string;
 }

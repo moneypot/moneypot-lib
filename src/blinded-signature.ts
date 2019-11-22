@@ -2,7 +2,7 @@ import * as assert from './util/assert';
 import * as ecc from './util/ecc';
 import * as bech32 from './util/bech32';
 
-const serializedPrefix = 'bshi'; // blinded signature hookedin
+const serializedPrefix = 'bsmp'; // blinded signature moneypot
 
 export default class BlindedSignature {
   public static fromPOD(data: any) {

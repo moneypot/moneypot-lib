@@ -8,7 +8,7 @@ const wif = require("./util/wif");
 const random_1 = require("./util/random");
 const Buffutils = require("./util/buffutils");
 const mu_sig_1 = require("./util/ecc/mu-sig");
-const serializedPrefix = 'privhi'; // private key hookedin
+const serializedPrefix = 'privmp'; // private key moneypot
 class PrivateKey {
     constructor(scalar) {
         this.scalar = scalar;

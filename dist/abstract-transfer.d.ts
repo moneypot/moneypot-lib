@@ -19,9 +19,9 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
     static transferHash(td: TransferData): Hash;
     abstract hash(): Hash;
     toPOD(): POD.AbstractTransfer;
-    readonly claimableAmount: number;
+    get claimableAmount(): number;
     inputAmount(): number;
-    readonly claimant: PublicKey;
+    get claimant(): PublicKey;
     isAuthorized(): boolean;
     authorize(combinedInputPrivkey: PrivateKey): void;
 }

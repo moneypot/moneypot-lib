@@ -3,7 +3,7 @@ import * as bech32 from './util/bech32';
 import SHA256 from './util/bcrypto/sha256';
 import * as Buffutil from './util/buffutils';
 
-const serializedPrefix = 'hshi'; // hash hookedin
+const serializedPrefix = 'hsmp'; // hash moneypot
 
 export default class Hash {
   // actually hashes a message(s)

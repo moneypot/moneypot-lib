@@ -1,4 +1,4 @@
-hookedin-lib is a javascript library that fully implements the hookedin primitives. 
+moneypot-lib is a javascript library that fully implements the moneypot primitives. 
 
 
 Design Goals

@@ -6,7 +6,7 @@ export default class PublicKey {
     static combine(pubkeys: PublicKey[]): PublicKey;
     x: ecc.Scalar;
     y: ecc.Scalar;
-    readonly buffer: Uint8Array;
+    get buffer(): Uint8Array;
     constructor(x: ecc.Scalar, y: ecc.Scalar);
     toPOD(): string;
     tweak(n: PublicKey): PublicKey;

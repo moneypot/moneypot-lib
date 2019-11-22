@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const bech32 = require("./util/bech32");
 const ecc = require("./util/ecc/index");
-const serializedPrefix = 'bmhi'; // blinded message hookedin
+const serializedPrefix = 'bmmp'; // blinded message moneypot
 class BlindedMessage {
     constructor(challenge) {
         this.c = challenge;

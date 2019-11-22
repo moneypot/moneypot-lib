@@ -6,7 +6,7 @@ export default class Hookout extends AbstractTransfer {
     static fromPOD(data: any): Hookout | Error;
     bitcoinAddress: string;
     priority: Priority;
-    readonly kind: 'Hookout';
+    get kind(): 'Hookout';
     constructor(td: TransferData, bitcoinAddress: string, priority: Priority);
     toPOD(): POD.Hookout;
     static hashOf(transferDataHash: Hash, bitcoinAddress: string, priority: Priority): Hash;

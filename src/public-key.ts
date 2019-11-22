@@ -10,7 +10,7 @@ import * as buffutils from './util/buffutils';
 import { Buffutils } from '.';
 import { pubkeyCombine } from './util/ecc/mu-sig';
 
-const serializedPrefix = 'pubhi'; // public key hookedin
+const serializedPrefix = 'pubmp'; // public key moneypot
 
 export default class PublicKey {
   public static fromPOD(data: any): PublicKey | Error {

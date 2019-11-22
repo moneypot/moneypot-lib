@@ -5,6 +5,6 @@ export default class Magnitude {
     readonly n: number;
     constructor(n: number);
     toAmount(): number;
-    readonly buffer: Uint8Array;
+    get buffer(): Uint8Array;
     toPOD(): POD.Magnitude;
 }

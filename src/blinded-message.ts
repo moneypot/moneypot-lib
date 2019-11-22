@@ -2,7 +2,7 @@ import * as assert from './util/assert';
 import * as bech32 from './util/bech32';
 import * as ecc from './util/ecc/index';
 
-const serializedPrefix = 'bmhi'; // blinded message hookedin
+const serializedPrefix = 'bmmp'; // blinded message moneypot
 
 export default class BlindedMessage {
   public static fromPOD(data: any): BlindedMessage | Error {

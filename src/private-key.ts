@@ -8,7 +8,7 @@ import random from './util/random';
 import * as Buffutils from './util/buffutils';
 import { privkeyCombine } from './util/ecc/mu-sig';
 
-const serializedPrefix = 'privhi'; // private key hookedin
+const serializedPrefix = 'privmp'; // private key moneypot
 
 export default class PrivateKey {
   public static fromPOD(data: any): PrivateKey | Error {

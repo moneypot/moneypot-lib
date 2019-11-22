@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("./util/assert");
 const ecc = require("./util/ecc");
 const bech32 = require("./util/bech32");
-const serializedPrefix = 'bshi'; // blinded signature hookedin
+const serializedPrefix = 'bsmp'; // blinded signature moneypot
 class BlindedSignature {
     constructor(s) {
         this.s = s;

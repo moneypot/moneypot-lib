@@ -4,7 +4,7 @@ const assert = require("./util/assert");
 const bech32 = require("./util/bech32");
 const sha256_1 = require("./util/bcrypto/sha256");
 const Buffutil = require("./util/buffutils");
-const serializedPrefix = 'hshi'; // hash hookedin
+const serializedPrefix = 'hsmp'; // hash moneypot
 class Hash {
     constructor(buff) {
         assert.equal(buff.length, 32);
