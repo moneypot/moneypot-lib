@@ -1,4 +1,4 @@
-import assert from '../assert';
+import assert from "../assert";
 
 interface HashType {
   init(): void;
@@ -35,7 +35,7 @@ export default class HMAC {
     }
 
     // Pad key
-    const pad = Buffer.allocUnsafe(this.size);
+    const pad = new Uint8Array(this.size);
 
     for (let i = 0; i < key.length; i++) pad[i] = key[i] ^ 0x36;
 
