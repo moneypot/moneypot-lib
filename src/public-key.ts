@@ -9,6 +9,7 @@ import SHA256 from './util/bcrypto/sha256';
 import * as buffutils from './util/buffutils';
 import { Buffutils } from '.';
 import { pubkeyCombine } from './util/ecc/mu-sig';
+import { encode } from './util/base58';
 
 const serializedPrefix = 'pubmp'; // public key moneypot
 
@@ -101,6 +102,22 @@ export default class PublicKey {
     const version = new Uint8Array(1); // [0]
     return bech32.encode(prefix, buffutils.concat(version, words));
   }
+  public toNestedBitcoinAddress(testnet: boolean = true): string {
+    const prefix = testnet ? 0xc4 : 0x05;
+    const pubkeyHash = rmd160sha256(this.buffer)
+
+    // redeem script
+    const redeem = rmd160sha256(buffutils.concat(new Uint8Array([0x00, 0x14]), (pubkeyHash)))
+
+    // const rmdsha =  rmd160sha256(redeem)
+    const addbytes = buffutils.concat(new Uint8Array([prefix]), redeem)
+
+    const sha2 = SHA256.digest(SHA256.digest(addbytes)).slice(0, 4)
+    // const checksum = sha2.slice(0, 4) // wtf?????
+        
+    const binary = buffutils.concat(addbytes, sha2)
+    return encode(binary)
+}
 }
 
 function rmd160sha256(data: Uint8Array) {
