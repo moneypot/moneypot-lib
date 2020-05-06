@@ -12,9 +12,9 @@ export default class FeeBump extends AbstractTransfer {
     if (transferData instanceof Error) {
       throw transferData;
     }
-
+  //  Uint8Array.from(Buffer.from(data.txid, 'hex'));
     const txid = Buffutils.fromHex(data.txid, 32);
-    if (typeof txid !== 'string') {
+    if (txid instanceof Error) {
       return new Error('FeeBump.fromPOD invalid txid');
     }
 
