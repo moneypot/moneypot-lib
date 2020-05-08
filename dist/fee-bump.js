@@ -17,7 +17,7 @@ class FeeBump extends abstract_transfer_1.default {
             throw transferData;
         }
         const txid = Buffutils.fromHex(data.txid, 32);
-        if (typeof txid !== 'string') {
+        if (txid instanceof Error) {
             return new Error('FeeBump.fromPOD invalid txid');
         }
         return new FeeBump(transferData, txid);

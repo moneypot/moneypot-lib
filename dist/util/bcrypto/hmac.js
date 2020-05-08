@@ -18,7 +18,7 @@ class HMAC {
             assert_1.default(key.length <= this.size);
         }
         // Pad key
-        const pad = Buffer.allocUnsafe(this.size);
+        const pad = new Uint8Array(this.size);
         for (let i = 0; i < key.length; i++)
             pad[i] = key[i] ^ 0x36;
         for (let i = key.length; i < pad.length; i++)

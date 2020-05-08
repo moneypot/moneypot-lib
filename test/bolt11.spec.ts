@@ -72,61 +72,40 @@ describe('LightningInvoice', () => {
   });
 
   it('hrpToMillisat matches the fixtures test', () => {
-
     for (const { input, output } of fixtures.hrpToMillisat.valid) {
-
-
       strictEqual(`${bolt11.hrpToMillisat(input)}`, output);
     }
-  }) 
-
-
+  });
 
   it('hrpToSat matches the fixtures test', () => {
-
     for (const { input, output } of fixtures.hrpToSat.valid) {
-
-
       strictEqual(bolt11.hrpToSat(input).toString(), output);
     }
-  }) 
-
+  });
 
   it('decodes matches the fixtures', () => {
-
     for (const f of fixtures.decode.valid) {
-
       let decoded: any = bolt11.decodeBolt11(f.paymentRequest);
-      
+
       if (decoded.millisatoshis == undefined) {
         decoded.millisatoshis = null;
       } else {
         decoded.millisatoshis = decoded.millisatoshis.toString();
       }
 
-
       if (decoded.satoshis === undefined) {
         delete decoded.satoshis;
       }
 
-
       deepStrictEqual(decoded, f);
-
-
-
     }
-
-
-  })
+  });
 
   it('decode works for invalid fixtures testx', () => {
-
     for (const { paymentRequest, error } of fixtures.decode.invalid) {
-
       if (typeof paymentRequest !== 'string') {
         continue;
       }
-
 
       const decoded = bolt11.decodeBolt11(paymentRequest);
       if (!(decoded instanceof Error)) {
@@ -134,20 +113,11 @@ describe('LightningInvoice', () => {
       }
 
       strictEqual(decoded.message, error);
-
-
     }
-
-
   });
-
-
-
 });
 
-
 function doesThrow(f: () => any, message: string) {
-
   let ran = false;
   try {
     f();
@@ -166,6 +136,4 @@ function doesThrow(f: () => any, message: string) {
   if (ran) {
     throw new Error('doesThrow function ran without throwing');
   }
-
-
 }

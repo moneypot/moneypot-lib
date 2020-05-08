@@ -12,6 +12,10 @@ export default class Hookout extends AbstractTransfer {
     if (transferData instanceof Error) {
       return transferData;
     }
+    const rbf = data.rbf;
+    if (typeof rbf !== 'boolean') {
+      return new Error('Hookout.fromPOD invalid rbf');
+    }
 
     const bitcoinAddress = data.bitcoinAddress;
     if (typeof bitcoinAddress !== 'string') {
@@ -23,19 +27,20 @@ export default class Hookout extends AbstractTransfer {
       return new Error('Unrecognized priority');
     }
 
-    return new Hookout(transferData, bitcoinAddress, priority);
+    return new Hookout(transferData, bitcoinAddress, priority, rbf);
   }
-
+  public rbf: boolean;
   public bitcoinAddress: string;
   public priority: Priority;
   public get kind(): 'Hookout' {
     return 'Hookout';
   }
 
-  constructor(td: TransferData, bitcoinAddress: string, priority: Priority) {
+  constructor(td: TransferData, bitcoinAddress: string, priority: Priority, rbf: boolean) {
     super(td);
     this.bitcoinAddress = bitcoinAddress;
     this.priority = priority;
+    this.rbf = rbf;
   }
 
   public toPOD(): POD.Hookout {
@@ -43,6 +48,7 @@ export default class Hookout extends AbstractTransfer {
       ...super.toPOD(),
       bitcoinAddress: this.bitcoinAddress,
       priority: this.priority,
+      rbf: this.rbf,
     };
   }
 

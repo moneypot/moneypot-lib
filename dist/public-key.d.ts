@@ -13,4 +13,5 @@ export default class PublicKey {
     derive(n: Uint8Array | number | bigint): PublicKey;
     hash(): Hash;
     toBitcoinAddress(testnet?: boolean): string;
+    toNestedBitcoinAddress(testnet?: boolean): string;
 }

@@ -795,8 +795,8 @@ export default {
         millisatoshis: '2000000000',
         timestamp: 1496314658,
         timestampString: '2017-06-01T10:57:38.000Z',
-        "timeExpireDate": 1496318258,
-        "timeExpireDateString": "2017-06-01T11:57:38.000Z",
+        timeExpireDate: 1496318258,
+        timeExpireDateString: '2017-06-01T11:57:38.000Z',
         payeeNodeKey: '03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad',
         signature:
           'c63486e81f8c878a105bc9d959af1973854c4dc552c4f0e0e0c7389603d6bdc67707bf6be992a8ce7bf50016bb41d8a9b5358652c4960445a170d049ced4558c',
@@ -824,8 +824,8 @@ export default {
         millisatoshis: '2000000000',
         timestamp: 1496314658,
         timestampString: '2017-06-01T10:57:38.000Z',
-        "timeExpireDate": 1496318258,
-        "timeExpireDateString": "2017-06-01T11:57:38.000Z",
+        timeExpireDate: 1496318258,
+        timeExpireDateString: '2017-06-01T11:57:38.000Z',
         payeeNodeKey: '03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad',
         signature:
           'b6c42b8a61e0dc5823ea63e76ff148ab5f6c86f45f9722af0069c7934daff70d5e315893300774c897995e3a7476c8193693d144a36e2645a0851e6ebafc9d0a',
@@ -861,8 +861,8 @@ export default {
         millisatoshis: '2000000000',
         timestamp: 1496314658,
         timestampString: '2017-06-01T10:57:38.000Z',
-        "timeExpireDate": 1496318258,
-        "timeExpireDateString": "2017-06-01T11:57:38.000Z",
+        timeExpireDate: 1496318258,
+        timeExpireDateString: '2017-06-01T11:57:38.000Z',
         payeeNodeKey: '03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad',
         signature:
           '91675cb3fad8e9d915343883a49242e074474e26d42c7ed914655689a8074553733e8e4ea5ce9b85f69e40d755a55014536b12323f8b220600c94ef2b9c51428',
@@ -954,8 +954,8 @@ export default {
         millisatoshis: '2000000000',
         timestamp: 1496314658,
         timestampString: '2017-06-01T10:57:38.000Z',
-        "timeExpireDate": 1496318258,
-        "timeExpireDateString": "2017-06-01T11:57:38.000Z",
+        timeExpireDate: 1496318258,
+        timeExpireDateString: '2017-06-01T11:57:38.000Z',
         payeeNodeKey: '03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad',
         signature:
           'c8583b8f65853d7cc90f0eb4ae0e92a606f89caf4f7d65048142d7bbd4e5f3623ef407a75458e4b20f00efbc734f1c2eefc419f3a2be6d51038016ffb35cd613',
@@ -991,8 +991,8 @@ export default {
         millisatoshis: '2000000000',
         timestamp: 1496314658,
         timestampString: '2017-06-01T10:57:38.000Z',
-        "timeExpireDate": 1496318258,
-        "timeExpireDateString": "2017-06-01T11:57:38.000Z",
+        timeExpireDate: 1496318258,
+        timeExpireDateString: '2017-06-01T11:57:38.000Z',
         payeeNodeKey: '03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad',
         signature:
           '51e4f6446e410a164a6da9f39507e730c26241b4456ab6ea28d1b12c71ef8ca20c9cfe3dffc07d9f8db671ecaa4d20beedb193bda8ce37c59f85f82773a55d47',
@@ -1067,7 +1067,8 @@ export default {
       {
         paymentRequest:
           'lnbc2500u1PvJlUeZpP5QqQsYqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspfj9srp',
-        error: 'Mixed-case string lnbc2500u1PvJlUeZpP5QqQsYqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspfj9srp',
+        error:
+          'Mixed-case string lnbc2500u1PvJlUeZpP5QqQsYqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspfj9srp',
       },
       {
         paymentRequest: 'lnbc500m1jg3xv8',

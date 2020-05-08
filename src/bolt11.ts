@@ -107,7 +107,7 @@ export function hrpToSat(hrpString: string): bigint {
   return millisatoshisBN / BigInt(1000);
 }
 
-function wordsToIntBE(words: Uint8Array | (number[])): number {
+function wordsToIntBE(words: Uint8Array | number[]): number {
   let total = 0;
   for (const [index, item] of words.reverse().entries()) {
     total += item * 32 ** index;
@@ -358,7 +358,7 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject | Err
     let divisor = prefixMatches[3];
     try {
       satoshis = Number(hrpToSat(value + divisor));
-    } catch { }
+    } catch {}
     millisatoshis = hrpToMillisat(value + divisor);
   } else {
     satoshis = undefined;
@@ -403,8 +403,6 @@ export function decodeBolt11(paymentRequest: string): PaymentRequestObject | Err
   timeExpireDate = timestamp + expirySeconds;
 
   timeExpireDateString = new Date(timeExpireDate * 1000).toISOString();
-
-
 
   let toSign = buffutils.concat(buffutils.fromString(decoded.prefix), bech32.convert(wordsNoSig, 5, 8, true));
 

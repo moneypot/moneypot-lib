@@ -58,6 +58,7 @@ export interface Hookout extends AbstractTransfer {
     bitcoinAddress: string;
     priority: 'CUSTOM' | 'IMMEDIATE' | 'BATCH' | 'FREE';
     fee: Amount;
+    rbf: boolean;
 }
 export interface LightningInvoice {
     hash: string;

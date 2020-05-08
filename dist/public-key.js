@@ -8,6 +8,7 @@ const sha256_1 = require("./util/bcrypto/sha256");
 const buffutils = require("./util/buffutils");
 const _1 = require(".");
 const mu_sig_1 = require("./util/ecc/mu-sig");
+const base58_1 = require("./util/base58");
 const serializedPrefix = 'pubmp'; // public key moneypot
 class PublicKey {
     // dont directly use...
@@ -78,6 +79,18 @@ class PublicKey {
         const words = bech32.toWords(pubkeyHash);
         const version = new Uint8Array(1); // [0]
         return bech32.encode(prefix, buffutils.concat(version, words));
+    }
+    toNestedBitcoinAddress(testnet = true) {
+        const prefix = testnet ? 0xc4 : 0x05;
+        const pubkeyHash = rmd160sha256(this.buffer);
+        // redeem script
+        const redeem = rmd160sha256(buffutils.concat(new Uint8Array([0x00, 0x14]), pubkeyHash));
+        // const rmdsha =  rmd160sha256(redeem)
+        const addbytes = buffutils.concat(new Uint8Array([prefix]), redeem);
+        const sha2 = sha256_1.default.digest(sha256_1.default.digest(addbytes)).slice(0, 4);
+        // const checksum = sha2.slice(0, 4)
+        const binary = buffutils.concat(addbytes, sha2);
+        return base58_1.encode(binary);
     }
 }
 exports.default = PublicKey;
