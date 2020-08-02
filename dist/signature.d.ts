@@ -10,5 +10,6 @@ export default class Signature {
     constructor(r: ecc.Scalar, s: ecc.Scalar);
     get buffer(): Uint8Array;
     verify(message: Uint8Array, pubkey: PublicKey): boolean;
+    verifyECDSA(message: Uint8Array, pubkey: PublicKey): boolean;
     toPOD(): string;
 }

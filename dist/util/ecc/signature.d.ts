@@ -11,4 +11,5 @@ export declare const Signature: {
 };
 export declare function sign(message: Uint8Array, privkey: bigint): Signature;
 export declare function verify(pubkey: Point, message: Uint8Array, sig: Signature): boolean;
+export declare function verifyECDSA(pubkey: Point, message: Uint8Array, sig: Signature): boolean;
 export declare function ecdsaRecover(message: Uint8Array, sig: Signature, j: number): Point;

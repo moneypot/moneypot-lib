@@ -15,6 +15,7 @@ var signature_1 = require("./signature");
 exports.Signature = signature_1.Signature;
 exports.sign = signature_1.sign;
 exports.verify = signature_1.verify;
+exports.verifyECDSA = signature_1.verifyECDSA;
 var blind_1 = require("./blind");
 exports.blindMessage = blind_1.blindMessage;
 exports.blindSign = blind_1.blindSign;

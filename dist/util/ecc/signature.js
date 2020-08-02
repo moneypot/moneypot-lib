@@ -70,6 +70,34 @@ function verify(pubkey, message, sig) {
     }
 }
 exports.verify = verify;
+function verifyECDSA(pubkey, message, sig) {
+    if (!check.isValidPubkey(pubkey)) {
+        throw new Error('invalid pubkey provided');
+    }
+    if (!check.isValidSignature(sig)) {
+        throw new Error('invalid sig');
+    }
+    const m = message;
+    const P = pubkey;
+    let e = elliptic_1.Scalar.fromBytes(m);
+    if (e instanceof Error) {
+        throw new Error('invalid e scalar');
+    }
+    let sInv = util_1.modInverse(sig.s, util_1.curve.n);
+    let u1 = util_1.mod(e * sInv, util_1.curve.n);
+    let u2 = util_1.mod(sig.r * sInv, util_1.curve.n);
+    let S = elliptic_1.pointAdd(elliptic_1.pointMultiply(util_1.curve.g, u1), elliptic_1.pointMultiply(P, u2));
+    if (S === elliptic_1.INFINITE_POINT) {
+        return false;
+    }
+    if (S.x === sig.r) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+exports.verifyECDSA = verifyECDSA;
 // this is for ecdsa?! not schnorr ?!
 function ecdsaRecover(message, sig, j) {
     // var sigObj = { r: signature.slice(0, 32), s: signature.slice(32, 64) }

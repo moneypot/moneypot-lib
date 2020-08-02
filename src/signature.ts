@@ -60,6 +60,9 @@ export default class Signature {
   public verify(message: Uint8Array, pubkey: PublicKey) {
     return ecc.verify(pubkey, message, this);
   }
+  public verifyECDSA(message: Uint8Array, pubkey: PublicKey) {
+    return ecc.verifyECDSA(pubkey, message, this);
+  }
 
   public toPOD() {
     return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));

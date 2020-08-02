@@ -14,4 +14,5 @@ export default class PublicKey {
     hash(): Hash;
     toBitcoinAddress(testnet?: boolean): string;
     toNestedBitcoinAddress(testnet?: boolean): string;
+    toLegacyBitcoinAddress(testnet?: boolean): string;
 }

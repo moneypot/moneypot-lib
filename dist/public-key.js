@@ -92,6 +92,14 @@ class PublicKey {
         const binary = buffutils.concat(addbytes, sha2);
         return base58_1.encode(binary);
     }
+    toLegacyBitcoinAddress(testnet = false) {
+        const prefix = testnet ? 0x6f : 0x00;
+        const hash = rmd160sha256(this.buffer);
+        const concatVersion = buffutils.concat(new Uint8Array([prefix]), hash);
+        const sha = sha256_1.default.digest(sha256_1.default.digest(concatVersion)).slice(0, 4);
+        const enc = buffutils.concat(concatVersion, sha);
+        return base58_1.encode(enc);
+    }
 }
 exports.default = PublicKey;
 function rmd160sha256(data) {

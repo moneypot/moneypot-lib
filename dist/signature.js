@@ -43,6 +43,9 @@ class Signature {
     verify(message, pubkey) {
         return ecc.verify(pubkey, message, this);
     }
+    verifyECDSA(message, pubkey) {
+        return ecc.verifyECDSA(pubkey, message, this);
+    }
     toPOD() {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
     }

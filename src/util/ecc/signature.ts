@@ -95,6 +95,41 @@ export function verify(pubkey: Point, message: Uint8Array, sig: Signature): bool
   }
 }
 
+export function verifyECDSA(pubkey: Point, message: Uint8Array, sig: Signature): boolean {
+  if (!check.isValidPubkey(pubkey)) {
+    throw new Error('invalid pubkey provided');
+  }
+  if (!check.isValidSignature(sig)) {
+    throw new Error('invalid sig');
+  }
+  const m = message;
+  const P = pubkey;
+
+  let e = Scalar.fromBytes(m);
+
+  if (e instanceof Error) {
+    throw new Error('invalid e scalar');
+  }
+
+  let sInv = modInverse(sig.s, curve.n);
+
+  let u1 = mod(e * sInv, curve.n);
+
+  let u2 = mod(sig.r * sInv, curve.n);
+
+  let S = pointAdd(pointMultiply(curve.g, u1), pointMultiply(P, u2));
+
+  if (S === INFINITE_POINT) {
+    return false;
+  }
+  if (S.x === sig.r) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
 // this is for ecdsa?! not schnorr ?!
 export function ecdsaRecover(message: Uint8Array, sig: Signature, j: number): Point {
   // var sigObj = { r: signature.slice(0, 32), s: signature.slice(32, 64) }
