@@ -105,24 +105,22 @@ export function verifyECDSA(pubkey: Point, message: Uint8Array, sig: Signature):
   const m = message;
   const P = pubkey;
 
-  let e = Scalar.fromBytes(m);
+  const e = Scalar.fromBytes(m);
 
   if (e instanceof Error) {
     throw new Error('invalid e scalar');
   }
+  const sInv = modInverse(sig.s, curve.n);
+  const u1 = mod(e * sInv, curve.n);
+  const u2 = mod(sig.r * sInv, curve.n);
 
-  let sInv = modInverse(sig.s, curve.n);
-
-  let u1 = mod(e * sInv, curve.n);
-
-  let u2 = mod(sig.r * sInv, curve.n);
-
-  let S = pointAdd(pointMultiply(curve.g, u1), pointMultiply(P, u2));
+  const S = pointAdd(pointMultiply(curve.g, u1), pointMultiply(P, u2));
+  const V = mod(S.x, curve.n)
 
   if (S === INFINITE_POINT) {
     return false;
   }
-  if (S.x === sig.r) {
+  if (V === sig.r) {
     return true;
   } else {
     return false;

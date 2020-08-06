@@ -79,18 +79,19 @@ function verifyECDSA(pubkey, message, sig) {
     }
     const m = message;
     const P = pubkey;
-    let e = elliptic_1.Scalar.fromBytes(m);
+    const e = elliptic_1.Scalar.fromBytes(m);
     if (e instanceof Error) {
         throw new Error('invalid e scalar');
     }
-    let sInv = util_1.modInverse(sig.s, util_1.curve.n);
-    let u1 = util_1.mod(e * sInv, util_1.curve.n);
-    let u2 = util_1.mod(sig.r * sInv, util_1.curve.n);
-    let S = elliptic_1.pointAdd(elliptic_1.pointMultiply(util_1.curve.g, u1), elliptic_1.pointMultiply(P, u2));
+    const sInv = util_1.modInverse(sig.s, util_1.curve.n);
+    const u1 = util_1.mod(e * sInv, util_1.curve.n);
+    const u2 = util_1.mod(sig.r * sInv, util_1.curve.n);
+    const S = elliptic_1.pointAdd(elliptic_1.pointMultiply(util_1.curve.g, u1), elliptic_1.pointMultiply(P, u2));
+    const V = util_1.mod(S.x, util_1.curve.n);
     if (S === elliptic_1.INFINITE_POINT) {
         return false;
     }
-    if (S.x === sig.r) {
+    if (V === sig.r) {
         return true;
     }
     else {
