@@ -20,6 +20,8 @@ export interface CustodianInfo {
   currency: string;
   fundingKey: PublicKey;
   blindCoinKeys: PublicKey[];
+  wipeDateSig?: Signature;
+  wipeDate?: string;
 }
 
 export type CoinRequest = { blindingNonce: PublicKey; blindedOwner: PublicKey; magnitude: Magnitude };

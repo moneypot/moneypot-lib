@@ -4,12 +4,15 @@ const public_key_1 = require("./public-key");
 const hash_1 = require("./hash");
 const bech32 = require("./util/bech32");
 const Buffutils = require("./util/buffutils");
+const signature_1 = require("./signature");
 class CustodianInfo {
-    constructor(acknowledgementKey, currency, fundingKey, blindCoinKeys) {
+    constructor(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate, wipeDateSig) {
         this.acknowledgementKey = acknowledgementKey;
         this.currency = currency;
         this.fundingKey = fundingKey;
         this.blindCoinKeys = blindCoinKeys;
+        this.wipeDateSig = wipeDateSig;
+        this.wipeDate = wipeDate;
     }
     hash() {
         return hash_1.default.fromMessage('Custodian', this.acknowledgementKey.buffer, Buffutils.fromUint32(this.currency.length), Buffutils.fromString(this.currency), this.fundingKey.buffer, ...this.blindCoinKeys.map(bk => bk.buffer));
@@ -28,6 +31,8 @@ class CustodianInfo {
             currency: this.currency,
             fundingKey: this.fundingKey.toPOD(),
             blindCoinKeys: this.blindCoinKeys.map(bk => bk.toPOD()),
+            wipeDate: this.wipeDate,
+            wipeDateSig: this.wipeDateSig
         };
     }
     static fromPOD(d) {
@@ -57,7 +62,21 @@ class CustodianInfo {
             }
             blindCoinKeys.push(bk);
         }
-        return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys);
+        // doesn't force a type..
+        const wipeDate = d.wipeDate;
+        if (wipeDate) {
+            if (typeof wipeDate !== 'string') {
+                return new Error('Invalid format used for the date.');
+            }
+        }
+        const wipeDateSig = d.wipeDateSig;
+        if (wipeDateSig) {
+            const sig = signature_1.default.fromPOD(wipeDateSig);
+            if (sig instanceof Error) {
+                return sig;
+            }
+        }
+        return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate, wipeDateSig);
     }
 }
 exports.default = CustodianInfo;
