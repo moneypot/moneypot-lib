@@ -48,6 +48,8 @@ export interface Hookin {
   amount: number;
   claimant: string;
   bitcoinAddress: string;
+  conf?: boolean;
+  confSig?: Signature;
 }
 
 export interface AbstractTransfer {
@@ -100,6 +102,7 @@ export namespace Status {
 
   export interface HookinAccepted extends AbstractStatus {
     consolidationFee: number;
+    adversaryFee?: number;
   }
 
   export interface BitcoinTransactionSent extends AbstractStatus {

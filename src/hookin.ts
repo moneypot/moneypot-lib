@@ -6,6 +6,7 @@ import * as POD from './pod';
 
 import * as buffutils from './util/buffutils';
 import AbstractClaimable from './abstract-claimable';
+import Signature from './signature'
 
 export default class Hookin implements AbstractClaimable {
   public static fromPOD(data: any): Hookin | Error {
@@ -37,7 +38,24 @@ export default class Hookin implements AbstractClaimable {
       return new Error('hookin expected a bitcoin address');
     }
 
-    return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
+    const conf = data.conf;
+    if (conf) { 
+      if (typeof conf !== 'boolean') { 
+        return new Error('hookin expected a boolean or undefined value.')
+      }
+    }
+
+    const confSig = data.confSig
+    
+    if (confSig) { 
+      const sig = Signature.fromPOD(confSig)
+      if (sig instanceof Error) { 
+        return sig
+      }
+    }
+
+
+    return new Hookin(txid, vout, amount, claimant, bitcoinAddress, conf, confSig);
   }
 
   public static hashOf(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
@@ -55,13 +73,17 @@ export default class Hookin implements AbstractClaimable {
   public amount: number;
   public claimant: PublicKey;
   public bitcoinAddress: string;
+  public conf?: boolean;
+  public confSig?: POD.Signature;
 
-  constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
+  constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string, conf?: boolean, confSig?: POD.Signature) {
     this.txid = txid;
     this.vout = vout;
     this.amount = amount;
     this.claimant = claimant;
     this.bitcoinAddress = bitcoinAddress;
+    this.conf = conf;
+    this.confSig = confSig;
   }
 
   public hash(): Hash {
@@ -95,6 +117,8 @@ export default class Hookin implements AbstractClaimable {
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
       bitcoinAddress: this.bitcoinAddress,
+      conf: this.conf,
+      confSig: this.confSig
     };
   }
 }

@@ -38,6 +38,7 @@ export declare function statusToPOD(s: Status): {
     kind: "LightningPaymentSent";
 } | {
     consolidationFee: number;
+    adversaryFee?: number | undefined;
     hash: string;
     claimableHash: string;
     kind: "HookinAccepted";
