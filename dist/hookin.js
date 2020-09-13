@@ -5,16 +5,15 @@ const private_key_1 = require("./private-key");
 const public_key_1 = require("./public-key");
 const POD = require("./pod");
 const buffutils = require("./util/buffutils");
-const signature_1 = require("./signature");
 class Hookin {
-    constructor(txid, vout, amount, claimant, bitcoinAddress, conf, confSig) {
+    // public confSig?: POD.Signature;
+    constructor(txid, vout, amount, claimant, bitcoinAddress) {
         this.txid = txid;
         this.vout = vout;
         this.amount = amount;
         this.claimant = claimant;
         this.bitcoinAddress = bitcoinAddress;
-        this.conf = conf;
-        this.confSig = confSig;
+        // this.confSig = confSig;
     }
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -40,20 +39,14 @@ class Hookin {
         if (typeof bitcoinAddress !== 'string') {
             return new Error('hookin expected a bitcoin address');
         }
-        const conf = data.conf;
-        if (conf) {
-            if (typeof conf !== 'boolean') {
-                return new Error('hookin expected a boolean or undefined value.');
-            }
-        }
-        const confSig = data.confSig;
-        if (confSig) {
-            const sig = signature_1.default.fromPOD(confSig);
-            if (sig instanceof Error) {
-                return sig;
-            }
-        }
-        return new Hookin(txid, vout, amount, claimant, bitcoinAddress, conf, confSig);
+        // const confSig = data.confSig
+        // if (confSig) { 
+        //   const sig = Signature.fromPOD(confSig)
+        //   if (sig instanceof Error) { 
+        //     return sig
+        //   }
+        // }
+        return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
     }
     static hashOf(txid, vout, amount, claimant, bitcoinAddress) {
         const b = hash_1.default.newBuilder('Hookin');
@@ -90,8 +83,6 @@ class Hookin {
             txid: buffutils.toHex(this.txid),
             vout: this.vout,
             bitcoinAddress: this.bitcoinAddress,
-            conf: this.conf,
-            confSig: this.confSig
         };
     }
 }

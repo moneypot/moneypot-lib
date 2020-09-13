@@ -4,17 +4,20 @@ const blinded_message_1 = require("./blinded-message");
 const hash_1 = require("./hash");
 const public_key_1 = require("./public-key");
 const signature_1 = require("./signature");
+const POD = require("./pod");
 const magnitude_1 = require("./magnitude");
+const buffutils = require("./util/buffutils");
 class ClaimRequest {
-    constructor(claimableHash, coinRequests, authorization) {
+    constructor(claimableHash, coinRequests, authorization, fee) {
         this.claimableHash = claimableHash;
         this.coinRequests = coinRequests;
         this.authorization = authorization;
+        this.fee = fee;
     }
-    static newAuthorized(claimableHash, coinRequests, claimantPrivateKey) {
-        const hash = ClaimRequest.hashOf(claimableHash, coinRequests);
+    static newAuthorized(claimableHash, coinRequests, claimantPrivateKey, fee) {
+        const hash = ClaimRequest.hashOf(claimableHash, coinRequests, fee);
         const authorization = signature_1.default.compute(hash.buffer, claimantPrivateKey);
-        return new ClaimRequest(claimableHash, coinRequests, authorization);
+        return new ClaimRequest(claimableHash, coinRequests, authorization, fee);
     }
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -47,9 +50,13 @@ class ClaimRequest {
         if (authorization instanceof Error) {
             return authorization;
         }
-        return new ClaimRequest(claimableHash, coinRequests, authorization);
+        const fee = data.fee;
+        if (!POD.isAmount(fee)) {
+            return new Error(`${fee} is not a number.`);
+        }
+        return new ClaimRequest(claimableHash, coinRequests, authorization, fee);
     }
-    static hashOf(claimableHash, coinRequests) {
+    static hashOf(claimableHash, coinRequests, fee) {
         const h = hash_1.default.newBuilder('ClaimRequest');
         h.update(claimableHash.buffer);
         for (const cc of coinRequests) {
@@ -57,10 +64,11 @@ class ClaimRequest {
             h.update(cc.blindingNonce.buffer);
             h.update(cc.magnitude.buffer);
         }
+        h.update(buffutils.fromUint64(fee));
         return h.digest();
     }
     hash() {
-        return ClaimRequest.hashOf(this.claimableHash, this.coinRequests);
+        return ClaimRequest.hashOf(this.claimableHash, this.coinRequests, this.fee);
     }
     toPOD() {
         return {
@@ -72,11 +80,12 @@ class ClaimRequest {
                 blindingNonce: cr.blindingNonce.toPOD(),
                 magnitude: cr.magnitude.toPOD(),
             })),
+            fee: this.fee,
         };
     }
     // how much is being claimed
     amount() {
-        let n = 0;
+        let n = this.fee;
         for (const coinRequest of this.coinRequests) {
             n += coinRequest.magnitude.toAmount();
         }

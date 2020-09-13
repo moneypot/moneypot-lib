@@ -38,24 +38,16 @@ export default class Hookin implements AbstractClaimable {
       return new Error('hookin expected a bitcoin address');
     }
 
-    const conf = data.conf;
-    if (conf) { 
-      if (typeof conf !== 'boolean') { 
-        return new Error('hookin expected a boolean or undefined value.')
-      }
-    }
-
-    const confSig = data.confSig
-    
-    if (confSig) { 
-      const sig = Signature.fromPOD(confSig)
-      if (sig instanceof Error) { 
-        return sig
-      }
-    }
+    // const confSig = data.confSig
+    // if (confSig) { 
+    //   const sig = Signature.fromPOD(confSig)
+    //   if (sig instanceof Error) { 
+    //     return sig
+    //   }
+    // }
 
 
-    return new Hookin(txid, vout, amount, claimant, bitcoinAddress, conf, confSig);
+    return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
   }
 
   public static hashOf(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
@@ -73,17 +65,15 @@ export default class Hookin implements AbstractClaimable {
   public amount: number;
   public claimant: PublicKey;
   public bitcoinAddress: string;
-  public conf?: boolean;
-  public confSig?: POD.Signature;
+  // public confSig?: POD.Signature;
 
-  constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string, conf?: boolean, confSig?: POD.Signature) {
+  constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
     this.txid = txid;
     this.vout = vout;
     this.amount = amount;
     this.claimant = claimant;
     this.bitcoinAddress = bitcoinAddress;
-    this.conf = conf;
-    this.confSig = confSig;
+    // this.confSig = confSig;
   }
 
   public hash(): Hash {
@@ -117,8 +107,7 @@ export default class Hookin implements AbstractClaimable {
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
       bitcoinAddress: this.bitcoinAddress,
-      conf: this.conf,
-      confSig: this.confSig
+      // confSig: this.confSig
     };
   }
 }

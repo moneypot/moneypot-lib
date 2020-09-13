@@ -5,19 +5,19 @@ import * as buffutils from '../util/buffutils';
 
 export default class HookinAccepted extends AbstractStatus {
   consolidationFee: number;
-  adversaryFee?: number;
+  // adversaryFee: number;
 
-  constructor(claimableHash: Hash, consolidationFee: number, adversaryFee?: number) {
+  constructor(claimableHash: Hash, consolidationFee: number) {
     super(claimableHash);
     this.consolidationFee = consolidationFee;
-    this.adversaryFee = adversaryFee;
+    // this.adversaryFee = adversaryFee;
   }
 
   public hash() {
     const h = Hash.newBuilder('HookinAccepted');
     h.update(this.claimableHash.buffer);
     h.update(buffutils.fromUint64(this.consolidationFee));
-    (this.adversaryFee && h.update(buffutils.fromUint64(this.adversaryFee)))
+    // h.update(buffutils.fromUint64(this.adversaryFee))
     return h.digest();
   }
 
@@ -26,7 +26,7 @@ export default class HookinAccepted extends AbstractStatus {
       hash: this.hash().toPOD(),
       claimableHash: this.claimableHash.toPOD(),
       consolidationFee: this.consolidationFee,
-      adversaryFee: this.adversaryFee,
+      // adversaryFee: this.adversaryFee,
     };
   }
 
@@ -45,14 +45,14 @@ export default class HookinAccepted extends AbstractStatus {
       throw new Error('HookinAccepted.fromPOD expected an amount consolidation fee');
     }
 
-    const adversaryFee = data.adversaryFee;
+    // const adversaryFee = data.adversaryFee;
     
-    if (adversaryFee) { 
-      if (!POD.isAmount(adversaryFee)) { 
-        throw new Error('HookinAccepted.fromPOD expectde an amount adversary fee or none at all.')
-      }
-    }
+    // if (adversaryFee) { 
+    //   if (!POD.isAmount(adversaryFee)) { 
+    //     throw new Error('HookinAccepted.fromPOD expectde an amount adversary fee or none at all.')
+    //   }
+    // }
 
-    return new HookinAccepted(claimableHash, consolidationFee, adversaryFee);
+    return new HookinAccepted(claimableHash, consolidationFee);
   }
 }

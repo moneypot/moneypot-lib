@@ -31,6 +31,7 @@ export interface ClaimRequest {
   authorization: Signature;
   claimableHash: Hash;
   coinRequests: CoinRequest[];
+  fee: number;
 }
 
 export interface Coin {
@@ -48,8 +49,7 @@ export interface Hookin {
   amount: number;
   claimant: string;
   bitcoinAddress: string;
-  conf?: boolean;
-  confSig?: Signature;
+  // confSig?: Signature;
 }
 
 export interface AbstractTransfer {
@@ -102,7 +102,7 @@ export namespace Status {
 
   export interface HookinAccepted extends AbstractStatus {
     consolidationFee: number;
-    adversaryFee?: number;
+    // adversaryFee: number;
   }
 
   export interface BitcoinTransactionSent extends AbstractStatus {

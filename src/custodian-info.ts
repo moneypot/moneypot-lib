@@ -21,7 +21,7 @@ export default class CustodianInfo {
     this.wipeDateSig = wipeDateSig;
     this.wipeDate = wipeDate;
   }
-
+// TODO.
   hash() {
     return Hash.fromMessage(
       'Custodian',
@@ -29,7 +29,8 @@ export default class CustodianInfo {
       Buffutils.fromUint32(this.currency.length),
       Buffutils.fromString(this.currency),
       this.fundingKey.buffer,
-      ...this.blindCoinKeys.map(bk => bk.buffer)
+      ...this.blindCoinKeys.map(bk => bk.buffer),
+      Buffutils.fromString(this.wipeDate ? this.wipeDate : '')
     );
   }
 

@@ -14,8 +14,9 @@ class CustodianInfo {
         this.wipeDateSig = wipeDateSig;
         this.wipeDate = wipeDate;
     }
+    // TODO.
     hash() {
-        return hash_1.default.fromMessage('Custodian', this.acknowledgementKey.buffer, Buffutils.fromUint32(this.currency.length), Buffutils.fromString(this.currency), this.fundingKey.buffer, ...this.blindCoinKeys.map(bk => bk.buffer));
+        return hash_1.default.fromMessage('Custodian', this.acknowledgementKey.buffer, Buffutils.fromUint32(this.currency.length), Buffutils.fromString(this.currency), this.fundingKey.buffer, ...this.blindCoinKeys.map(bk => bk.buffer), Buffutils.fromString(this.wipeDate ? this.wipeDate : ''));
     }
     // 4 letter code for using in an Address
     prefix() {
