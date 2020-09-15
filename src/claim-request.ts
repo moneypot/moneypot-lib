@@ -9,7 +9,12 @@ import Magnitude from './magnitude';
 import * as buffutils from './util/buffutils';
 
 export default class ClaimRequest {
-  public static newAuthorized(claimableHash: Hash, coinRequests: CoinRequest[], claimantPrivateKey: PrivateKey, fee: number) {
+  public static newAuthorized(
+    claimableHash: Hash,
+    coinRequests: CoinRequest[],
+    claimantPrivateKey: PrivateKey,
+    fee: number
+  ) {
     const hash = ClaimRequest.hashOf(claimableHash, coinRequests, fee);
     const authorization = Signature.compute(hash.buffer, claimantPrivateKey);
 
@@ -55,9 +60,9 @@ export default class ClaimRequest {
       return authorization;
     }
 
-    const fee = data.fee
-    if(!POD.isAmount(fee)) { 
-      return new Error(`${fee} is not a number.`)
+    const fee = data.fee;
+    if (!POD.isAmount(fee)) {
+      return new Error(`${fee} is not a number.`);
     }
 
     return new ClaimRequest(claimableHash, coinRequests, authorization, fee);
@@ -82,7 +87,7 @@ export default class ClaimRequest {
       h.update(cc.blindingNonce.buffer);
       h.update(cc.magnitude.buffer);
     }
-    h.update(buffutils.fromUint64(fee))
+    h.update(buffutils.fromUint64(fee));
     return h.digest();
   }
 

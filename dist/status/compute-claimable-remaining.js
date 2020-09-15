@@ -37,9 +37,6 @@ function computeClaimableRemaining(c, statuses) {
             if (!(c instanceof hookin_1.default)) {
                 throw new Error('assertion failure. hookin accepted for non-hookin?!');
             }
-            // if (s.adversaryFee) { 
-            //   remaining += Math.max(c.amount - s.consolidationFee - s.adversaryFee, 0);
-            // }
             remaining += Math.max(c.amount - s.consolidationFee, 0);
         }
         else {

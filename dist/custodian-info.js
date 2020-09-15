@@ -4,17 +4,14 @@ const public_key_1 = require("./public-key");
 const hash_1 = require("./hash");
 const bech32 = require("./util/bech32");
 const Buffutils = require("./util/buffutils");
-const signature_1 = require("./signature");
 class CustodianInfo {
-    constructor(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate, wipeDateSig) {
+    constructor(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate) {
         this.acknowledgementKey = acknowledgementKey;
         this.currency = currency;
         this.fundingKey = fundingKey;
         this.blindCoinKeys = blindCoinKeys;
-        this.wipeDateSig = wipeDateSig;
         this.wipeDate = wipeDate;
     }
-    // TODO.
     hash() {
         return hash_1.default.fromMessage('Custodian', this.acknowledgementKey.buffer, Buffutils.fromUint32(this.currency.length), Buffutils.fromString(this.currency), this.fundingKey.buffer, ...this.blindCoinKeys.map(bk => bk.buffer), Buffutils.fromString(this.wipeDate ? this.wipeDate : ''));
     }
@@ -33,7 +30,6 @@ class CustodianInfo {
             fundingKey: this.fundingKey.toPOD(),
             blindCoinKeys: this.blindCoinKeys.map(bk => bk.toPOD()),
             wipeDate: this.wipeDate,
-            wipeDateSig: this.wipeDateSig
         };
     }
     static fromPOD(d) {
@@ -70,14 +66,7 @@ class CustodianInfo {
                 return new Error('Invalid format used for the date.');
             }
         }
-        const wipeDateSig = d.wipeDateSig;
-        if (wipeDateSig) {
-            const sig = signature_1.default.fromPOD(wipeDateSig);
-            if (sig instanceof Error) {
-                return sig;
-            }
-        }
-        return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate, wipeDateSig);
+        return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate);
     }
 }
 exports.default = CustodianInfo;

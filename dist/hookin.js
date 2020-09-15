@@ -6,14 +6,12 @@ const public_key_1 = require("./public-key");
 const POD = require("./pod");
 const buffutils = require("./util/buffutils");
 class Hookin {
-    // public confSig?: POD.Signature;
     constructor(txid, vout, amount, claimant, bitcoinAddress) {
         this.txid = txid;
         this.vout = vout;
         this.amount = amount;
         this.claimant = claimant;
         this.bitcoinAddress = bitcoinAddress;
-        // this.confSig = confSig;
     }
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -39,13 +37,6 @@ class Hookin {
         if (typeof bitcoinAddress !== 'string') {
             return new Error('hookin expected a bitcoin address');
         }
-        // const confSig = data.confSig
-        // if (confSig) { 
-        //   const sig = Signature.fromPOD(confSig)
-        //   if (sig instanceof Error) { 
-        //     return sig
-        //   }
-        // }
         return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
     }
     static hashOf(txid, vout, amount, claimant, bitcoinAddress) {

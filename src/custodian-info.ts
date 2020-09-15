@@ -3,7 +3,6 @@ import Hash from './hash';
 import * as bech32 from './util/bech32';
 import * as POD from './pod';
 import * as Buffutils from './util/buffutils';
-import Signature from './signature'
 
 export default class CustodianInfo {
   acknowledgementKey: PublicKey;
@@ -11,17 +10,20 @@ export default class CustodianInfo {
   fundingKey: PublicKey;
   blindCoinKeys: PublicKey[]; // of 31...
   wipeDate?: string;
-  wipeDateSig?: POD.Signature;
 
-  constructor(acknowledgementKey: PublicKey, currency: string, fundingKey: PublicKey, blindCoinKeys: PublicKey[], wipeDate?: string, wipeDateSig?: POD.Signature) {
+  constructor(
+    acknowledgementKey: PublicKey,
+    currency: string,
+    fundingKey: PublicKey,
+    blindCoinKeys: PublicKey[],
+    wipeDate?: string
+  ) {
     this.acknowledgementKey = acknowledgementKey;
     this.currency = currency;
     this.fundingKey = fundingKey;
     this.blindCoinKeys = blindCoinKeys;
-    this.wipeDateSig = wipeDateSig;
     this.wipeDate = wipeDate;
   }
-// TODO.
   hash() {
     return Hash.fromMessage(
       'Custodian',
@@ -52,7 +54,6 @@ export default class CustodianInfo {
       fundingKey: this.fundingKey.toPOD(),
       blindCoinKeys: this.blindCoinKeys.map(bk => bk.toPOD()),
       wipeDate: this.wipeDate,
-      wipeDateSig: this.wipeDateSig
     };
   }
 
@@ -89,22 +90,12 @@ export default class CustodianInfo {
     }
 
     // doesn't force a type..
-    const wipeDate = d.wipeDate
+    const wipeDate = d.wipeDate;
     if (wipeDate) {
       if (typeof wipeDate !== 'string') {
-        return new Error('Invalid format used for the date.')
+        return new Error('Invalid format used for the date.');
       }
     }
-    
-    const wipeDateSig = d.wipeDateSig
-
-    if (wipeDateSig) { 
-      const sig = Signature.fromPOD(wipeDateSig)
-      if (sig instanceof Error) { 
-        return sig
-      }
-    }
-
-    return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate, wipeDateSig);
+    return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate);
   }
 }

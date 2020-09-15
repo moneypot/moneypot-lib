@@ -6,7 +6,6 @@ import * as POD from './pod';
 
 import * as buffutils from './util/buffutils';
 import AbstractClaimable from './abstract-claimable';
-import Signature from './signature'
 
 export default class Hookin implements AbstractClaimable {
   public static fromPOD(data: any): Hookin | Error {
@@ -38,15 +37,6 @@ export default class Hookin implements AbstractClaimable {
       return new Error('hookin expected a bitcoin address');
     }
 
-    // const confSig = data.confSig
-    // if (confSig) { 
-    //   const sig = Signature.fromPOD(confSig)
-    //   if (sig instanceof Error) { 
-    //     return sig
-    //   }
-    // }
-
-
     return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
   }
 
@@ -65,7 +55,6 @@ export default class Hookin implements AbstractClaimable {
   public amount: number;
   public claimant: PublicKey;
   public bitcoinAddress: string;
-  // public confSig?: POD.Signature;
 
   constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
     this.txid = txid;
@@ -73,7 +62,6 @@ export default class Hookin implements AbstractClaimable {
     this.amount = amount;
     this.claimant = claimant;
     this.bitcoinAddress = bitcoinAddress;
-    // this.confSig = confSig;
   }
 
   public hash(): Hash {
@@ -107,7 +95,6 @@ export default class Hookin implements AbstractClaimable {
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
       bitcoinAddress: this.bitcoinAddress,
-      // confSig: this.confSig
     };
   }
 }

@@ -37,12 +37,6 @@ class HookinAccepted extends abstract_status_1.default {
         if (!POD.isAmount(consolidationFee)) {
             throw new Error('HookinAccepted.fromPOD expected an amount consolidation fee');
         }
-        // const adversaryFee = data.adversaryFee;
-        // if (adversaryFee) { 
-        //   if (!POD.isAmount(adversaryFee)) { 
-        //     throw new Error('HookinAccepted.fromPOD expectde an amount adversary fee or none at all.')
-        //   }
-        // }
         return new HookinAccepted(claimableHash, consolidationFee);
     }
 }

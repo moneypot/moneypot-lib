@@ -115,7 +115,7 @@ export function verifyECDSA(pubkey: Point, message: Uint8Array, sig: Signature):
   const u2 = mod(sig.r * sInv, curve.n);
 
   const S = pointAdd(pointMultiply(curve.g, u1), pointMultiply(P, u2));
-  const V = mod(S.x, curve.n)
+  const V = mod(S.x, curve.n);
 
   if (S === INFINITE_POINT) {
     return false;
@@ -126,7 +126,6 @@ export function verifyECDSA(pubkey: Point, message: Uint8Array, sig: Signature):
     return false;
   }
 }
-
 
 // this is for ecdsa?! not schnorr ?!
 export function ecdsaRecover(message: Uint8Array, sig: Signature, j: number): Point {

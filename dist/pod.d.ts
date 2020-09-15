@@ -13,7 +13,6 @@ export interface CustodianInfo {
     currency: string;
     fundingKey: PublicKey;
     blindCoinKeys: PublicKey[];
-    wipeDateSig?: Signature;
     wipeDate?: string;
 }
 export declare type CoinRequest = {
