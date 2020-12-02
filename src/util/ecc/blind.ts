@@ -66,3 +66,7 @@ export function unblind({ alpha, r }: Unblinder, blindedSig: BlindedSignature): 
   const s = scalarAdd(blindedSig.s, alpha);
   return { r, s };
 }
+
+export function blindVerify(blindedSig: bigint, nonce: Point, message: bigint, signer: Point): boolean {
+  return add(nonce, mul(signer, message)).x === mul(curve.g, blindedSig).x
+}

@@ -35,6 +35,10 @@ export default class BlindedSignature {
     this.s = s;
   }
 
+  public verify(nonce: ecc.Point, message: bigint, signer: ecc.Point): boolean {
+    return ecc.blindVerify(this.s, nonce, message, signer)
+  }
+
   get buffer(): Uint8Array {
     return ecc.Scalar.toBytes(this.s);
   }
