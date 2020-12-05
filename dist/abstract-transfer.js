@@ -8,10 +8,11 @@ const coin_1 = require("./coin");
 const public_key_1 = require("./public-key");
 const buffutils = require("./util/buffutils");
 class AbstractTransfer {
-    constructor({ amount, authorization, fee, inputs }) {
+    constructor({ amount, authorization, fee, inputs, initCreated }) {
         this.amount = amount;
         this.authorization = authorization;
         this.fee = fee;
+        this.initCreated = initCreated;
         assert_1.default(isHashSorted(inputs));
         this.inputs = inputs;
     }
@@ -32,6 +33,7 @@ class AbstractTransfer {
             claimant: this.claimant.toPOD(),
             fee: this.fee,
             inputs: this.inputs.map(i => i.toPOD()),
+            initCreated: this.initCreated,
         };
     }
     get claimableAmount() {
@@ -91,7 +93,13 @@ function parseTransferData(data) {
     if (inputAmount < amount + fee) {
         return new Error('not sourcing enough input for amount and fee');
     }
-    return { amount, authorization, fee, inputs };
+    const initCreated = data.initCreated;
+    if (initCreated) {
+        if (typeof initCreated != 'number') {
+            throw initCreated;
+        }
+    }
+    return { amount, authorization, fee, inputs, initCreated };
 }
 exports.parseTransferData = parseTransferData;
 function isHashSorted(ts) {

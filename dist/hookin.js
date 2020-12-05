@@ -6,12 +6,13 @@ const public_key_1 = require("./public-key");
 const POD = require("./pod");
 const buffutils = require("./util/buffutils");
 class Hookin {
-    constructor(txid, vout, amount, claimant, bitcoinAddress) {
+    constructor(txid, vout, amount, claimant, bitcoinAddress, initCreated) {
         this.txid = txid;
         this.vout = vout;
         this.amount = amount;
         this.claimant = claimant;
         this.bitcoinAddress = bitcoinAddress;
+        this.initCreated = initCreated;
     }
     static fromPOD(data) {
         if (typeof data !== 'object') {
@@ -37,7 +38,13 @@ class Hookin {
         if (typeof bitcoinAddress !== 'string') {
             return new Error('hookin expected a bitcoin address');
         }
-        return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
+        const initCreated = data.initCreated;
+        if (initCreated) {
+            if (typeof initCreated != 'number') {
+                throw initCreated;
+            }
+        }
+        return new Hookin(txid, vout, amount, claimant, bitcoinAddress, initCreated);
     }
     static hashOf(txid, vout, amount, claimant, bitcoinAddress) {
         const b = hash_1.default.newBuilder('Hookin');
@@ -74,6 +81,7 @@ class Hookin {
             txid: buffutils.toHex(this.txid),
             vout: this.vout,
             bitcoinAddress: this.bitcoinAddress,
+            initCreated: this.initCreated,
         };
     }
 }

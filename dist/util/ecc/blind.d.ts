@@ -13,3 +13,4 @@ export declare type BlindedSignature = {
 export declare function blindMessage(secret: Uint8Array, nonce: Point, signer: Point, message: Uint8Array): [Unblinder, BlindedMessage];
 export declare function blindSign(signer: bigint, nonce: bigint, { c }: BlindedMessage): BlindedSignature;
 export declare function unblind({ alpha, r }: Unblinder, blindedSig: BlindedSignature): Signature;
+export declare function blindVerify(blindedSig: bigint, nonce: Point, message: bigint, signer: Point): boolean;

@@ -14,13 +14,15 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
   fee: number;
 
   authorization?: Signature;
+  initCreated?: number;
 
   abstract kind: 'LightningPayment' | 'FeeBump' | 'Hookout';
 
-  constructor({ amount, authorization, fee, inputs }: TransferData) {
+  constructor({ amount, authorization, fee, inputs, initCreated }: TransferData) {
     this.amount = amount;
     this.authorization = authorization;
     this.fee = fee;
+    this.initCreated = initCreated;
 
     assert(isHashSorted(inputs));
     this.inputs = inputs;
@@ -54,6 +56,7 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
       claimant: this.claimant.toPOD(),
       fee: this.fee,
       inputs: this.inputs.map(i => i.toPOD()),
+      initCreated: this.initCreated,
     };
   }
 
@@ -128,7 +131,14 @@ export function parseTransferData(data: any): TransferData | Error {
     return new Error('not sourcing enough input for amount and fee');
   }
 
-  return { amount, authorization, fee, inputs };
+  const initCreated = data.initCreated;
+  if (initCreated) {
+    if (typeof initCreated != 'number') {
+      throw initCreated;
+    }
+  }
+
+  return { amount, authorization, fee, inputs, initCreated };
 }
 
 export interface TransferData {
@@ -136,6 +146,7 @@ export interface TransferData {
   authorization?: Signature;
   fee: number;
   inputs: Coin[];
+  initCreated?: number;
 }
 
 function isHashSorted<T extends { hash(): Hash }>(ts: ReadonlyArray<T>) {

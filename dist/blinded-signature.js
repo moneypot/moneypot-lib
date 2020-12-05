@@ -26,6 +26,9 @@ class BlindedSignature {
         }
         return new BlindedSignature(s);
     }
+    verify(nonce, message, signer) {
+        return ecc.blindVerify(this.s, nonce, message, signer);
+    }
     get buffer() {
         return ecc.Scalar.toBytes(this.s);
     }

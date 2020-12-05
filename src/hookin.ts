@@ -36,8 +36,14 @@ export default class Hookin implements AbstractClaimable {
     if (typeof bitcoinAddress !== 'string') {
       return new Error('hookin expected a bitcoin address');
     }
+    const initCreated = data.initCreated;
+    if (initCreated) {
+      if (typeof initCreated != 'number') {
+        throw initCreated;
+      }
+    }
 
-    return new Hookin(txid, vout, amount, claimant, bitcoinAddress);
+    return new Hookin(txid, vout, amount, claimant, bitcoinAddress, initCreated);
   }
 
   public static hashOf(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
@@ -55,13 +61,22 @@ export default class Hookin implements AbstractClaimable {
   public amount: number;
   public claimant: PublicKey;
   public bitcoinAddress: string;
+  public initCreated?: number;
 
-  constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string) {
+  constructor(
+    txid: Uint8Array,
+    vout: number,
+    amount: number,
+    claimant: PublicKey,
+    bitcoinAddress: string,
+    initCreated?: number
+  ) {
     this.txid = txid;
     this.vout = vout;
     this.amount = amount;
     this.claimant = claimant;
     this.bitcoinAddress = bitcoinAddress;
+    this.initCreated = initCreated;
   }
 
   public hash(): Hash {
@@ -95,6 +110,7 @@ export default class Hookin implements AbstractClaimable {
       txid: buffutils.toHex(this.txid),
       vout: this.vout,
       bitcoinAddress: this.bitcoinAddress,
+      initCreated: this.initCreated,
     };
   }
 }

@@ -48,6 +48,7 @@ export interface Hookin {
   amount: number;
   claimant: string;
   bitcoinAddress: string;
+  initCreated?: number;
 }
 
 export interface AbstractTransfer {
@@ -57,6 +58,7 @@ export interface AbstractTransfer {
   claimant: PublicKey;
   fee: Amount;
   inputs: Coin[];
+  initCreated?: number;
 }
 
 export interface LightningPayment extends AbstractTransfer {
@@ -78,6 +80,7 @@ export interface LightningInvoice {
   hash: string;
   claimant: PublicKey;
   paymentRequest: string;
+  initCreated?: number;
 }
 
 export type Claimable =

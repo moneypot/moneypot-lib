@@ -10,8 +10,9 @@ export default abstract class AbstractTransfer implements AbstractClaimable {
     inputs: Coin[];
     fee: number;
     authorization?: Signature;
+    initCreated?: number;
     abstract kind: 'LightningPayment' | 'FeeBump' | 'Hookout';
-    constructor({ amount, authorization, fee, inputs }: TransferData);
+    constructor({ amount, authorization, fee, inputs, initCreated }: TransferData);
     static sort(hashable: {
         hash(): Hash;
     }[]): void;
@@ -31,4 +32,5 @@ export interface TransferData {
     authorization?: Signature;
     fee: number;
     inputs: Coin[];
+    initCreated?: number;
 }

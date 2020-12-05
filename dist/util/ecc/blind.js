@@ -40,4 +40,8 @@ function unblind({ alpha, r }, blindedSig) {
     return { r, s };
 }
 exports.unblind = unblind;
+function blindVerify(blindedSig, nonce, message, signer) {
+    return elliptic_1.pointAdd(nonce, elliptic_1.pointMultiply(signer, message)).x === elliptic_1.pointMultiply(util_1.curve.g, blindedSig).x;
+}
+exports.blindVerify = blindVerify;
 //# sourceMappingURL=blind.js.map

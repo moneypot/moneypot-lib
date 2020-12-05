@@ -5,7 +5,8 @@ import AbstractClaimable from './abstract-claimable';
 export default class LightningInvoice implements AbstractClaimable {
     claimant: PublicKey;
     paymentRequest: string;
-    constructor(claimant: PublicKey, paymentRequest: string);
+    initCreated?: number;
+    constructor(claimant: PublicKey, paymentRequest: string, initCreated?: number);
     hash(): Hash;
     toPOD(): POD.LightningInvoice;
     get fee(): number;

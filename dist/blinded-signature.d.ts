@@ -4,6 +4,7 @@ export default class BlindedSignature {
     static fromBytes(bytes: Uint8Array): BlindedSignature | Error;
     s: ecc.Scalar;
     constructor(s: ecc.Scalar);
+    verify(nonce: ecc.Point, message: bigint, signer: ecc.Point): boolean;
     get buffer(): Uint8Array;
     toPOD(): string;
 }

@@ -4,9 +4,10 @@ const public_key_1 = require("./public-key");
 const hash_1 = require("./hash");
 const buffutils = require("./util/buffutils");
 class LightningInvoice {
-    constructor(claimant, paymentRequest) {
+    constructor(claimant, paymentRequest, initCreated) {
         this.claimant = claimant;
         this.paymentRequest = paymentRequest;
+        this.initCreated = initCreated;
     }
     hash() {
         return hash_1.default.fromMessage('LightningInvoice', this.claimant.buffer, buffutils.fromString(this.paymentRequest));
@@ -16,6 +17,7 @@ class LightningInvoice {
             hash: this.hash().toPOD(),
             claimant: this.claimant.toPOD(),
             paymentRequest: this.paymentRequest,
+            initCreated: this.initCreated,
         };
     }
     get fee() {
@@ -43,7 +45,13 @@ class LightningInvoice {
         if (typeof paymentRequest !== 'string' || !paymentRequest.startsWith('ln')) {
             return new Error('expected valid payment request for lightninginvoice');
         }
-        return new LightningInvoice(claimant, paymentRequest);
+        const initCreated = data.initCreated;
+        if (initCreated) {
+            if (typeof initCreated != 'number') {
+                throw initCreated;
+            }
+        }
+        return new LightningInvoice(claimant, paymentRequest, initCreated);
     }
 }
 exports.default = LightningInvoice;

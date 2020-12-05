@@ -11,7 +11,8 @@ export default class Hookin implements AbstractClaimable {
     amount: number;
     claimant: PublicKey;
     bitcoinAddress: string;
-    constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string);
+    initCreated?: number;
+    constructor(txid: Uint8Array, vout: number, amount: number, claimant: PublicKey, bitcoinAddress: string, initCreated?: number);
     hash(): Hash;
     get kind(): 'Hookin';
     get claimableAmount(): number;

@@ -7,10 +7,12 @@ import AbstractClaimable from './abstract-claimable';
 export default class LightningInvoice implements AbstractClaimable {
   claimant: PublicKey;
   paymentRequest: string;
+  initCreated?: number;
 
-  constructor(claimant: PublicKey, paymentRequest: string) {
+  constructor(claimant: PublicKey, paymentRequest: string, initCreated?: number) {
     this.claimant = claimant;
     this.paymentRequest = paymentRequest;
+    this.initCreated = initCreated;
   }
 
   hash() {
@@ -22,6 +24,7 @@ export default class LightningInvoice implements AbstractClaimable {
       hash: this.hash().toPOD(),
       claimant: this.claimant.toPOD(),
       paymentRequest: this.paymentRequest,
+      initCreated: this.initCreated,
     };
   }
 
@@ -57,6 +60,13 @@ export default class LightningInvoice implements AbstractClaimable {
       return new Error('expected valid payment request for lightninginvoice');
     }
 
-    return new LightningInvoice(claimant, paymentRequest);
+    const initCreated = data.initCreated;
+    if (initCreated) {
+      if (typeof initCreated != 'number') {
+        throw initCreated;
+      }
+    }
+
+    return new LightningInvoice(claimant, paymentRequest, initCreated);
   }
 }
