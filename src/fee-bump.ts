@@ -16,35 +16,41 @@ export default class FeeBump extends AbstractTransfer {
     if (txid instanceof Error) {
       return new Error('FeeBump.fromPOD invalid txid');
     }
-
-    return new FeeBump(transferData, txid);
+    const confTarget = data.confTarget
+    if (typeof confTarget !== 'number') { 
+      return new Error('Feebump.frompod invalid conftarget')
+    }
+    return new FeeBump(transferData, txid, confTarget);
   }
 
   txid: Uint8Array;
+  confTarget: number;
   get kind(): 'FeeBump' {
     return 'FeeBump';
   }
 
-  constructor(transferData: TransferData, txid: Uint8Array) {
+  constructor(transferData: TransferData, txid: Uint8Array, confTarget: number) {
     super(transferData);
 
     this.txid = txid;
     assert.equal(txid.length, 32);
     this.txid = txid;
+    this.confTarget = confTarget
   }
 
   toPOD(): POD.FeeBump {
     return {
       ...super.toPOD(),
       txid: Buffutils.toHex(this.txid),
+      confTarget: this.confTarget
     };
   }
 
-  static hashOf(transferHash: Hash, txid: Uint8Array) {
-    return Hash.fromMessage('FeeBump', transferHash.buffer, txid);
+  static hashOf(transferHash: Hash, txid: Uint8Array, confTarget: number) {
+    return Hash.fromMessage('FeeBump', transferHash.buffer, txid, Buffutils.fromUint64(confTarget));
   }
 
   hash() {
-    return FeeBump.hashOf(AbstractTransfer.transferHash(this), this.txid);
+    return FeeBump.hashOf(AbstractTransfer.transferHash(this), this.txid, this.confTarget);
   }
 }

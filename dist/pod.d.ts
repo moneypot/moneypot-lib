@@ -57,6 +57,7 @@ export interface LightningPayment extends AbstractTransfer {
 }
 export interface FeeBump extends AbstractTransfer {
     txid: string;
+    confTarget: number;
 }
 export interface Hookout extends AbstractTransfer {
     bitcoinAddress: string;

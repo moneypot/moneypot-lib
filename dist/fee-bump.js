@@ -5,11 +5,12 @@ const hash_1 = require("./hash");
 const assert = require("./util/assert");
 const abstract_transfer_1 = require("./abstract-transfer");
 class FeeBump extends abstract_transfer_1.default {
-    constructor(transferData, txid) {
+    constructor(transferData, txid, confTarget) {
         super(transferData);
         this.txid = txid;
         assert.equal(txid.length, 32);
         this.txid = txid;
+        this.confTarget = confTarget;
     }
     static fromPOD(data) {
         const transferData = abstract_transfer_1.parseTransferData(data);
@@ -20,7 +21,11 @@ class FeeBump extends abstract_transfer_1.default {
         if (txid instanceof Error) {
             return new Error('FeeBump.fromPOD invalid txid');
         }
-        return new FeeBump(transferData, txid);
+        const confTarget = data.confTarget;
+        if (typeof confTarget !== 'number') {
+            return new Error('Feebump.frompod invalid conftarget');
+        }
+        return new FeeBump(transferData, txid, confTarget);
     }
     get kind() {
         return 'FeeBump';
@@ -29,13 +34,14 @@ class FeeBump extends abstract_transfer_1.default {
         return {
             ...super.toPOD(),
             txid: Buffutils.toHex(this.txid),
+            confTarget: this.confTarget
         };
     }
-    static hashOf(transferHash, txid) {
-        return hash_1.default.fromMessage('FeeBump', transferHash.buffer, txid);
+    static hashOf(transferHash, txid, confTarget) {
+        return hash_1.default.fromMessage('FeeBump', transferHash.buffer, txid, Buffutils.fromUint32(confTarget));
     }
     hash() {
-        return FeeBump.hashOf(abstract_transfer_1.default.transferHash(this), this.txid);
+        return FeeBump.hashOf(abstract_transfer_1.default.transferHash(this), this.txid, this.confTarget);
     }
 }
 exports.default = FeeBump;
