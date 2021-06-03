@@ -17,7 +17,7 @@ export function toBech32(data: Uint8Array, version: number, prefix: string): str
   return bech32.encode(prefix, words);
 }
 
-type AddressKind = 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh';
+type AddressKind = 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2wsh' | 'p2tr';
 
 export function decodeBitcoinAddress(address: string): { kind: AddressKind; network: 'mainnet' | 'testnet' } | Error {
   if (address.startsWith('bc1') || address.startsWith('tb1')) {
@@ -39,17 +39,23 @@ export function decodeBitcoinAddress(address: string): { kind: AddressKind; netw
 
     const witnessVersion = decoded.words[0];
 
-    if (witnessVersion !== 0) {
+    // do not support v2-16 until we need to
+    if ([0, 1].indexOf(witnessVersion) < 0) {
       return new Error('unknown witness version');
     }
 
     const data = bech32.fromWords(decoded.words.slice(1));
-    if (data.length === 20) {
+
+    // can we do it like this?
+    if (data.length === 20 && witnessVersion === 0 && decoded.chk === 1) {
       return { kind: 'p2wpkh', network };
-    } else if (data.length === 32) {
+    } else if (data.length === 32 && witnessVersion === 0 && decoded.chk === 1) {
       return { kind: 'p2wsh', network };
+    } else if (witnessVersion === 1 && data.length === 32 && decoded.chk === 0x2bc830a3) {
+      //v1 checksum, also check witness to pass v1 v0 mixups
+      return { kind: 'p2tr', network };
     } else {
-      return new Error('invalid length for bech32 address');
+      return new Error('invalid length for bech32 address'); // generic error but could be number of things
     }
   }
 

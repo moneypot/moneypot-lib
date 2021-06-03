@@ -63,6 +63,9 @@ function encode(prefix, words) {
     return result;
 }
 exports.encode = encode;
+// https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki#bech32m
+const BECH32M_CONST = 0x2bc830a3; // 734539939
+// check for version 0 (old segwit) and version 1; P2TR (which uses bech32m)
 function decode(str) {
     if (str.length < 8) {
         throw new TypeError(str + ' too short');
@@ -101,10 +104,13 @@ function decode(str) {
         }
         words.push(v);
     }
+    // ok, can be 1 (bech32) or 0x2bc830a3 (bech32m)
     if (chk !== 1) {
-        throw new Error('Invalid checksum for ' + str);
+        if (chk !== BECH32M_CONST) {
+            throw new Error('Invalid checksum for ' + str);
+        }
     }
-    return { prefix, words };
+    return { prefix, words, chk };
 }
 exports.decode = decode;
 function convert(data, inBits, outBits, pad) {

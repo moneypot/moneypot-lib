@@ -1,6 +1,7 @@
 import { strictEqual, deepStrictEqual, strict } from 'assert';
 import 'mocha';
 import { decodeBitcoinAddress } from '../src/util/bitcoin-address';
+import { decode } from '../src/util/bech32';
 
 function isTrue(x: any) {
   strictEqual(x, true);
@@ -77,6 +78,100 @@ describe('bitcoin address', () => {
 
   it('fails on invalid Bech32', () => {
     const address = 'bc1qw508d6qejxtdg4y5r3zrrvary0c5xw7kv8f3t4';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+
+  // is this extensive enough?
+  
+  it('validates Testnet P2TR using bech32m decoding', () => {
+    const address = 'tb1pvyjn32ranzv2lxs5s8q5pptfjkejw8f3t950afs9v6ehwaanhk2q9atrhz';
+
+    deepStrictEqual(decodeBitcoinAddress(address), { kind: 'p2tr', network: 'testnet' });
+  });
+
+  it('validates Mainnet P2TR using bech32m decoding', () => {
+    const address = 'bc1pvyjn32ranzv2lxs5s8q5pptfjkejw8f3t950afs9v6ehwaanhk2qj4avdd';
+
+    deepStrictEqual(decodeBitcoinAddress(address), { kind: 'p2tr', network: 'mainnet' });
+  });
+
+  it('fails on mainnet addresses with witness version 1 encoded using bech32', () => {
+    const address = 'bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqh2y7hd';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails on testnet addresses with witness version 1 encoded using bech32', () => {
+    const address = 'tb1z0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqglt7rf';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails on mainnet addresses with witness version 0 encoded using bech32m', () => {
+    const address = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kemeawh';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails on testnet addresses with witness version 0 encoded using bech32m', () => {
+    const address = 'tb1q0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vq24jc47';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  // some more generic errors detailed in the bip
+  it('fails when invalid character in checksum ', () => {
+    const address = 'bc1p38j9r5y49hruaue7wxjce0updqjuyyx0kh56v8s25huc6995vvpql3jow4';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails when invalid witness ', () => {
+    const address = 'BC130XLXVLHEMJA6C4DQV22UAPCTQUPFHLXM9H8Z3K2E72Q4K9HCZ7VQ7ZWS8R';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails when invalid program length (1 byte) ', () => {
+    const address = 'bc1pw5dgrnzv';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails when invalid program length (41 bytes) ', () => {
+    const address = 'bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7v8n0nx0muaewav253zgeav';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails when Invalid program length for witness version 0 (per BIP141) ', () => {
+    const address = 'BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails on mixed case ', () => {
+    const address = 'tb1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vq47Zagq';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails on zero padding of more than 4 bits ', () => {
+    const address = 'bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7v07qwwzcrf';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails on Non-zero padding in 8-to-5 conversion', () => {
+    const address = 'tb1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vpggkg4j';
+
+    isError(decodeBitcoinAddress(address));
+  });
+
+  it('fails on Empty data section', () => {
+    const address = 'bc1gmk9yu';
 
     isError(decodeBitcoinAddress(address));
   });

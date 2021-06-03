@@ -38,7 +38,7 @@ class FeeBump extends abstract_transfer_1.default {
         };
     }
     static hashOf(transferHash, txid, confTarget) {
-        return hash_1.default.fromMessage('FeeBump', transferHash.buffer, txid, Buffutils.fromUint32(confTarget));
+        return hash_1.default.fromMessage('FeeBump', transferHash.buffer, txid, Buffutils.fromUint64(confTarget));
     }
     hash() {
         return FeeBump.hashOf(abstract_transfer_1.default.transferHash(this), this.txid, this.confTarget);

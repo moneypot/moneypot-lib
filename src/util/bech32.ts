@@ -75,6 +75,10 @@ export function encode(prefix: string, words: Uint8Array) {
   return result;
 }
 
+// https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki#bech32m
+
+const BECH32M_CONST = 0x2bc830a3; // 734539939
+// check for version 0 (bech32) and version 1 (bech32m)
 export function decode(str: string) {
   if (str.length < 8) {
     throw new TypeError(str + ' too short');
@@ -87,7 +91,6 @@ export function decode(str: string) {
     throw new Error('Mixed-case string ' + str);
   }
   str = lowered;
-
   const split = str.lastIndexOf('1');
   if (split === -1) {
     throw new Error('No separator character for ' + str);
@@ -119,10 +122,14 @@ export function decode(str: string) {
     words.push(v);
   }
 
+  // ok, can be 1 (bech32) or 0x2bc830a3 (bech32m)
   if (chk !== 1) {
-    throw new Error('Invalid checksum for ' + str);
+    if (chk !== BECH32M_CONST) {
+      throw new Error('Invalid checksum for ' + str);
+    }
   }
-  return { prefix, words };
+
+  return { prefix, words, chk };
 }
 
 export function convert(data: Uint8Array | number[], inBits: number, outBits: number, pad: boolean) {

@@ -5,6 +5,7 @@ export declare function encode(prefix: string, words: Uint8Array): string;
 export declare function decode(str: string): {
     prefix: string;
     words: number[];
+    chk: number;
 };
 export declare function convert(data: Uint8Array | number[], inBits: number, outBits: number, pad: boolean): Uint8Array;
 export declare function toWords(bytes: Uint8Array): Uint8Array;
