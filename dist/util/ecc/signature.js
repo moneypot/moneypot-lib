@@ -1,6 +1,13 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const check = require("./check");
+const check = __importStar(require("./check"));
 const elliptic_1 = require("./elliptic");
 const util_1 = require("./util");
 exports.Signature = {
@@ -70,6 +77,31 @@ function verify(pubkey, message, sig) {
     }
 }
 exports.verify = verify;
+function verifyBip340(pubkey, message, sig) {
+    if (!check.isValidPubkey(pubkey)) {
+        throw new Error('invalid pubkey provided');
+    }
+    if (!check.isValidSignature(sig)) {
+        throw new Error('invalid sig');
+    }
+    const m = message;
+    const P = util_1.isEven(pubkey.y) ? pubkey : elliptic_1.negatePoint(pubkey);
+    const e = util_1.standardGetEBIP340(sig.r, P.x, m);
+    const R = elliptic_1.pointSubtract(elliptic_1.pointMultiply(util_1.curve.g, sig.s), elliptic_1.pointMultiply(P, e));
+    if (R === elliptic_1.INFINITE_POINT) {
+        return false;
+    }
+    else if (!util_1.isEven(R.y)) {
+        return false;
+    }
+    else if (R.x !== sig.r) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+exports.verifyBip340 = verifyBip340;
 function verifyECDSA(pubkey, message, sig) {
     if (!check.isValidPubkey(pubkey)) {
         throw new Error('invalid pubkey provided');

@@ -1,9 +1,19 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const abstract_status_1 = require("./abstract-status");
-const hash_1 = require("../hash");
-const POD = require("../pod");
-const buffutils = require("../util/buffutils");
+const abstract_status_1 = __importDefault(require("./abstract-status"));
+const hash_1 = __importDefault(require("../hash"));
+const POD = __importStar(require("../pod"));
+const buffutils = __importStar(require("../util/buffutils"));
 class HookinAccepted extends abstract_status_1.default {
     // adversaryFee: number;
     constructor(claimableHash, consolidationFee) {

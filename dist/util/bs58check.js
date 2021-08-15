@@ -1,8 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const sha256_1 = require("./bcrypto/sha256");
-const base58 = require("./base58");
-const buffutils = require("./buffutils");
+const sha256_1 = __importDefault(require("./bcrypto/sha256"));
+const base58 = __importStar(require("./base58"));
+const buffutils = __importStar(require("./buffutils"));
 function checksumFn(buffer) {
     return sha256_1.default.digest(sha256_1.default.digest(buffer));
 }

@@ -1,8 +1,18 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const crypto = require("crypto");
-const random_1 = require("./random");
-const Buffutils = require("./buffutils");
+const crypto = __importStar(require("crypto"));
+const random_1 = __importDefault(require("./random"));
+const Buffutils = __importStar(require("./buffutils"));
 function encrypt(plainText, key) {
     const iv = random_1.default(12);
     const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);

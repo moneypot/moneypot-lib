@@ -11,7 +11,7 @@ export interface Acknowledged {
 export interface CustodianInfo {
     acknowledgementKey: PublicKey;
     currency: string;
-    fundingKey: PublicKey;
+    fundingKey: PublicKey | PublicKey[];
     blindCoinKeys: PublicKey[];
     wipeDate?: string;
 }

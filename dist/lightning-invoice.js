@@ -1,8 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const public_key_1 = require("./public-key");
-const hash_1 = require("./hash");
-const buffutils = require("./util/buffutils");
+const public_key_1 = __importDefault(require("./public-key"));
+const hash_1 = __importDefault(require("./hash"));
+const buffutils = __importStar(require("./util/buffutils"));
 class LightningInvoice {
     constructor(claimant, paymentRequest, initCreated) {
         this.claimant = claimant;

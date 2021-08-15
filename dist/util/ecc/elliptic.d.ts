@@ -25,5 +25,9 @@ export declare function scalarInverse(a: Scalar): Scalar;
 export declare function pointEq(a: Point, b: Point): boolean;
 export declare function pointAdd(...points: Point[]): Point;
 export declare function pointSubtract(a: Point, b: Point): Point;
+export declare function negatePoint(a: Point): {
+    x: bigint;
+    y: bigint;
+};
 export declare function pointMultiply(point: Point, scalar: bigint): Point;
 export declare function naiveMultiply(point: Point, scalar: bigint): Point;

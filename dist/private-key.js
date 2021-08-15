@@ -1,12 +1,22 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const ecc = require("./util/ecc");
-const hash_1 = require("./hash");
-const public_key_1 = require("./public-key");
-const bech32 = require("./util/bech32");
-const wif = require("./util/wif");
-const random_1 = require("./util/random");
-const Buffutils = require("./util/buffutils");
+const ecc = __importStar(require("./util/ecc"));
+const hash_1 = __importDefault(require("./hash"));
+const public_key_1 = __importDefault(require("./public-key"));
+const bech32 = __importStar(require("./util/bech32"));
+const wif = __importStar(require("./util/wif"));
+const random_1 = __importDefault(require("./util/random"));
+const Buffutils = __importStar(require("./util/buffutils"));
 const mu_sig_1 = require("./util/ecc/mu-sig");
 const serializedPrefix = 'privmp'; // private key moneypot
 class PrivateKey {
@@ -47,6 +57,7 @@ class PrivateKey {
     toPOD() {
         return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
     }
+    // in BIP340 we should curve.p - Y if Y is uneven and scrap even uneven markers TODO?
     toPublicKey() {
         const point = ecc.Point.fromPrivKey(this.scalar);
         return new public_key_1.default(point.x, point.y);

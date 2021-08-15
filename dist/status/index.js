@@ -1,11 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const claimed_1 = require("./claimed");
-const failed_1 = require("./failed");
-const bitcoin_transaction_sent_1 = require("./bitcoin-transaction-sent");
-const invoice_settled_1 = require("./invoice-settled");
-const lightning_payment_sent_1 = require("./lightning-payment-sent");
-const hookin_accepted_1 = require("./hookin-accepted");
+const claimed_1 = __importDefault(require("./claimed"));
+const failed_1 = __importDefault(require("./failed"));
+const bitcoin_transaction_sent_1 = __importDefault(require("./bitcoin-transaction-sent"));
+const invoice_settled_1 = __importDefault(require("./invoice-settled"));
+const lightning_payment_sent_1 = __importDefault(require("./lightning-payment-sent"));
+const hookin_accepted_1 = __importDefault(require("./hookin-accepted"));
 function statusFromPOD(obj) {
     if (typeof obj !== 'object' || typeof obj.kind !== 'string') {
         return new Error('parseTransfer expected an object with a kind to parse');

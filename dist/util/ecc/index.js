@@ -1,5 +1,12 @@
 "use strict";
 // CORE DATA
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var elliptic_1 = require("./elliptic");
 exports.Scalar = elliptic_1.Scalar;
@@ -22,9 +29,9 @@ exports.blindSign = blind_1.blindSign;
 exports.unblind = blind_1.unblind;
 exports.blindVerify = blind_1.blindVerify;
 // MULTI SIGNATURES
-const muSig = require("./mu-sig");
+const muSig = __importStar(require("./mu-sig"));
 exports.muSig = muSig;
 // CONVENIENCE
-const util = require("./util");
+const util = __importStar(require("./util"));
 exports.util = util;
 //# sourceMappingURL=index.js.map

@@ -1,6 +1,13 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const check = require("./check");
+const check = __importStar(require("./check"));
 const util_1 = require("./util");
 exports.Scalar = {
     fromBytes(buf) {
@@ -103,6 +110,10 @@ function pointSubtract(a, b) {
     return pointAdd(a, b);
 }
 exports.pointSubtract = pointSubtract;
+function negatePoint(a) {
+    return { x: a.x, y: (util_1.curve.p - a.y) % util_1.curve.p };
+}
+exports.negatePoint = negatePoint;
 function pointMultiply(point, scalar) {
     scalar = scalar % util_1.curve.n;
     return fastMultiply(point, scalar);
@@ -200,6 +211,15 @@ function jacobianAdd(p, q) {
     const nz = (H * p[2] * q[2]) % P;
     return [nx, ny, nz];
 }
+// equivalent to
+// let p = JacobianPoint.ZERO;
+// let d: JacobianPoint = this;
+// while (n > 0n) {
+//   if (n & 1n) p = p.add(d);
+//   d = d.double();
+//   n >>= 1n;
+// }
+// return p;
 function jacobianMultiply(a, n) {
     if (a[1] === BigInt(0) || n === BigInt(0)) {
         return [BigInt(0), BigInt(0), BigInt(1)];

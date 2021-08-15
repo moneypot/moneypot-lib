@@ -1,8 +1,15 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const buffutils = require("./buffutils");
-const bech32 = require("./bech32");
-const bs58check = require("./bs58check");
+const buffutils = __importStar(require("./buffutils"));
+const bech32 = __importStar(require("./bech32"));
+const bs58check = __importStar(require("./bs58check"));
 function toBase58Check(hash, version) {
     const payload = new Uint8Array(21);
     payload[0] = version;

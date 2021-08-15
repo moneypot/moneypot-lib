@@ -2,10 +2,20 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Buffutils = require("./util/buffutils");
+const Buffutils = __importStar(require("./util/buffutils"));
 exports.Buffutils = Buffutils;
-const POD = require("./pod");
+const POD = __importStar(require("./pod"));
 exports.POD = POD;
 // types
 var blinded_message_1 = require("./blinded-message");
@@ -23,15 +33,15 @@ exports.Signature = signature_1.default;
 // models
 var coin_1 = require("./coin");
 exports.Coin = coin_1.default;
-const custodian_info_1 = require("./custodian-info");
+const custodian_info_1 = __importDefault(require("./custodian-info"));
 exports.CustodianInfo = custodian_info_1.default;
 var hookin_1 = require("./hookin");
 exports.Hookin = hookin_1.default;
-const hookout_1 = require("./hookout");
+const hookout_1 = __importDefault(require("./hookout"));
 exports.Hookout = hookout_1.default;
-const lightning_payment_1 = require("./lightning-payment");
+const lightning_payment_1 = __importDefault(require("./lightning-payment"));
 exports.LightningPayment = lightning_payment_1.default;
-const fee_bump_1 = require("./fee-bump");
+const fee_bump_1 = __importDefault(require("./fee-bump"));
 exports.FeeBump = fee_bump_1.default;
 var magnitude_1 = require("./magnitude");
 exports.Magnitude = magnitude_1.default;
@@ -49,9 +59,9 @@ __export(require("./bolt11"));
 __export(require("./util/bitcoin-address"));
 var claim_request_1 = require("./claim-request");
 exports.ClaimRequest = claim_request_1.default;
-const Acknowledged = require("./acknowledged");
+const Acknowledged = __importStar(require("./acknowledged"));
 exports.Acknowledged = Acknowledged;
-const lightning_invoice_1 = require("./lightning-invoice");
+const lightning_invoice_1 = __importDefault(require("./lightning-invoice"));
 exports.LightningInvoice = lightning_invoice_1.default;
 // crypto, should be in it's own lib too..
 var random_1 = require("./util/random");

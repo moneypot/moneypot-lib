@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const elliptic_1 = require("./elliptic");
-const sha256_1 = require("../bcrypto/sha256");
+const sha256_1 = __importDefault(require("../bcrypto/sha256"));
 const util_1 = require("./util");
 function blindMessage(secret, nonce, signer, message) {
     const R = nonce;

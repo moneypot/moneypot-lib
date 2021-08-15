@@ -1,12 +1,21 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const hash_1 = require("./hash");
-const ecc = require("./util/ecc/elliptic");
-const bech32 = require("./util/bech32");
-const ripemd160_1 = require("./util/bcrypto/ripemd160");
-const sha256_1 = require("./util/bcrypto/sha256");
-const buffutils = require("./util/buffutils");
-const _1 = require(".");
+const hash_1 = __importDefault(require("./hash"));
+const ecc = __importStar(require("./util/ecc/elliptic"));
+const bech32 = __importStar(require("./util/bech32"));
+const ripemd160_1 = __importDefault(require("./util/bcrypto/ripemd160"));
+const sha256_1 = __importDefault(require("./util/bcrypto/sha256"));
+const buffutils = __importStar(require("./util/buffutils"));
 const mu_sig_1 = require("./util/ecc/mu-sig");
 const base58_1 = require("./util/base58");
 const serializedPrefix = 'pubmp'; // public key moneypot
@@ -53,10 +62,10 @@ class PublicKey {
             nBuff = n;
         }
         else if (typeof n === 'bigint') {
-            nBuff = _1.Buffutils.fromBigInt(n);
+            nBuff = buffutils.fromBigInt(n);
         }
         else if (typeof n === 'number') {
-            nBuff = _1.Buffutils.fromVarInt(n);
+            nBuff = buffutils.fromVarInt(n);
         }
         else {
             throw new Error('unexpected type for deriving with. must be a Uint8Array | number | bigint');
@@ -77,6 +86,23 @@ class PublicKey {
         const prefix = testnet ? 'tb' : 'bc';
         const pubkeyHash = rmd160sha256(this.buffer);
         const words = bech32.toWords(pubkeyHash);
+        const version = new Uint8Array(1); // [0]
+        return bech32.encode(prefix, buffutils.concat(version, words));
+    }
+    // the pubkeys are the custodians fundingkeys. we don't tweak like we do with normal addresses
+    toMultisig(testnet = true, pubkeys, redeemReq) {
+        const prefix = testnet ? 'tb' : 'bc';
+        // OP_RESERVED =
+        const OP_INT_BASE = 80;
+        // OP_CHECKMULTISIG =
+        const OP_CHECKMULTISIG = 174;
+        // M (n - x)
+        const U = buffutils.fromUint8(OP_INT_BASE + redeemReq);
+        // N
+        const R = buffutils.fromUint8(OP_INT_BASE + pubkeys.length + 1);
+        const redeem = buffutils.concat(U, new Uint8Array([33]), this.buffer, ...pubkeys.map(pk => buffutils.concat(new Uint8Array([33]), pk.buffer)), R, buffutils.fromUint8(OP_CHECKMULTISIG));
+        const hashRedeem = sha256_1.default.digest(redeem);
+        const words = bech32.toWords(hashRedeem);
         const version = new Uint8Array(1); // [0]
         return bech32.encode(prefix, buffutils.concat(version, words));
     }

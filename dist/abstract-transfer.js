@@ -1,12 +1,22 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert_1 = require("./util/assert");
-const hash_1 = require("./hash");
-const signature_1 = require("./signature");
-const POD = require("./pod");
-const coin_1 = require("./coin");
-const public_key_1 = require("./public-key");
-const buffutils = require("./util/buffutils");
+const assert_1 = __importDefault(require("./util/assert"));
+const hash_1 = __importDefault(require("./hash"));
+const signature_1 = __importDefault(require("./signature"));
+const POD = __importStar(require("./pod"));
+const coin_1 = __importDefault(require("./coin"));
+const public_key_1 = __importDefault(require("./public-key"));
+const buffutils = __importStar(require("./util/buffutils"));
 class AbstractTransfer {
     constructor({ amount, authorization, fee, inputs, initCreated }) {
         this.amount = amount;

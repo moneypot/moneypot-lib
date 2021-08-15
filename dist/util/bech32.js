@@ -1,7 +1,14 @@
 "use strict";
 // taken from npm package bech32
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert = require("./assert");
+const assert = __importStar(require("./assert"));
 exports.ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 // pre-compute lookup table
 const ALPHABET_MAP = new Map();
@@ -65,7 +72,7 @@ function encode(prefix, words) {
 exports.encode = encode;
 // https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki#bech32m
 const BECH32M_CONST = 0x2bc830a3; // 734539939
-// check for version 0 (old segwit) and version 1; P2TR (which uses bech32m)
+// check for version 0 (bech32) and version 1 (bech32m)
 function decode(str) {
     if (str.length < 8) {
         throw new TypeError(str + ' too short');

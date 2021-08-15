@@ -13,6 +13,7 @@ export default class PublicKey {
     derive(n: Uint8Array | number | bigint): PublicKey;
     hash(): Hash;
     toBitcoinAddress(testnet?: boolean): string;
+    toMultisig(testnet: boolean | undefined, pubkeys: PublicKey[], redeemReq: number): string;
     toNestedBitcoinAddress(testnet?: boolean): string;
     toLegacyBitcoinAddress(testnet?: boolean): string;
 }

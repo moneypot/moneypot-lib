@@ -1,8 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert_1 = require("../assert");
-const sha256_1 = require("../bcrypto/sha256");
+const assert_1 = __importDefault(require("../assert"));
+const sha256_1 = __importDefault(require("../bcrypto/sha256"));
 const check_1 = require("./check");
+const buffutils_1 = require("../buffutils");
 // secp256k1 parameters
 exports.curve = {
     a: BigInt(0),
@@ -76,6 +80,22 @@ function bigIntSqrt(n) {
     }
     return newtonIteration(n, BigInt(1));
 }
+// copy-pasted, seems to be faster though time optimization is not really a priority
+// // Pre-Init
+// const LUT_HEX_4b = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+// const LUT_HEX_8b = new Array(0x100);
+// for (let n = 0; n < 0x100; n++) {
+//   LUT_HEX_8b[n] = `${LUT_HEX_4b[(n >>> 4) & 0xF]}${LUT_HEX_4b[n & 0xF]}`;
+// }
+// // End Pre-Init
+// export function bufferToHex(buffer: Uint8Array) {
+//   let out = '';
+//   for (let idx = 0, edx = buffer.length; idx < edx; idx++) {
+//     out += LUT_HEX_8b[buffer[idx]];
+//   }
+//   return out;
+// }
+exports.bigintToHex = (n) => n.toString(16).padStart(64, '0');
 function bufferToHex(buf) {
     let result = '';
     for (const b of buf) {
@@ -187,6 +207,10 @@ function pointToBuffer(point) {
     return result;
 }
 exports.pointToBuffer = pointToBuffer;
+function isEven(y) {
+    return y % BigInt(2) === BigInt(0);
+}
+exports.isEven = isEven;
 function constantTimeBufferEquals(a, b) {
     const aLen = a.length;
     const bLen = b.length;
@@ -229,4 +253,9 @@ function getE(Rx, P, m) {
     return bufferToBigInt(sha256_1.default.digest(concatBuffers(buffer32FromBigInt(Rx), pointToBuffer(P), m))) % exports.curve.n;
 }
 exports.getE = getE;
+function standardGetEBIP340(Rx, Px, m) {
+    const tag = sha256_1.default.digest(buffutils_1.fromString('BIP0340/challenge'));
+    return (bufferToBigInt(sha256_1.default.digest(concatBuffers(tag, tag, buffer32FromBigInt(Rx), buffer32FromBigInt(Px), m))) % exports.curve.n);
+}
+exports.standardGetEBIP340 = standardGetEBIP340;
 //# sourceMappingURL=util.js.map

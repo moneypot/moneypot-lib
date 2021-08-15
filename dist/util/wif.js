@@ -1,6 +1,13 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const bs58check = require("./bs58check");
+const bs58check = __importStar(require("./bs58check"));
 function decodeRaw(buffer, version) {
     // check version only if defined
     if (version !== undefined && buffer[0] !== version) {

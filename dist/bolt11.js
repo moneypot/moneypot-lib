@@ -1,14 +1,24 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const public_key_1 = require("./public-key");
-const bech32 = require("./util/bech32");
-const buffutils = require("./util/buffutils");
+const public_key_1 = __importDefault(require("./public-key"));
+const bech32 = __importStar(require("./util/bech32"));
+const buffutils = __importStar(require("./util/buffutils"));
 const bitcoin_address_1 = require("./util/bitcoin-address");
-const sha256_1 = require("./util/bcrypto/sha256");
-const ecc = require("./util/ecc");
+const sha256_1 = __importDefault(require("./util/bcrypto/sha256"));
+const ecc = __importStar(require("./util/ecc"));
 const signature_1 = require("./util/ecc/signature");
-const signature_2 = require("./signature");
-const bs58check = require("./util/bs58check");
+const signature_2 = __importDefault(require("./signature"));
+const bs58check = __importStar(require("./util/bs58check"));
 const MAX_MILLISATS = BigInt('2100000000000000000');
 const MILLISATS_PER_BTC = BigInt(1e11);
 const MILLISATS_PER_MILLIBTC = BigInt(1e8);

@@ -1,14 +1,17 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const signature_1 = require("./signature");
-const hookout_1 = require("./hookout");
-const fee_bump_1 = require("./fee-bump");
-const lightning_payment_1 = require("./lightning-payment");
-const lightning_invoice_1 = require("./lightning-invoice");
-const hookin_1 = require("./hookin");
+const signature_1 = __importDefault(require("./signature"));
+const hookout_1 = __importDefault(require("./hookout"));
+const fee_bump_1 = __importDefault(require("./fee-bump"));
+const lightning_payment_1 = __importDefault(require("./lightning-payment"));
+const lightning_invoice_1 = __importDefault(require("./lightning-invoice"));
+const hookin_1 = __importDefault(require("./hookin"));
 const claimable_1 = require("./claimable");
 const status_1 = require("./status");
-const abstract_status_1 = require("./status/abstract-status");
+const abstract_status_1 = __importDefault(require("./status/abstract-status"));
 // T is what is acknowledged, a P is the type of a  T.toPOD()
 // type inference of this thing kind of sucks. So it's recommended to use
 // x: AcknowledgedX = hi.Acknowledged(....)  to guide it

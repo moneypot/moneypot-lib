@@ -1,13 +1,16 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const failed_1 = require("./failed");
-const claimed_1 = require("./claimed");
-const lightning_payment_sent_1 = require("./lightning-payment-sent");
-const bitcoin_transaction_sent_1 = require("./bitcoin-transaction-sent");
-const invoice_settled_1 = require("./invoice-settled");
-const hookin_accepted_1 = require("./hookin-accepted");
-const hookin_1 = require("../hookin");
-const lightning_payment_1 = require("../lightning-payment");
+const failed_1 = __importDefault(require("./failed"));
+const claimed_1 = __importDefault(require("./claimed"));
+const lightning_payment_sent_1 = __importDefault(require("./lightning-payment-sent"));
+const bitcoin_transaction_sent_1 = __importDefault(require("./bitcoin-transaction-sent"));
+const invoice_settled_1 = __importDefault(require("./invoice-settled"));
+const hookin_accepted_1 = __importDefault(require("./hookin-accepted"));
+const hookin_1 = __importDefault(require("../hookin"));
+const lightning_payment_1 = __importDefault(require("../lightning-payment"));
 function computeClaimableRemaining(c, statuses) {
     let remaining = c.claimableAmount;
     for (const s of statuses) {

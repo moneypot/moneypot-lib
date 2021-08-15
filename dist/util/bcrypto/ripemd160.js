@@ -1,8 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const assert_1 = require("../assert");
-const buffutils = require("../buffutils");
-const hmac_1 = require("./hmac");
+const assert_1 = __importDefault(require("../assert"));
+const buffutils = __importStar(require("../buffutils"));
+const hmac_1 = __importDefault(require("./hmac"));
 const FINALIZED = -1;
 const DESC = new Uint8Array(8);
 const PADDING = new Uint8Array(64);
