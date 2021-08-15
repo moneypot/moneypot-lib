@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as check from './check';
-import { INFINITE_POINT, pointEq, pointMultiply, pointSubtract, pointAdd, Point, scalarAdd, Scalar } from './elliptic';
+import { INFINITE_POINT, pointMultiply, pointSubtract, pointAdd, Point, Scalar, negatePoint } from './elliptic';
 import {
   buffer32FromBigInt,
   bufferFromHex,
@@ -14,6 +14,8 @@ import {
   jacobi,
   mod,
   modInverse,
+  standardGetEBIP340,
+  isEven,
 } from './util';
 
 // Schnorr Signatures
@@ -87,6 +89,30 @@ export function verify(pubkey: Point, message: Uint8Array, sig: Signature): bool
   if (R === INFINITE_POINT) {
     return false;
   } else if (jacobi(R.y) !== BigInt(1)) {
+    return false;
+  } else if (R.x !== sig.r) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+export function verifyBip340(pubkey: Point, message: Uint8Array, sig: Signature): boolean {
+  if (!check.isValidPubkey(pubkey)) {
+    throw new Error('invalid pubkey provided');
+  }
+  if (!check.isValidSignature(sig)) {
+    throw new Error('invalid sig');
+  }
+
+  const m = message;
+  const P = isEven(pubkey.y) ? pubkey : negatePoint(pubkey);
+  const e = standardGetEBIP340(sig.r, P.x, m);
+  const R = pointSubtract(pointMultiply(curve.g, sig.s), pointMultiply(P, e));
+
+  if (R === INFINITE_POINT) {
+    return false;
+  } else if (!isEven(R.y)) {
     return false;
   } else if (R.x !== sig.r) {
     return false;

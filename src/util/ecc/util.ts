@@ -2,6 +2,7 @@ import assert from '../assert';
 import { Point, Scalar } from './elliptic';
 import sha256 from '../bcrypto/sha256';
 import { isValidPubkey } from './check';
+import { fromString } from '../buffutils';
 
 // secp256k1 parameters
 export const curve = {
@@ -81,6 +82,25 @@ function bigIntSqrt(n: bigint): bigint {
 
   return newtonIteration(n, BigInt(1));
 }
+
+// copy-pasted, seems to be faster though time optimization is not really a priority
+
+// // Pre-Init
+// const LUT_HEX_4b = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+// const LUT_HEX_8b = new Array(0x100);
+// for (let n = 0; n < 0x100; n++) {
+//   LUT_HEX_8b[n] = `${LUT_HEX_4b[(n >>> 4) & 0xF]}${LUT_HEX_4b[n & 0xF]}`;
+// }
+// // End Pre-Init
+// export function bufferToHex(buffer: Uint8Array) {
+//   let out = '';
+//   for (let idx = 0, edx = buffer.length; idx < edx; idx++) {
+//     out += LUT_HEX_8b[buffer[idx]];
+//   }
+//   return out;
+// }
+
+export const bigintToHex = (n: number | bigint) => n.toString(16).padStart(64, '0');
 
 export function bufferToHex(buf: Uint8Array): string {
   let result = '';
@@ -214,6 +234,10 @@ export function pointToBuffer(point: Point): Uint8Array {
   return result;
 }
 
+export function isEven(y: bigint) {
+  return y % BigInt(2) === BigInt(0);
+}
+
 export function constantTimeBufferEquals(a: Uint8Array, b: Uint8Array): boolean {
   const aLen = a.length;
   const bLen = b.length;
@@ -257,4 +281,11 @@ export function getK0(privkey: Scalar, message: Uint8Array): Scalar {
 
 export function getE(Rx: bigint, P: Point, m: Uint8Array): bigint {
   return bufferToBigInt(sha256.digest(concatBuffers(buffer32FromBigInt(Rx), pointToBuffer(P), m))) % curve.n;
+}
+
+export function standardGetEBIP340(Rx: bigint, Px: bigint, m: Uint8Array) {
+  const tag = sha256.digest(fromString('BIP0340/challenge'));
+  return (
+    bufferToBigInt(sha256.digest(concatBuffers(tag, tag, buffer32FromBigInt(Rx), buffer32FromBigInt(Px), m))) % curve.n
+  );
 }

@@ -127,6 +127,10 @@ export function pointSubtract(a: Point, b: Point): Point {
   return pointAdd(a, b);
 }
 
+export function negatePoint(a: Point) {
+  return { x: a.x, y: (curve.p - a.y) % curve.p };
+}
+
 export function pointMultiply(point: Point, scalar: bigint): Point {
   scalar = scalar % curve.n;
   return fastMultiply(point, scalar);
@@ -236,6 +240,16 @@ function jacobianAdd(p: Jacobian, q: Jacobian): Jacobian {
   const nz = (H * p[2] * q[2]) % P;
   return [nx, ny, nz];
 }
+
+// equivalent to
+// let p = JacobianPoint.ZERO;
+// let d: JacobianPoint = this;
+// while (n > 0n) {
+//   if (n & 1n) p = p.add(d);
+//   d = d.double();
+//   n >>= 1n;
+// }
+// return p;
 
 function jacobianMultiply(a: Jacobian, n: bigint): Jacobian {
   if (a[1] === BigInt(0) || n === BigInt(0)) {

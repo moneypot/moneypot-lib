@@ -82,9 +82,8 @@ describe('bitcoin address', () => {
     isError(decodeBitcoinAddress(address));
   });
 
-
   // is this extensive enough?
-  
+
   it('validates Testnet P2TR using bech32m decoding', () => {
     const address = 'tb1pvyjn32ranzv2lxs5s8q5pptfjkejw8f3t950afs9v6ehwaanhk2q9atrhz';
 

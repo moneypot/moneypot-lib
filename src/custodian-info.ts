@@ -7,14 +7,14 @@ import * as Buffutils from './util/buffutils';
 export default class CustodianInfo {
   acknowledgementKey: PublicKey;
   currency: string;
-  fundingKey: PublicKey;
+  fundingKey: PublicKey | PublicKey[];
   blindCoinKeys: PublicKey[]; // of 31...
   wipeDate?: string;
 
   constructor(
     acknowledgementKey: PublicKey,
     currency: string,
-    fundingKey: PublicKey,
+    fundingKey: PublicKey | PublicKey[],
     blindCoinKeys: PublicKey[],
     wipeDate?: string
   ) {
@@ -30,7 +30,7 @@ export default class CustodianInfo {
       this.acknowledgementKey.buffer,
       Buffutils.fromUint32(this.currency.length),
       Buffutils.fromString(this.currency),
-      this.fundingKey.buffer,
+      ...(this.fundingKey instanceof Array ? this.fundingKey.map(bk => bk.buffer) : [this.fundingKey.buffer]), // can we spread like this?
       ...this.blindCoinKeys.map(bk => bk.buffer),
       Buffutils.fromString(this.wipeDate ? this.wipeDate : '')
     );
@@ -51,7 +51,7 @@ export default class CustodianInfo {
     return {
       acknowledgementKey: this.acknowledgementKey.toPOD(),
       currency: this.currency,
-      fundingKey: this.fundingKey.toPOD(),
+      fundingKey: this.fundingKey instanceof Array ? this.fundingKey.map(fk => fk.toPOD()) : this.fundingKey.toPOD(),
       blindCoinKeys: this.blindCoinKeys.map(bk => bk.toPOD()),
       wipeDate: this.wipeDate,
     };
@@ -71,9 +71,23 @@ export default class CustodianInfo {
       return new Error('custodian expected a stringified currency');
     }
 
-    const fundingKey = PublicKey.fromPOD(d.fundingKey);
-    if (fundingKey instanceof Error) {
-      return fundingKey;
+    let fundingKey: PublicKey[] = [];
+    if (Array.isArray(d.fundingKey)) {
+      for (const fkstr of d.fundingKey) {
+        const fk = PublicKey.fromPOD(fkstr);
+        if (fk instanceof Error) {
+          return fk;
+        }
+
+        fundingKey.push(fk);
+      }
+    }
+    if (!Array.isArray(d.fundingKey)) {
+      const fk = PublicKey.fromPOD(d.fundingKey);
+      if (fk instanceof Error) {
+        return fk;
+      }
+      fundingKey.push(fk);
     }
 
     if (!Array.isArray(d.blindCoinKeys) || d.blindCoinKeys.length !== 31) {
@@ -96,6 +110,12 @@ export default class CustodianInfo {
         return new Error('Invalid format used for the date.');
       }
     }
-    return new CustodianInfo(acknowledgementKey, currency, fundingKey, blindCoinKeys, wipeDate);
+    return new CustodianInfo(
+      acknowledgementKey,
+      currency,
+      fundingKey.length > 1 ? fundingKey : fundingKey[0],
+      blindCoinKeys,
+      wipeDate
+    );
   }
 }

@@ -6,7 +6,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "mocha -r ts-node/register \"test/**/*.ts\"",
+    "test": "mocha --timeout 15000 -r ts-node/register \"test/**/*.ts\"",
     "prettier": "prettier --single-quote --trailing-comma es5 --print-width 120 --write \"{src,test}/**/*.ts\""
   },
   "author": "",

@@ -1,5 +1,4 @@
 import Hash from './hash';
-
 import * as ecc from './util/ecc/elliptic';
 import * as bech32 from './util/bech32';
 
@@ -7,7 +6,6 @@ import RIPEMD160 from './util/bcrypto/ripemd160';
 import SHA256 from './util/bcrypto/sha256';
 
 import * as buffutils from './util/buffutils';
-import { Buffutils } from '.';
 import { pubkeyCombine } from './util/ecc/mu-sig';
 import { encode } from './util/base58';
 
@@ -69,9 +67,9 @@ export default class PublicKey {
     if (n instanceof Uint8Array) {
       nBuff = n;
     } else if (typeof n === 'bigint') {
-      nBuff = Buffutils.fromBigInt(n);
+      nBuff = buffutils.fromBigInt(n);
     } else if (typeof n === 'number') {
-      nBuff = Buffutils.fromVarInt(n);
+      nBuff = buffutils.fromVarInt(n);
     } else {
       throw new Error('unexpected type for deriving with. must be a Uint8Array | number | bigint');
     }
@@ -102,6 +100,38 @@ export default class PublicKey {
     const version = new Uint8Array(1); // [0]
     return bech32.encode(prefix, buffutils.concat(version, words));
   }
+
+  // the pubkeys are the custodians fundingkeys. we don't tweak like we do with normal addresses
+  public toMultisig(testnet: boolean = true, pubkeys: PublicKey[], redeemReq: number) {
+    const prefix = testnet ? 'tb' : 'bc';
+
+    // OP_RESERVED =
+    const OP_INT_BASE = 80;
+    // OP_CHECKMULTISIG =
+    const OP_CHECKMULTISIG = 174;
+
+    // M (n - x)
+    const U = buffutils.fromUint8(OP_INT_BASE + redeemReq);
+
+    // N
+    const R = buffutils.fromUint8(OP_INT_BASE + pubkeys.length + 1);
+
+    const redeem = buffutils.concat(
+      U,
+      new Uint8Array([33]),
+      this.buffer,
+      ...pubkeys.map(pk => buffutils.concat(new Uint8Array([33]), pk.buffer)),
+      R,
+      buffutils.fromUint8(OP_CHECKMULTISIG)
+    );
+
+    const hashRedeem = SHA256.digest(redeem);
+    const words = bech32.toWords(hashRedeem);
+
+    const version = new Uint8Array(1); // [0]
+    return bech32.encode(prefix, buffutils.concat(version, words));
+  }
+
   public toNestedBitcoinAddress(testnet: boolean = true): string {
     const prefix = testnet ? 0xc4 : 0x05;
     const pubkeyHash = rmd160sha256(this.buffer);

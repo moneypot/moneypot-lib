@@ -60,6 +60,7 @@ export default class PrivateKey {
     return bech32.encode(serializedPrefix, bech32.toWords(this.buffer));
   }
 
+  // in BIP340 we should curve.p - Y if Y is uneven and scrap even uneven markers TODO?
   public toPublicKey(): PublicKey {
     const point = ecc.Point.fromPrivKey(this.scalar);
     return new PublicKey(point.x, point.y);
